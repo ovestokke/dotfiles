@@ -1,0 +1,81 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.38/schema.json",
+  "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
+  "window_hiding_behaviour": "Cloak",
+  "cross_monitor_move_behaviour": "Insert",
+  "default_workspace_padding": 1,
+  "default_container_padding": 1,
+  "border": true,
+  "border_width": 2,
+  "border_offset": -1,
+  "mouse_follows_focus": false,
+  "global_work_area_offset": {
+    "top": -20,
+    "bottom": 0,
+    "left": 0,
+    "right": 0
+  },
+  "theme": {
+    "palette": "Catppuccin",
+    "name": "Mocha",
+    "unfocused_border": "Lavender",
+    "bar_accent": "Blue"
+  },
+  "stackbar": {
+  },
+  "monitors": [
+    {
+      "workspaces": [
+        {
+          "name": "I",
+          "layout": "UltrawideVerticalStack"
+        },
+        {
+          "name": "II",
+          "layout": "UltrawideVerticalStack",
+          "initial_workspace_rules": [
+            {
+              "id": "Discord.exe",
+              "kind": "Exe",
+              "matching_strategy": "Equals"
+            },
+            {
+              "id": "tidal.exe",
+              "kind": "Exe",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "III",
+          "layout": "UltrawideVerticalStack"
+        },
+        {
+          "name": "IV",
+          "layout": "UltrawideVerticalStack"
+        },
+        {
+          "name": "V",
+          "initial_workspace_rules": [
+            {
+              "id": "bf6.exe",
+              "kind": "Exe"
+            },
+            {
+              "id": "pathofexile2.exe",
+              "kind": "Exe"
+            },
+            {
+              "id": "Steam.exe",
+              "kind": "Exe"
+            },
+            {
+              "id": "Borderlands4.exe",
+              "kind": "Exe"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
