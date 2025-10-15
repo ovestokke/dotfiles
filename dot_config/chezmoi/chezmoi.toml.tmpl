@@ -9,13 +9,15 @@
 [merge]
 {{- if eq .chezmoi.os "darwin" }}
     command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
+    args = ["-d", "{{`{{ .Destination }}`}}", "{{`{{ .Source }}`}}", "{{`{{ .Target }}`}}"]
 {{- else if eq .chezmoi.os "windows" }}
     command = "code"
-    args = ["--wait", "--diff", "{{ .Destination }}", "{{ .Source }}"]
+    args = ["-d", "{{`{{ .Destination }}`}}", "{{`{{ .Source }}`}}", "{{`{{ .Target }}`}}"]
 {{- end }}
 
 [git]
     # autoAdd = true
     autoCommit = true # add + commit
     autoPush = true
+
+
