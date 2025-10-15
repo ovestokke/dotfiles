@@ -9,14 +9,16 @@ local config = wezterm.config_builder()
 -- Set default shell based on platform
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' or wezterm.target_triple == 'aarch64-pc-windows-msvc' then
   config.default_prog = { 'pwsh.exe' }
+  config.font = wezterm.font("MesloLGS NF")
 elseif wezterm.target_triple == 'x86_64-apple-darwin' or wezterm.target_triple == 'aarch64-apple-darwin' then
   config.default_prog = { 'zsh', '-l' }
+  config.font = wezterm.font("MesloLGS Nerd Font Mono")
 end
 
 config.color_scheme = 'Catppuccin Mocha'
 -- config.color_scheme = 'Lunaria Dark (Gogh)'
 -- config.font = wezterm.font("MesloLGS NF")
-config.font = wezterm.font("MesloLGS Nerd Font Mono")
+-- config.font = wezterm.font("MesloLGS Nerd Font Mono")
 config.font_size = 16
 
 -- Set initial window size (columns x rows)
