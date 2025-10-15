@@ -9,6 +9,11 @@ One-line install (recommended):
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
+```pwsh
+$env:GITHUB_USERNAME = "ovestokke"
+iex "&{$(irm 'https://get.chezmoi.io/ps1')} -- init --apply $env:GITHUB_USERNAME"
+```
+
 
 Or install manually:
 
