@@ -87,6 +87,10 @@ source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # User configuration
 
+# ---- dotsync for manuall sync -----
+alias dotsync='cd ~/.local/share/chezmoi && git add -A && git commit -m "update: $(date +%Y-%m-%d)" && git pull --rebase && git push
+&& cd -'
+
 # ---- Eza (better ls) -----
 alias ls="eza --icons=always"
 
