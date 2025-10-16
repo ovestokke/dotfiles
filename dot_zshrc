@@ -90,6 +90,31 @@ source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 # ---- dotsync for manuall sync -----
 alias dotsync='cd ~/.local/share/chezmoi && git add -A && git commit -m "update: $(date +%Y-%m-%d)" && git pull --rebase && git push && cd -'
 
+# ---- Chezmoi aliases ----
+# Ensure chezmoi is available
+[[ $+commands[chezmoi] ]] || return 0
+
+# Completion
+source <(chezmoi completion zsh)
+
+# Status
+alias ch="chezmoi"
+alias chd="chezmoi diff"
+alias chst="chezmoi status"
+alias chdoc="chezmoi doctor"
+
+# Editing source
+alias cha="chezmoi add"
+alias chr="chezmoi re-add"
+alias che="chezmoi edit"
+alias chea="chezmoi edit --apply"
+alias chcd="chezmoi cd"
+
+# Updating target
+alias chap="chezmoi apply"
+alias chup="chezmoi update"
+alias chug="chezmoi upgrade"
+
 # ---- Eza (better ls) -----
 alias ls="eza --icons=always"
 
