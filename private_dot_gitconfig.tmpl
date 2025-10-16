@@ -14,8 +14,7 @@
     		program = /opt/homebrew/bin/gpg
 	{{- else if eq .chezmoi.os "windows" }}
     		program = C:/Program Files/GnuPG/bin/gpg.exe
-	{{- end }}
-	
+	{{- end }}	
 	format = ssh
 [gpg "ssh"]
 	{{- if eq .chezmoi.os "darwin" }}
