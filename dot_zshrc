@@ -78,7 +78,7 @@ ZSH_THEME=""
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git 1password terraform)
+plugins=(git chezmoi 1password terraform)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -104,37 +104,4 @@ alias cd="z"
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-
-# Ensure chezmoi is available
-[[ $+commands[chezmoi] ]] || return 0
-
-# Completion
-source <(chezmoi completion zsh)
-
-# Status
-alias ch="chezmoi"
-alias chd="chezmoi diff"
-alias chst="chezmoi status"
-alias chdoc="chezmoi doctor"
-
-# Editing source
-alias cha="chezmoi add"
-alias chr="chezmoi re-add"
-alias che="chezmoi edit"
-alias chea="chezmoi edit --apply"
-alias chcd="chezmoi cd"
-
-# Updating target
-alias chap="chezmoi apply"
-alias chup="chezmoi update"
-alias chug="chezmoi upgrade"
-
-# Standardized $0 handling
-0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
-0="${${(M)0:#/*}:-$PWD/$0}"
-
-# Git
-[[ $+commands[git] ]] || return 0
-source <(alias | awk -F "='" -f "${0:h}/alias.awk")
-alias chg="chezmoi git --"
 
