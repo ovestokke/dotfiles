@@ -9,11 +9,6 @@ One-line install (recommended):
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
-```pwsh
-$env:GITHUB_USERNAME = "ovestokke"
-iex "&{$(irm 'https://get.chezmoi.io/ps1')} -- init --apply $env:GITHUB_USERNAME"
-```
-
 
 Or install manually:
 
@@ -21,6 +16,13 @@ Or install manually:
 # Install chezmoi
 brew install chezmoi
 
+# Initialize and apply dotfiles
+chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+```
+
+```pwsh
+# Install chezmoi
+winget install chezmoi
 # Initialize and apply dotfiles
 chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
