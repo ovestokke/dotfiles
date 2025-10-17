@@ -45,10 +45,25 @@ chezmoi add ~/.newfile
 
 ## What's Included
 
+### Cross-Platform
+- **VS Code**: Settings and extensions (auto-installs on `chezmoi apply`)
+- **PowerShell**: Profile with Oh My Posh and zoxide integration
+- **Tools**: zoxide for smart directory navigation
+
+### macOS
 - **WezTerm**: Terminal emulator with Catppuccin Mocha theme
-- **AeroSpace**: Tiling window manager for macOS
+- **AeroSpace**: Tiling window manager
 - **Zsh**: Shell configuration with Oh My Zsh, Powerlevel10k theme
-- **Tools**: eza, zoxide, and various plugins
+- **Tools**: eza (ls replacement)
+
+### Windows
+- **PowerShell**: Profile with Oh My Posh prompt
+
+## Platform-Specific Paths
+
+Configs are deployed to the correct location per OS:
+- **PowerShell**: `~/.config/powershell/` (macOS) or `~/Documents/PowerShell/` (Windows)
+- **VS Code**: `~/Library/Application Support/Code/User/` (macOS) or `%APPDATA%/Code/User/` (Windows)
 
 ## Documentation
 

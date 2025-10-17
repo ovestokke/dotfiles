@@ -1,0 +1,15 @@
+packages:
+  darwin:
+    brews:
+      - git
+      - eza
+      - zoxide
+      - chezmoi
+      - terraform
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+      - powerlevel10k
+    casks:
+      - wezterm
+      - 1password
+      - 1password-cli

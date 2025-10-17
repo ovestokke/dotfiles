@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
+
+{{ if ne .chezmoi.os "darwin" -}}
+exit 0
+{{- end }}
+
+if ! command -v brew &> /dev/null; then
+    echo "Homebrew not found, skipping package installation"
+    exit 0
+fi
+
+echo "Installing Homebrew packages..."
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+{{ range .packages.darwin.brews -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ range .packages.darwin.casks -}}
+cask {{ . | quote }}
+{{ end -}}
+EOF
+
+echo "Homebrew packages installed"
