@@ -1,4 +1,5 @@
-# extensions.txt hash: #{{ includeTemplate "vscode/extensions.txt" . | sha256sum }}
+{{- if eq .chezmoi.os "windows" }}
+# extensions.txt hash: {{ includeTemplate "vscode/extensions.txt" . | sha256sum }}
 
 if (-not (Get-Command code -ErrorAction SilentlyContinue)) {
     Write-Host "VS Code CLI not found, skipping extension installation"
@@ -8,7 +9,7 @@ if (-not (Get-Command code -ErrorAction SilentlyContinue)) {
 Write-Host "Installing VS Code extensions..."
 
 @'
-#{{ includeTemplate "vscode/extensions.txt" . }}
+{{ includeTemplate "vscode/extensions.txt" . }}
 '@ -split "`n" | ForEach-Object {
     $extension = $_.Trim()
     if ($extension) {
@@ -18,3 +19,4 @@ Write-Host "Installing VS Code extensions..."
 }
 
 Write-Host "VS Code extensions installed"
+{{- end }}

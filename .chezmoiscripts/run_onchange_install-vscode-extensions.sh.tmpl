@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# extensions.txt hash: #{{ includeTemplate "vscode/extensions.txt" . | sha256sum }}
+# extensions.txt hash: {{ includeTemplate "vscode/extensions.txt" . | sha256sum }}
+
+{{ if eq .chezmoi.os "windows" -}}
+exit 0
+{{- end }}
 
 if ! command -v code &> /dev/null; then
     echo "VS Code CLI not found, skipping extension installation"
@@ -9,14 +13,13 @@ fi
 
 echo "Installing VS Code extensions..."
 
-#{{ includeTemplate "vscode/extensions.txt" . -}}
 while IFS= read -r extension; do
     if [ -n "$extension" ]; then
         echo "Installing: $extension"
         code --install-extension "$extension" --force
     fi
 done <<'EOF'
-#{{ includeTemplate "vscode/extensions.txt" . }}
+{{ includeTemplate "vscode/extensions.txt" . }}
 EOF
 
 echo "VS Code extensions installed"
