@@ -52,9 +52,9 @@ chezmoi add ~/.newfile
 
 ### macOS
 - **WezTerm**: Terminal emulator with Catppuccin Mocha theme
-- **AeroSpace**: Tiling window manager
 - **Zsh**: Shell configuration with Oh My Zsh, Powerlevel10k theme
-- **Tools**: eza (ls replacement)
+- **Tools**: eza (ls replacement), 1Password CLI
+- **Packages**: Declarative package management via Homebrew (auto-installs git, terraform, etc.)
 
 ### Windows
 - **PowerShell**: Profile with Oh My Posh prompt
