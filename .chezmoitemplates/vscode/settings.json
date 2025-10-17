@@ -1,0 +1,31 @@
+{
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "azureTerraform.survey": {
+    "surveyPromptDate": "2025-10-17T10:02:29.920Z",
+    "surveyPromptIgnoredCount": 3
+  },
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "terminal.integrated.fontFamily": "MesloLGS Nerd Font Mono",
+  "terminal.integrated.fontLigatures.enabled": true,
+  "terminal.external.linuxExec": "zsh",
+  "editor.largeFileOptimizations": false,
+  "editor.semanticTokenColorCustomizations": {},
+  "workbench.iconTheme": "catppuccin-mocha",
+  "workbench.colorTheme": "Catppuccin Mocha"
+}

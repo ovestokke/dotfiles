@@ -1,7 +1,11 @@
 {{ if ne .chezmoi.os "windows" -}}
 Documents/
 Documents/**
+AppData/
+AppData/**
 {{- else -}}
 .config/powershell/
 .config/powershell/**
+Library/
+Library/**
 {{- end }}
