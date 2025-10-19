@@ -14,6 +14,8 @@
     		program = /opt/homebrew/bin/gpg
 	{{- else if eq .chezmoi.os "windows" }}
     		program = C:/Program Files/GnuPG/bin/gpg.exe
+	{{- else if eq .chezmoi.os "linux" }}
+    		program = /usr/bin/gpg
 	{{- end }}	
 	format = ssh
 [gpg "ssh"]
@@ -21,4 +23,6 @@
     		program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 	{{- else if eq .chezmoi.os "windows" }}
     		program = "C:/Users/ovsto/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+	{{- else if eq .chezmoi.os "linux" }}
+    		program = /mnt/c/Users/ovsto/AppData/Local/1Password/app/8/op-ssh-sign.exe
 	{{- end }}

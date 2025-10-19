@@ -1,11 +1,21 @@
-{{ if ne .chezmoi.os "windows" -}}
+{{- if eq .chezmoi.os "darwin" }}
 Documents/
 Documents/**
 AppData/
 AppData/**
-{{- else -}}
 .config/powershell/
 .config/powershell/**
+{{- else if eq .chezmoi.os "windows" }}
 Library/
 Library/**
+.config/powershell/
+.config/powershell/**
+{{- else if eq .chezmoi.os "linux" }}
+Library/
+Library/**
+Documents/
+Documents/**
+AppData/
+AppData/**
+dot_wezterm.lua
 {{- end }}

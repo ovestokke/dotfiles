@@ -6,7 +6,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Ensure PATH is set (in case .zprofile wasn't sourced)
+{{- if eq .chezmoi.os "darwin" }}
 [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+{{- end }}
 export PATH="$HOME/.local/bin:$PATH"
 
 # Path to your Oh My Zsh installation.
@@ -83,7 +85,11 @@ plugins=(git 1password terraform)
 source $ZSH/oh-my-zsh.sh
 
 # Load Powerlevel10k theme
+{{- if eq .chezmoi.os "darwin" }}
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+{{- else }}
+source ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k/powerlevel10k.zsh-theme
+{{- end }}
 
 # User configuration
 
@@ -126,7 +132,12 @@ alias cd="z"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Load zsh plugins
+{{- if eq .chezmoi.os "darwin" }}
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{{- else }}
+source ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{{- end }}
 
 

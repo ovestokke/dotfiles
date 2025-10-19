@@ -13,3 +13,19 @@ packages:
       - wezterm
       - 1password
       - 1password-cli
+  linux:
+    apt:
+      - git
+      - eza
+      - fzf
+      - zoxide
+      - curl
+      - wget
+      - unzip
+      - ripgrep
+      - fd-find
+      - bat
+      - exa
+      - gh
+      - gnupg
+      - zsh
