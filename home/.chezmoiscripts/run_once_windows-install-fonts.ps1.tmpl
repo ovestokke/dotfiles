@@ -1,0 +1,30 @@
+{{- if eq .chezmoi.os "windows" }}
+# Install Meslo Nerd Font via Oh My Posh
+
+Write-Host "Installing Meslo Nerd Font..." -ForegroundColor Cyan
+
+# Check if oh-my-posh is available
+if (-not (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
+    Write-Host "[SKIP] Oh My Posh not found. Install it first via: chezmoi apply" -ForegroundColor Yellow
+    exit 0
+}
+
+# Refresh PATH to include oh-my-posh
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+try {
+    oh-my-posh font install meslo --user
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[OK] Meslo Nerd Font installed" -ForegroundColor Green
+    }
+    else {
+        Write-Host "[SKIP] Font may already be installed or installation skipped" -ForegroundColor Yellow
+    }
+}
+catch {
+    Write-Host "[WARN] Failed to install font: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "You can install fonts manually from: https://www.nerdfonts.com/font-downloads" -ForegroundColor Gray
+}
+
+{{- end }}

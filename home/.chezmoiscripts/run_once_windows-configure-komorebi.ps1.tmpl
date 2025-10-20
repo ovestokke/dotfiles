@@ -1,0 +1,49 @@
+{{- if eq .chezmoi.os "windows" }}
+# Komorebi Post-Installation Configuration
+# This script runs once after komorebi is installed to configure autostart
+
+$ErrorActionPreference = "SilentlyContinue"
+
+Write-Host "Configuring Komorebi..." -ForegroundColor Cyan
+
+# Check if komorebi is installed
+$komorebicPath = Get-Command komorebic -ErrorAction SilentlyContinue
+if (-not $komorebicPath) {
+    Write-Host "Komorebi not found. Install it first via: chezmoi apply" -ForegroundColor Yellow
+    exit 0
+}
+
+# Refresh PATH
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# Enable autostart for komorebi and whkd
+Write-Host "Enabling autostart for Komorebi and whkd..." -ForegroundColor Cyan
+try {
+    komorebic enable-autostart --whkd 2>&1 | Out-Null
+    Write-Host "[OK] Autostart enabled" -ForegroundColor Green
+}
+catch {
+    Write-Host "[WARN] Failed to enable autostart: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "You can enable it manually with: komorebic enable-autostart --whkd" -ForegroundColor Gray
+}
+
+Write-Host ""
+Write-Host "Komorebi Configuration Complete!" -ForegroundColor Green
+Write-Host ""
+Write-Host "Next Steps:" -ForegroundColor Yellow
+Write-Host "  1. Grant Accessibility Permissions:" -ForegroundColor Cyan
+Write-Host "     Settings > Privacy & Security > Accessibility" -ForegroundColor Gray
+Write-Host "     Add: komorebi.exe and whkd.exe" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  2. Start Komorebi:" -ForegroundColor Cyan
+Write-Host "     komorebic start --whkd" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  3. Reload config after changes:" -ForegroundColor Cyan
+Write-Host "     komorebic reload-configuration" -ForegroundColor Gray
+Write-Host ""
+Write-Host "Config files managed by chezmoi:" -ForegroundColor Cyan
+Write-Host "  - $env:USERPROFILE\komorebi.json" -ForegroundColor Gray
+Write-Host "  - $env:USERPROFILE\komorebi.bar.json" -ForegroundColor Gray
+Write-Host ""
+
+{{- end }}

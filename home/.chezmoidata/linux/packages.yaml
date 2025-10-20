@@ -1,0 +1,19 @@
+packages:
+  linux:
+    apt:
+      - git
+      - eza
+      - fzf
+      - zoxide
+      - curl
+      - wget
+      - unzip
+      - ripgrep
+      - fd-find
+      - bat
+      - exa
+      - gh
+      - gnupg
+      - zsh
+      - neovim
+      - build-essential

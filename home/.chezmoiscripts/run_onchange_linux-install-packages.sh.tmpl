@@ -1,7 +1,7 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/bash
 
-# packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
+# packages.yaml hash: {{ include ".chezmoidata/linux/packages.yaml" | sha256sum }}
 
 echo "Installing Linux packages..."
 

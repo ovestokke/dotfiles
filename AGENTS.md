@@ -1,29 +1,20 @@
 # Agent Guidelines for Dotfiles Repository
 
-## Repository Type
-Chezmoi dotfiles repository managing personal configs for macOS, Windows, and Linux (WSL).
+## Build/Lint/Test Commands
+- **Deploy Configs**: `chezmoi apply` (Applies all configurations to the home directory.)
+- **Preview Changes**: `chezmoi diff` (Shows what will change before deployment.)
+- **Validate Templates**: `chezmoi execute --dry-run` (Checks Go template syntax validity.)
+- **Single File Validation**: Use `chezmoi cat --dry-run <path>` for specific file checks.
+- **Error Handling**: Configuration errors are typically caught by `chezmoi apply` or manual inspection post-deployment.
 
-## Commands
-- **Deploy**: `chezmoi apply` (applies configs to home directory)
-- **Preview**: `chezmoi diff` (view changes before applying)
-- **Verify**: Open new terminal/app session to test
-- **No build/test/lint** - configs are declarative, verify manually
+## Code Style & Conventions
+- **File Naming**: `dot_` prefix for dotfiles (`dot_zshrc` → `~/.zshrc`), `private_` for secrets.
+- **Templates**: Use `.tmpl` suffix for Go templates. Use OS conditionals: `{{ if eq .chezmoi.os "darwin" }}...{{- else }}...{{- end }}`.
+- **Lua**: 2-space indent, `local` scope, `snake_case` variables, use `require()`.
+- **Shell (Zsh)**: Oh My Zsh style, double-quote all paths, use `eval "$(cmd)"` for initialization.
+- **Theme**: Catppuccin Mocha is the standard color scheme.
+- **Keybinds**: Prefer vim-style navigation (hjkl).
 
-## File Naming
-- `dot_` → `.` in home dir (`dot_zshrc` → `~/.zshrc`)
-- `private_` → excluded from template expansion
-- `.tmpl` → Go template (vars: `.chezmoi.os`, `.chezmoi.username`)
-
-## Cross-Platform
-- Shared templates in `.chezmoitemplates/`
-- Conditionals: `{{ if eq .chezmoi.os "darwin" }}...{{- else if eq .chezmoi.os "linux" }}...{{- end }}`
-- `.chezmoiignore` filters platform-specific paths
-- macOS → `Library/`, Windows → `AppData/`, `Documents/`, Linux → `dot_config/`
-
-## Code Style
-- **Lua**: 2-space indent, snake_case, `local` scope, `require()` for modules
-- **Zsh**: Oh My Zsh style, `eval "$(cmd)"`, double-quote paths
-- **PowerShell**: `Invoke-Expression`, pipe to `Out-String`
-- **JSON**: 2-space indent, trailing commas OK
-- **Theme**: Catppuccin Mocha everywhere
-- **Keybinds**: vim-style hjkl, CMD (macOS) / CTRL (Windows) leader
+## Agent Configuration Rules
+- **Cursor**: No specific rules found in `.cursor/rules/`. Agents should adhere to the style above.
+- **Copilot**: No specific instructions found in `.github/copilot-instructions.md`. Agents should prioritize idiomatic configuration file syntax (Lua, Shell, Go Template).

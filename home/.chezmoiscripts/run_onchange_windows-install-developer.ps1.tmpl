@@ -1,0 +1,17 @@
+{{- if eq .chezmoi.os "windows" }}
+# developer.yaml hash: {{ include ".chezmoidata/windows/developer.yaml" | sha256sum }}
+
+Write-Host "Installing Windows developer packages via winget..."
+
+if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    Write-Host "winget not found, skipping package installation"
+    exit 0
+}
+
+{{ range .packages.windows.winget -}}
+Write-Host "Installing: {{ . }}"
+winget install --id {{ . | quote }} --silent --accept-package-agreements --accept-source-agreements
+{{ end -}}
+
+Write-Host "Windows developer packages installed"
+{{- end }}

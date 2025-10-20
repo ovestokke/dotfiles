@@ -1,0 +1,18 @@
+
+packages:
+  windows:
+    winget:
+      # Browsers
+      - Mozilla.Firefox
+      # Development Tools - Absolute essentials
+      - Git.Git
+      - GitHub.cli
+      - Microsoft.VisualStudioCode
+      # Terminal
+      - Microsoft.WindowsTerminal
+      - Microsoft.PowerShell
+      # Password Management
+      - AgileBits.1Password
+      # Utilities
+      - 7zip.7zip
+      - wez.wezterm

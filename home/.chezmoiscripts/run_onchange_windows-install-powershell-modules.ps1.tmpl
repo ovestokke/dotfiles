@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "windows" }}
+# powershell-modules.yaml hash: {{ include ".chezmoidata/windows/powershell-modules.yaml" | sha256sum }}
+
+Write-Host "Installing PowerShell modules..." -ForegroundColor Cyan
+
+# Set PSGallery as trusted repository
+try {
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction Stop
+    Write-Host "[OK] PSGallery set as trusted" -ForegroundColor Green
+}
+catch {
+    Write-Host "[WARN] Failed to set PSGallery as trusted: $($_.Exception.Message)" -ForegroundColor Yellow
+}
+
+{{ range .modules.windows.powershell -}}
+$moduleName = "{{ . }}"
+Write-Host "Checking module: $moduleName" -ForegroundColor Cyan
+
+if (Get-Module -ListAvailable -Name $moduleName) {
+    Write-Host "[SKIP] $moduleName already installed" -ForegroundColor Yellow
+    
+    # Update to latest version
+    try {
+        Update-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+        Write-Host "[OK] $moduleName updated" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "[SKIP] Could not update $moduleName" -ForegroundColor Gray
+    }
+}
+else {
+    Write-Host "Installing $moduleName..." -ForegroundColor Cyan
+    try {
+        Install-Module -Name $moduleName -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
+        Write-Host "[OK] $moduleName installed" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "[FAIL] Failed to install $moduleName : $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+
+{{ end -}}
+
+Write-Host "PowerShell modules installation complete" -ForegroundColor Green
+{{- end }}

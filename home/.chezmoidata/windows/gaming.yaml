@@ -1,0 +1,21 @@
+
+packages:
+  windows:
+    winget:
+      # Gaming Platforms
+      - Valve.Steam
+      - EpicGames.EpicGamesLauncher
+      - ElectronicArts.EADesktop
+      # Gaming Peripherals
+      - Logitech.GHUB
+      # System Monitoring (crucial for gaming performance)
+      - REALiX.HWiNFO
+      - CPUID.CPU-Z
+      - TechPowerUp.GPU-Z
+      # Window Management
+      - LGUG2Z.komorebi
+      - LGUG2Z.whkd
+      # Communication
+      - Discord.Discord
+      # Media
+      - VideoLAN.VLC

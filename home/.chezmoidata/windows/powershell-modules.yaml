@@ -1,0 +1,8 @@
+
+modules:
+  windows:
+    powershell:
+      - PSReadLine
+      - Terminal-Icons
+      - PSFzf
+      - z
