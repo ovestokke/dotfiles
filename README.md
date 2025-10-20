@@ -6,6 +6,10 @@
 ![License](https://img.shields.io/github/license/ovestokke/dotfiles?style=flat-square)
 ![Last Commit](https://img.shields.io/github/last-commit/ovestokke/dotfiles?style=flat-square)
 
+![macOS Tests](https://img.shields.io/github/actions/workflow/status/ovestokke/dotfiles/test-macos.yaml?style=flat-square&logo=apple&label=macOS)
+![Linux Tests](https://img.shields.io/github/actions/workflow/status/ovestokke/dotfiles/test-linux.yaml?style=flat-square&logo=linux&label=Linux)
+![Windows Tests](https://img.shields.io/github/actions/workflow/status/ovestokke/dotfiles/test-windows.yaml?style=flat-square&logo=windows&label=Windows)
+
 ![chezmoi](https://img.shields.io/github/v/release/twpayne/chezmoi?label=chezmoi&style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJMMiA3bDEwIDUgMTAtNXoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMiA3djEwbDEwIDVWMTJ6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIyIDd2MTBsLTEwIDVWMTJ6Ii8+PC9zdmc+)
 ![WezTerm](https://img.shields.io/github/v/release/wez/wezterm?label=WezTerm&style=flat-square)
 ![komorebi](https://img.shields.io/github/v/release/LGUG2Z/komorebi?label=komorebi&style=flat-square)
