@@ -1,0 +1,8 @@
+packages:
+  darwin:
+    brews:
+      - terraform
+    casks:
+      - slack
+      - visual-studio-code
+      - github

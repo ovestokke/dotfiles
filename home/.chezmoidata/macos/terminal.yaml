@@ -4,8 +4,6 @@ packages:
       - git
       - eza
       - zoxide
-      - chezmoi
-      - terraform
       - zsh-autosuggestions
       - zsh-syntax-highlighting
       - powerlevel10k
@@ -19,5 +17,3 @@ packages:
       - gnupg
     casks:
       - wezterm
-      - 1password
-      - 1password-cli
