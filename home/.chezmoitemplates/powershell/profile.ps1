@@ -12,7 +12,9 @@ Set-PSReadLineOption -EditMode Windows -ErrorAction SilentlyContinue
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward -ErrorAction SilentlyContinue
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward -ErrorAction SilentlyContinue
 
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r' -ErrorAction SilentlyContinue
+if (Get-Command Set-PsFzfOption -ErrorAction SilentlyContinue) {
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r' -ErrorAction SilentlyContinue
+}
 
 Set-Alias -Name ch -Value chezmoi
 

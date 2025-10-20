@@ -3,7 +3,16 @@
 
 Write-Host "Installing PowerShell modules..." -ForegroundColor Cyan
 
-# Set PSGallery as trusted repository
+$hasInstallModule = Get-Command Install-Module -ErrorAction SilentlyContinue
+
+if (-not $hasInstallModule) {
+    Write-Host "[WARN] PowerShellGet not available in this session" -ForegroundColor Yellow
+    Write-Host "       Try installing in a new PowerShell window with:" -ForegroundColor Gray
+    Write-Host "       winget install Microsoft.PowerShell" -ForegroundColor Gray
+    Write-Host "       Then run: chezmoi apply" -ForegroundColor Gray
+    exit 0
+}
+
 try {
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction Stop
     Write-Host "[OK] PSGallery set as trusted" -ForegroundColor Green
