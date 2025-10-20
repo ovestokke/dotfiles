@@ -1,12 +1,10 @@
 
 packages:
   windows:
-    winget:
+    productivity:
       # Browsers
-      - Mozilla.Firefox
       - Google.Chrome
       # Productivity & Organization
-      - AgileBits.1Password
       - Obsidian.Obsidian
       - Microsoft.PowerToys
       - Flow-Launcher.Flow-Launcher
@@ -18,10 +16,8 @@ packages:
       - Google.GoogleDrive
       - BillStewart.SyncthingWindowsSetup
       # Media & Entertainment
-      - VideoLAN.VLC
       - TIDALMusicAS.TIDAL
       # Utilities - Essential
-      - 7zip.7zip
       - JAMSoftware.TreeSize.Free
       # Utilities - Advanced
       - Klocman.BulkCrapUninstaller

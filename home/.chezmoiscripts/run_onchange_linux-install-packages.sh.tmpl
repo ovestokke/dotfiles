@@ -1,42 +1,75 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
 # packages.yaml hash: {{ include ".chezmoidata/linux/packages.yaml" | sha256sum }}
 
 echo "Installing Linux packages..."
+
+failed=()
+succeeded=()
 
 # Update package list
 sudo apt-get update
 
 # Install apt packages
 {{ range .packages.linux.apt -}}
-sudo apt-get install -y {{ . }}
+echo "Installing: {{ . }}"
+if sudo apt-get install -y {{ . }} 2>/dev/null; then
+    succeeded+=("{{ . }}")
+else
+    failed+=("{{ . }}")
+fi
 {{ end -}}
 
 # Install oh-my-zsh if not already installed
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     echo "Installing oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 2>/dev/null; then
+        succeeded+=("oh-my-zsh")
+    else
+        failed+=("oh-my-zsh")
+    fi
 fi
 
 # Install Powerlevel10k theme
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
     echo "Installing Powerlevel10k theme..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    if git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k 2>/dev/null; then
+        succeeded+=("powerlevel10k")
+    else
+        failed+=("powerlevel10k")
+    fi
 fi
 
 # Install zsh-autosuggestions plugin
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
     echo "Installing zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    if git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null; then
+        succeeded+=("zsh-autosuggestions")
+    else
+        failed+=("zsh-autosuggestions")
+    fi
 fi
 
 # Install zsh-syntax-highlighting plugin
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
     echo "Installing zsh-syntax-highlighting..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    if git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null; then
+        succeeded+=("zsh-syntax-highlighting")
+    else
+        failed+=("zsh-syntax-highlighting")
+    fi
 fi
 
-echo "Linux packages installed"
+echo ""
+echo "Installation Summary:"
+echo "Succeeded: ${#succeeded[@]}"
+echo "Failed: ${#failed[@]}"
+
+if [ ${#failed[@]} -gt 0 ]; then
+    echo ""
+    echo "Failed packages:"
+    printf '  - %s\n' "${failed[@]}"
+fi
 {{- end }}

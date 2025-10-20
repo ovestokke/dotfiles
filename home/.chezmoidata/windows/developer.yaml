@@ -1,7 +1,7 @@
 
 packages:
   windows:
-    winget:
+    developer:
       # Version Control
       - Git.Git
       - GitHub.GitHubDesktop

@@ -1,24 +1,45 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
 # work.yaml hash: {{ include ".chezmoidata/macos/work.yaml" | sha256sum }}
 
 if ! command -v brew &> /dev/null; then
-    echo "Homebrew not found, skipping package installation"
+    echo "[SKIP] Homebrew not found, skipping package installation"
     exit 0
 fi
 
 echo "Installing work Homebrew packages..."
 
-brew bundle --file=/dev/stdin <<EOF
-{{ range .packages.darwin.brews -}}
-brew {{ . | quote }}
-{{ end -}}
-{{ range .packages.darwin.casks -}}
-cask {{ . | quote }}
-{{ end -}}
-EOF
+failed=()
+succeeded=()
 
-echo "Work Homebrew packages installed"
+{{ range .packages.darwin.brews -}}
+echo "Installing brew: {{ . }}"
+if brew install {{ . | quote }} 2>/dev/null; then
+    succeeded+=("brew:{{ . }}")
+else
+    failed+=("brew:{{ . }}")
+fi
+{{ end -}}
+
+{{ range .packages.darwin.casks -}}
+echo "Installing cask: {{ . }}"
+if brew install --cask {{ . | quote }} 2>/dev/null; then
+    succeeded+=("cask:{{ . }}")
+else
+    failed+=("cask:{{ . }}")
+fi
+{{ end -}}
+
+echo ""
+echo "Installation Summary:"
+echo "Succeeded: ${#succeeded[@]}"
+echo "Failed: ${#failed[@]}"
+
+if [ ${#failed[@]} -gt 0 ]; then
+    echo ""
+    echo "Failed packages:"
+    printf '  - %s\n' "${failed[@]}"
+fi
 {{- end }}

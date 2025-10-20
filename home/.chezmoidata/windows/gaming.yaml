@@ -1,7 +1,7 @@
 
 packages:
   windows:
-    winget:
+    gaming:
       # Gaming Platforms
       - Valve.Steam
       - EpicGames.EpicGamesLauncher
@@ -12,10 +12,3 @@ packages:
       - REALiX.HWiNFO
       - CPUID.CPU-Z
       - TechPowerUp.GPU-Z
-      # Window Management
-      - LGUG2Z.komorebi
-      - LGUG2Z.whkd
-      # Communication
-      - Discord.Discord
-      # Media
-      - VideoLAN.VLC

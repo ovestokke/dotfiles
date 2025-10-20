@@ -31,7 +31,8 @@
 		{{- end }}
 		{{- if $versions }}
 		{{- $latest := $versions | sortAlpha | last }}
-    		program = "{{ $opPath }}/{{ $latest }}/op-ssh-sign.exe"
+		{{- $fullPath := print $opPath "/" $latest "/op-ssh-sign.exe" | replace "\\" "/" }}
+    		program = "{{ $fullPath }}"
 		{{- else }}
     		program = "C:/Users/{{ .chezmoi.username }}/AppData/Local/1Password/app/8/op-ssh-sign.exe"
 		{{- end }}
