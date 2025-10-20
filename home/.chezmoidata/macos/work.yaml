@@ -2,7 +2,6 @@ packages:
   darwin:
     brews:
       - azure-cli
-      - cloudflared
       - node
       - node@20
       - pipx
