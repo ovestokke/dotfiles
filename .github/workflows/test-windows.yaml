@@ -26,5 +26,6 @@ jobs:
             $branch = "${{ github.ref_name }}"
           }
           Write-Host "Testing deployment from branch: $branch"
-          chezmoi init --apply ${{ github.repository_owner }} --branch="$branch"
+          chezmoi init --apply ${{ github.repository_owner }} --branch="$branch" --verbose
+          chezmoi doctor          
         shell: powershell

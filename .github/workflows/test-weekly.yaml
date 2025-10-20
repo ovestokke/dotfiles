@@ -20,13 +20,36 @@ jobs:
     
     runs-on: ${{ matrix.os }}
     name: Full setup test on ${{ matrix.name }}
+    env:
+      CHEZMOI_VERSION: latest  # Change to pin version: e.g., 2.52.3
     
     steps:
       - name: Test one-liner setup (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
+          echo "Installing chezmoi version: $CHEZMOI_VERSION"
           echo "Testing full setup from main branch on ${{ matrix.name }}"
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }}
+          
+          if [ "$CHEZMOI_VERSION" = "latest" ]; then
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --verbose
+          else
+            if [[ "${{ runner.os }}" == "macOS" ]]; then
+              # Detect architecture for macOS
+              if [[ "$(uname -m)" == "arm64" ]]; then
+                ARCH="arm64"
+              else
+                ARCH="amd64"
+              fi
+              curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_darwin_${ARCH}.tar.gz" | tar -xz -C /tmp
+            else
+              # Linux
+              curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
+            fi
+            sudo install /tmp/chezmoi /usr/local/bin/
+            chezmoi init --apply ${{ github.repository_owner }} --verbose
+          fi
+          
+          chezmoi doctor
 
       - name: Test one-liner setup (Windows)
         if: runner.os == 'Windows'

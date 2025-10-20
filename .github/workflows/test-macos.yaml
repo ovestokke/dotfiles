@@ -1,17 +1,17 @@
-name: Test Linux
+name: Test macOS
 
 on:
   push:
     branches: [main, master]
     paths:
       - 'home/**'
-      - '.github/workflows/test-linux.yaml'
+      - '.github/workflows/test-macos.yaml'
   pull_request:
     branches: [main, master]
 
 jobs:
-  test-ubuntu:
-    runs-on: ubuntu-latest
+  test-macos:
+    runs-on: macos-latest
     env:
       CHEZMOI_VERSION: 2.52.3 #latest  # Change to pin version: e.g., 2.52.3
     
@@ -25,7 +25,13 @@ jobs:
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
             sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH" --verbose
           else
-            curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
+            # Detect architecture
+            if [[ "$(uname -m)" == "arm64" ]]; then
+              ARCH="arm64"
+            else
+              ARCH="amd64"
+            fi
+            curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_darwin_${ARCH}.tar.gz" | tar -xz -C /tmp
             sudo install /tmp/chezmoi /usr/local/bin/
             chezmoi init --apply ${{ github.repository_owner }} --branch="$BRANCH" --verbose
           fi
