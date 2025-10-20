@@ -31,7 +31,7 @@ jobs:
           echo "Testing full setup from main branch on ${{ matrix.name }}"
           
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --verbose
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }}
           else
             if [[ "${{ runner.os }}" == "macOS" ]]; then
               # Detect architecture for macOS
@@ -46,10 +46,11 @@ jobs:
               curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
             fi
             sudo install /tmp/chezmoi /usr/local/bin/
-            chezmoi init --apply ${{ github.repository_owner }} --verbose
+            chezmoi init --apply ${{ github.repository_owner }}
           fi
           
           chezmoi doctor
+          chezmoi managed
 
       - name: Test one-liner setup (Windows)
         if: runner.os == 'Windows'

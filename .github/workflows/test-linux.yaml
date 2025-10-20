@@ -23,11 +23,12 @@ jobs:
           echo "Testing deployment from branch: $BRANCH"
           
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH" --verbose
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"
           else
             curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
             sudo install /tmp/chezmoi /usr/local/bin/
-            chezmoi init --apply ${{ github.repository_owner }} --branch="$BRANCH" --verbose
+            chezmoi init --apply ${{ github.repository_owner }} --branch="$BRANCH"
           fi
           
+          chezmoi managed
           chezmoi doctor
