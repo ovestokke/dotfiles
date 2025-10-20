@@ -20,15 +20,29 @@ jobs:
     name: Full setup test on ${{ matrix.name }}
     
     steps:
-      - name: Test one-liner setup (Linux)
+      - name: Install chezmoi (Linux)
+        if: runner.os == 'Linux'
+        uses: action-pack/setup@v1
+        with:
+          repo: twpayne/chezmoi
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test setup (Linux)
         if: runner.os == 'Linux'
         run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }}
+          chezmoi init --apply ${{ github.repository_owner }}
 
       - name: Test one-liner setup (Windows)
         if: runner.os == 'Windows'
         run: |
-          (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+          # Install chezmoi
+          $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
+          & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
+          
+          # Add to PATH
+          $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
+          
+          # Initialize dotfiles
           chezmoi init --apply ${{ github.repository_owner }}
         shell: powershell
 

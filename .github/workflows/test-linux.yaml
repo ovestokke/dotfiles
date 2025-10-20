@@ -18,9 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install chezmoi
-        run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)"
-          sudo mv ./bin/chezmoi /usr/local/bin/
+        uses: action-pack/setup@v1
+        with:
+          repo: twpayne/chezmoi
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Initialize chezmoi from local repo
         run: |
