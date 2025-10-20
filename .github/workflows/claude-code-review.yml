@@ -9,6 +9,7 @@ on:
     #   - "src/**/*.tsx"
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
+  workflow_dispatch:      # Allow manual trigger
 
 jobs:
   claude-review:
