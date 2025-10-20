@@ -22,7 +22,31 @@
 	{{- if eq .chezmoi.os "darwin" }}
     		program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 	{{- else if eq .chezmoi.os "windows" }}
-    		program = "C:/Users/ovsto/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+		{{- $opPath := (joinPath (env "LOCALAPPDATA") "1Password" "app") }}
+		{{- $versions := list }}
+		{{- range glob (print $opPath "/*") }}
+		{{- if regexMatch "^[0-9]+$" (base .) }}
+		{{- $versions = append $versions (base .) }}
+		{{- end }}
+		{{- end }}
+		{{- if $versions }}
+		{{- $latest := $versions | sortAlpha | last }}
+    		program = "{{ $opPath }}/{{ $latest }}/op-ssh-sign.exe"
+		{{- else }}
+    		program = "C:/Users/{{ .chezmoi.username }}/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+		{{- end }}
 	{{- else if eq .chezmoi.os "linux" }}
+		{{- $opPath := "/mnt/c/Users/ovsto/AppData/Local/1Password/app" }}
+		{{- $versions := list }}
+		{{- range glob (print $opPath "/*") }}
+		{{- if regexMatch "^[0-9]+$" (base .) }}
+		{{- $versions = append $versions (base .) }}
+		{{- end }}
+		{{- end }}
+		{{- if $versions }}
+		{{- $latest := $versions | sortAlpha | last }}
+    		program = {{ $opPath }}/{{ $latest }}/op-ssh-sign.exe
+		{{- else }}
     		program = /mnt/c/Users/ovsto/AppData/Local/1Password/app/8/op-ssh-sign.exe
+		{{- end }}
 	{{- end }}
