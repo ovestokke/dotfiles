@@ -1,0 +1,23 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+# work.yaml hash: {{ include ".chezmoidata/macos/work.yaml" | sha256sum }}
+
+if ! command -v brew &> /dev/null; then
+    echo "Homebrew not found, skipping package installation"
+    exit 0
+fi
+
+echo "Installing work Homebrew packages..."
+
+brew bundle --file=/dev/stdin <<EOF
+{{ range .packages.darwin.brews -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ range .packages.darwin.casks -}}
+cask {{ . | quote }}
+{{ end -}}
+EOF
+
+echo "Work Homebrew packages installed"
+{{- end }}

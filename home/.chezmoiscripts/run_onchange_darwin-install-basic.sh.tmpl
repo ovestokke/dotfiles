@@ -1,14 +1,14 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
-# packages.yaml hash: {{ include ".chezmoidata/macos/packages.yaml" | sha256sum }}
+# basic.yaml hash: {{ include ".chezmoidata/macos/basic.yaml" | sha256sum }}
 
 if ! command -v brew &> /dev/null; then
     echo "Homebrew not found, skipping package installation"
     exit 0
 fi
 
-echo "Installing Homebrew packages..."
+echo "Installing basic Homebrew packages..."
 
 brew bundle --file=/dev/stdin <<EOF
 {{ range .packages.darwin.brews -}}
@@ -19,6 +19,5 @@ cask {{ . | quote }}
 {{ end -}}
 EOF
 
-echo "Homebrew packages installed"
+echo "Basic Homebrew packages installed"
 {{- end }}
-
