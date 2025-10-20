@@ -50,14 +50,14 @@ jobs:
             Write-Error "PowerShell profile not found"
             exit 1
           }
-          Write-Host "✓ PowerShell profile exists"
+          Write-Host "OK PowerShell profile exists"
           
           # Check git config
           if (-not (Test-Path ~/.gitconfig)) {
             Write-Error "Git config not found"
             exit 1
           }
-          Write-Host "✓ Git config exists"
+          Write-Host "OK Git config exists"
           
           # Check VS Code settings
           $vscodeSettings = "$env:APPDATA\Code\User\settings.json"
@@ -65,27 +65,27 @@ jobs:
             Write-Error "VS Code settings not found"
             exit 1
           }
-          Write-Host "✓ VS Code settings exist"
+          Write-Host "OK VS Code settings exist"
           
           # Check komorebi configs
           if (-not (Test-Path ~/komorebi.json)) {
             Write-Error "komorebi.json not found"
             exit 1
           }
-          Write-Host "✓ komorebi.json exists"
+          Write-Host "OK komorebi.json exists"
           
           if (-not (Test-Path ~/komorebi.bar.json)) {
             Write-Error "komorebi.bar.json not found"
             exit 1
           }
-          Write-Host "✓ komorebi.bar.json exists"
+          Write-Host "OK komorebi.bar.json exists"
         shell: powershell
 
       - name: Verify install script is valid
         run: |
           $scriptPath = "$env:USERPROFILE\.local\share\chezmoi\home\.chezmoiscripts\run_onchange_windows-install-packages.ps1.tmpl"
           if (Test-Path $scriptPath) {
-            Write-Host "✓ Windows install script template exists"
+            Write-Host "OK Windows install script template exists"
           } else {
             Write-Error "Windows install script template not found"
             exit 1

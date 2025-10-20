@@ -51,7 +51,7 @@ jobs:
         run: |
           chezmoi doctor
           if (-not (Test-Path ~/.gitconfig)) { exit 1 }
-          Write-Host "✓ gitconfig"
+          Write-Host "OK gitconfig"
         shell: powershell
 
       - name: Report results
