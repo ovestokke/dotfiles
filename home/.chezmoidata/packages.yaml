@@ -29,3 +29,9 @@ packages:
       - gh
       - gnupg
       - zsh
+  windows:
+    winget:
+      - Git.Git
+      - GitHub.cli
+      - wez.wezterm
+      - Microsoft.VisualStudioCode

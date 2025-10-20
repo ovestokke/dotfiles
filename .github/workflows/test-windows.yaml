@@ -1,0 +1,88 @@
+name: Test Windows
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'home/**'
+      - '.github/workflows/test-windows.yaml'
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: |
+          (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+        shell: powershell
+
+      - name: Initialize chezmoi from local repo
+        run: |
+          chezmoi init --source=${{ github.workspace }}
+        shell: powershell
+
+      - name: Run chezmoi apply (dry-run)
+        run: |
+          chezmoi apply --dry-run --verbose
+        shell: powershell
+
+      - name: Apply dotfiles
+        run: |
+          chezmoi apply --verbose
+        shell: powershell
+
+      - name: Verify critical files exist
+        run: |
+          # Check PowerShell profile
+          $profileDir = Split-Path $PROFILE.CurrentUserAllHosts -Parent
+          if (-not (Test-Path "$profileDir\Microsoft.PowerShell_profile.ps1")) {
+            Write-Error "PowerShell profile not found"
+            exit 1
+          }
+          Write-Host "✓ PowerShell profile exists"
+          
+          # Check git config
+          if (-not (Test-Path ~/.gitconfig)) {
+            Write-Error "Git config not found"
+            exit 1
+          }
+          Write-Host "✓ Git config exists"
+          
+          # Check VS Code settings
+          $vscodeSettings = "$env:APPDATA\Code\User\settings.json"
+          if (-not (Test-Path $vscodeSettings)) {
+            Write-Error "VS Code settings not found"
+            exit 1
+          }
+          Write-Host "✓ VS Code settings exist"
+          
+          # Check komorebi configs
+          if (-not (Test-Path ~/komorebi.json)) {
+            Write-Error "komorebi.json not found"
+            exit 1
+          }
+          Write-Host "✓ komorebi.json exists"
+          
+          if (-not (Test-Path ~/komorebi.bar.json)) {
+            Write-Error "komorebi.bar.json not found"
+            exit 1
+          }
+          Write-Host "✓ komorebi.bar.json exists"
+        shell: powershell
+
+      - name: Verify install script is valid
+        run: |
+          $scriptPath = "$env:USERPROFILE\.local\share\chezmoi\home\.chezmoiscripts\run_onchange_windows-install-packages.ps1.tmpl"
+          if (Test-Path $scriptPath) {
+            Write-Host "✓ Windows install script template exists"
+          } else {
+            Write-Error "Windows install script template not found"
+            exit 1
+          }
+        shell: powershell

@@ -1,0 +1,52 @@
+name: Validate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate-dotfiles:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            name: Ubuntu
+          - os: windows-latest
+            name: Windows
+          - os: macos-latest
+            name: macOS
+    
+    runs-on: ${{ matrix.os }}
+    name: Validate on ${{ matrix.name }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)"
+          sudo mv ./bin/chezmoi /usr/local/bin/
+
+      - name: Install chezmoi (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+        shell: powershell
+
+      - name: Validate chezmoi configuration
+        run: |
+          chezmoi init --source=${{ github.workspace }}
+          chezmoi doctor
+
+      - name: Check for template errors (dry-run)
+        run: |
+          chezmoi apply --dry-run --verbose
+
+      - name: Report validation success
+        run: |
+          echo "✓ Dotfiles validated successfully on ${{ matrix.name }}"

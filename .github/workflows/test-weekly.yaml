@@ -1,0 +1,53 @@
+name: Weekly E2E Test
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  test-full-setup:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            name: Ubuntu
+          - os: windows-latest
+            name: Windows
+    
+    runs-on: ${{ matrix.os }}
+    name: Full setup test on ${{ matrix.name }}
+    
+    steps:
+      - name: Test one-liner setup (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }}
+
+      - name: Test one-liner setup (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+          chezmoi init --apply ${{ github.repository_owner }}
+        shell: powershell
+
+      - name: Verify setup completed (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          chezmoi doctor
+          test -f ~/.gitconfig && echo "✓ gitconfig" || exit 1
+          test -f ~/.zshrc && echo "✓ zshrc" || exit 1
+
+      - name: Verify setup completed (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          chezmoi doctor
+          if (-not (Test-Path ~/.gitconfig)) { exit 1 }
+          Write-Host "✓ gitconfig"
+        shell: powershell
+
+      - name: Report results
+        if: failure()
+        run: |
+          echo "::error::Weekly E2E test failed on ${{ matrix.name }}"
