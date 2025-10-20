@@ -60,23 +60,33 @@ chezmoi add ~/.newfile
 
 ### Cross-Platform
 - **VS Code**: Settings and extensions (auto-installs on `chezmoi apply`)
-- **PowerShell**: Profile with Oh My Posh and zoxide integration
-- **Tools**: zoxide for smart directory navigation
+- **Neovim**: LazyVim configuration with Catppuccin Mocha theme
+- **Git**: Global gitconfig with user settings
+- **WezTerm**: Terminal emulator with Catppuccin Mocha theme and vim keybinds
 
 ### macOS
-- **WezTerm**: Terminal emulator with Catppuccin Mocha theme
-- **Zsh**: Shell configuration with Oh My Zsh, Powerlevel10k theme
-- **Tools**: eza (ls replacement), 1Password CLI
-- **Packages**: Declarative package management via Homebrew (auto-installs git, terraform, etc.)
+- **Zsh**: Shell configuration with Oh My Zsh and Powerlevel10k theme
+- **Tools**: eza, zoxide, fzf, ripgrep, fd, bat, gh, lazygit
+- **Packages**: Declarative Homebrew management (git, terraform, neovim, etc.)
+- **1Password**: CLI integration with Zsh
 
 ### Windows
-- **PowerShell**: Profile with Oh My Posh prompt
+- **PowerShell**: Profile with Oh My Posh and zoxide integration
+- **komorebi**: Tiling window manager with autostart configuration
+- **Packages**: Multiple package categories via winget (basic, developer, gaming, productivity, window-manager)
+- **PowerShell Modules**: Terminal-Icons, PSReadLine, z, posh-git
+
+### Linux
+- **Zsh**: Shell configuration with Oh My Zsh and Powerlevel10k theme
+- **Tools**: eza, zoxide, fzf, ripgrep, fd, bat, gh, neovim
+- **Packages**: Declarative apt package management
 
 ## Platform-Specific Paths
 
 Configs are deployed to the correct location per OS:
-- **PowerShell**: `~/.config/powershell/` (macOS) or `~/Documents/PowerShell/` (Windows)
-- **VS Code**: `~/Library/Application Support/Code/User/` (macOS) or `%APPDATA%/Code/User/` (Windows)
+- **PowerShell**: `~/.config/powershell/` (macOS/Linux) or `~/Documents/PowerShell/` (Windows)
+- **VS Code**: `~/Library/Application Support/Code/User/` (macOS), `%APPDATA%/Code/User/` (Windows), or `~/.config/Code/User/` (Linux)
+- **Neovim**: `~/.config/nvim/` (macOS/Linux) or `%LOCALAPPDATA%/nvim/` (Windows)
 
 ## Documentation
 
