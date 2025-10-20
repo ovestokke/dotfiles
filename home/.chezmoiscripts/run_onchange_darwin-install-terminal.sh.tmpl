@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
+set -euo pipefail
 
 # packages.yaml hash: {{ include ".chezmoidata/macos/terminal.yaml" | sha256sum }}
 

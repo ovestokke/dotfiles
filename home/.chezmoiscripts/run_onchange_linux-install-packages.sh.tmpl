@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/bash
+set -euo pipefail
 
 # packages.yaml hash: {{ include ".chezmoidata/linux/packages.yaml" | sha256sum }}
 
