@@ -32,33 +32,75 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     fi
 fi
 
-# Install Powerlevel10k theme
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
+# Install/Update Powerlevel10k theme
+p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+if [ ! -d "$p10k_dir" ]; then
     echo "Installing Powerlevel10k theme..."
-    if git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k 2>/dev/null; then
+    if git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir" 2>/dev/null; then
         succeeded+=("powerlevel10k")
     else
         failed+=("powerlevel10k")
     fi
+else
+    echo "Updating Powerlevel10k theme..."
+    if git -C "$p10k_dir" pull 2>/dev/null; then
+        succeeded+=("powerlevel10k (updated)")
+    else
+        failed+=("powerlevel10k (update)")
+    fi
 fi
 
-# Install zsh-autosuggestions plugin
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
+# Install/Update zsh-autosuggestions plugin
+autosugg_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+if [ ! -d "$autosugg_dir" ]; then
     echo "Installing zsh-autosuggestions..."
-    if git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null; then
+    if git clone https://github.com/zsh-users/zsh-autosuggestions "$autosugg_dir" 2>/dev/null; then
         succeeded+=("zsh-autosuggestions")
     else
         failed+=("zsh-autosuggestions")
     fi
+else
+    echo "Updating zsh-autosuggestions..."
+    if git -C "$autosugg_dir" pull 2>/dev/null; then
+        succeeded+=("zsh-autosuggestions (updated)")
+    else
+        failed+=("zsh-autosuggestions (update)")
+    fi
 fi
 
-# Install zsh-syntax-highlighting plugin
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
+# Install/Update zsh-syntax-highlighting plugin
+syntax_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+if [ ! -d "$syntax_dir" ]; then
     echo "Installing zsh-syntax-highlighting..."
-    if git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null; then
+    if git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$syntax_dir" 2>/dev/null; then
         succeeded+=("zsh-syntax-highlighting")
     else
         failed+=("zsh-syntax-highlighting")
+    fi
+else
+    echo "Updating zsh-syntax-highlighting..."
+    if git -C "$syntax_dir" pull 2>/dev/null; then
+        succeeded+=("zsh-syntax-highlighting (updated)")
+    else
+        failed+=("zsh-syntax-highlighting (update)")
+    fi
+fi
+
+# Install/Update zsh-async plugin
+async_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-async"
+if [ ! -d "$async_dir" ]; then
+    echo "Installing zsh-async..."
+    if git clone https://github.com/mafredri/zsh-async.git "$async_dir" 2>/dev/null; then
+        succeeded+=("zsh-async")
+    else
+        failed+=("zsh-async")
+    fi
+else
+    echo "Updating zsh-async..."
+    if git -C "$async_dir" pull 2>/dev/null; then
+        succeeded+=("zsh-async (updated)")
+    else
+        failed+=("zsh-async (update)")
     fi
 fi
 

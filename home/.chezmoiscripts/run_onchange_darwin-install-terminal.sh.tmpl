@@ -2,7 +2,7 @@
 #!/bin/bash
 set -uo pipefail
 
-# packages.yaml hash: {{ include ".chezmoidata/macos/terminal.yaml" | sha256sum }}
+# terminal.yaml hash: {{ include ".chezmoidata/macos/terminal.yaml" | sha256sum }}
 
 if ! command -v brew &> /dev/null; then
     echo "[SKIP] Homebrew not found, skipping package installation"
