@@ -1,8 +1,13 @@
 packages:
   darwin:
     brews:
+      - azure-cli
+      - cloudflared
+      - node
+      - node@20
+      - pipx
       - terraform
     casks:
-      - slack
-      - visual-studio-code
+      - claude-code
       - github
+      - slack

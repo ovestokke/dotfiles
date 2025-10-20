@@ -1,19 +1,33 @@
 packages:
   darwin:
     brews:
-      - git
+      - bash
+      - bat
+      - chezmoi
       - eza
+      - fd
+      - fzf
+      - gh
+      - git
+      - gnupg
+      - go
+      - htop
+      - lazygit
+      - neovim
+      - oh-my-posh
+      - opencode
+      - powerlevel10k
+      - pure
+      - ripgrep
+      - tree-sitter
+      - uv
+      - wget
       - zoxide
+      - zsh-async
       - zsh-autosuggestions
       - zsh-syntax-highlighting
-      - powerlevel10k
-      - neovim
-      - lazygit
-      - fzf
-      - ripgrep
-      - fd
-      - bat
-      - gh
-      - gnupg
     casks:
+      - font-meslo-lg-nerd-font
+      - iterm2
+      - powershell
       - wezterm
