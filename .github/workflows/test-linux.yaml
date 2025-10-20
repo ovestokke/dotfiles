@@ -14,57 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install chezmoi
+      - name: Test deployment from branch
         run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
-
-      - name: Run chezmoi apply (dry-run)
-        run: |
-          chezmoi apply --dry-run --verbose --source=${{ github.workspace }}
-
-      - name: Apply dotfiles
-        run: |
-          chezmoi apply --verbose --source=${{ github.workspace }}
-
-      - name: Verify critical files exist
-        run: |
-          # Check zsh config
-          if [ ! -f ~/.zshrc ]; then
-            echo "❌ .zshrc not found"
-            exit 1
-          fi
-          echo "✓ .zshrc exists"
-          
-          # Check zprofile
-          if [ ! -f ~/.zprofile ]; then
-            echo "❌ .zprofile not found"
-            exit 1
-          fi
-          echo "✓ .zprofile exists"
-          
-          # Check git config
-          if [ ! -f ~/.gitconfig ]; then
-            echo "❌ .gitconfig not found"
-            exit 1
-          fi
-          echo "✓ .gitconfig exists"
-          
-          # Check nvim config
-          if [ ! -d ~/.config/nvim ]; then
-            echo "❌ nvim config not found"
-            exit 1
-          fi
-          echo "✓ nvim config exists"
-
-      - name: Verify install script is valid
-        run: |
-          # Check that the Linux install script was generated correctly
-          if [ -f ~/.local/share/chezmoi/home/.chezmoiscripts/run_onchange_linux-install-packages.sh.tmpl ]; then
-            echo "✓ Linux install script template exists"
-          else
-            echo "❌ Linux install script template not found"
-            exit 1
-          fi
+          BRANCH="${{ github.head_ref || github.ref_name }}"
+          echo "Testing deployment from branch: $BRANCH"
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"

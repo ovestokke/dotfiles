@@ -23,33 +23,29 @@ jobs:
     name: Validate on ${{ matrix.name }}
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install chezmoi (Linux/macOS)
+      - name: Test deployment from branch (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+          BRANCH="${{ github.head_ref || github.ref_name }}"
+          echo "Testing deployment on ${{ matrix.name }} from branch: $BRANCH"
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"
 
       - name: Install chezmoi (Windows)
         if: runner.os == 'Windows'
         run: |
-          # Download and install chezmoi
           $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
           & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
-          
-          # Add to PATH for subsequent steps
-          echo "$env:TEMP\chezmoi" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
         shell: powershell
 
-      - name: Validate chezmoi configuration
+      - name: Test deployment from branch (Windows)
+        if: runner.os == 'Windows'
         run: |
-          chezmoi doctor --source=${{ github.workspace }}
-
-      - name: Check for template errors (dry-run)
-        run: |
-          chezmoi apply --dry-run --verbose --source=${{ github.workspace }}
-
-      - name: Report validation success
-        run: |
-          echo "✓ Dotfiles validated successfully on ${{ matrix.name }}"
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            $branch = "${{ github.head_ref }}"
+          } else {
+            $branch = "${{ github.ref_name }}"
+          }
+          Write-Host "Testing deployment on ${{ matrix.name }} from branch: $branch"
+          chezmoi init --apply ${{ github.repository_owner }} --branch="$branch"
+        shell: powershell

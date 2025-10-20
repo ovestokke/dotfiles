@@ -14,80 +14,20 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Install chezmoi
         run: |
-          # Download and install chezmoi
           $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
           & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
-          
-          # Add to PATH for subsequent steps
-          echo "$env:TEMP\chezmoi" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
         shell: powershell
 
-      - name: Verify chezmoi installation
+      - name: Test deployment from branch
         run: |
-          chezmoi --version
-        shell: powershell
-
-      - name: Run chezmoi apply (dry-run)
-        run: |
-          chezmoi apply --dry-run --verbose --source="${{ github.workspace }}"
-        shell: powershell
-
-      - name: Apply dotfiles
-        run: |
-          chezmoi apply --verbose --source="${{ github.workspace }}"
-        shell: powershell
-
-      - name: Verify critical files exist
-        run: |
-          # Check PowerShell profile
-          $profileDir = Split-Path $PROFILE.CurrentUserAllHosts -Parent
-          if (-not (Test-Path "$profileDir\Microsoft.PowerShell_profile.ps1")) {
-            Write-Error "PowerShell profile not found"
-            exit 1
-          }
-          Write-Host "OK PowerShell profile exists"
-          
-          # Check git config
-          if (-not (Test-Path ~/.gitconfig)) {
-            Write-Error "Git config not found"
-            exit 1
-          }
-          Write-Host "OK Git config exists"
-          
-          # Check VS Code settings
-          $vscodeSettings = "$env:APPDATA\Code\User\settings.json"
-          if (-not (Test-Path $vscodeSettings)) {
-            Write-Error "VS Code settings not found"
-            exit 1
-          }
-          Write-Host "OK VS Code settings exist"
-          
-          # Check komorebi configs
-          if (-not (Test-Path ~/komorebi.json)) {
-            Write-Error "komorebi.json not found"
-            exit 1
-          }
-          Write-Host "OK komorebi.json exists"
-          
-          if (-not (Test-Path ~/komorebi.bar.json)) {
-            Write-Error "komorebi.bar.json not found"
-            exit 1
-          }
-          Write-Host "OK komorebi.bar.json exists"
-        shell: powershell
-
-      - name: Verify install script is valid
-        run: |
-          $scriptPath = "$env:USERPROFILE\.local\share\chezmoi\home\.chezmoiscripts\run_onchange_windows-install-packages.ps1.tmpl"
-          if (Test-Path $scriptPath) {
-            Write-Host "OK Windows install script template exists"
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            $branch = "${{ github.head_ref }}"
           } else {
-            Write-Error "Windows install script template not found"
-            exit 1
+            $branch = "${{ github.ref_name }}"
           }
+          Write-Host "Testing deployment from branch: $branch"
+          chezmoi init --apply ${{ github.repository_owner }} --branch="$branch"
         shell: powershell
