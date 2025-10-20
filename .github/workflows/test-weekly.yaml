@@ -33,6 +33,7 @@ jobs:
         run: |
           Write-Host "Testing full setup from main branch on ${{ matrix.name }}"
           $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
-          & ([scriptblock]::Create($ChezmoiInstallScript))
+          & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
+          $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
           chezmoi init --apply ${{ github.repository_owner }}
         shell: powershell

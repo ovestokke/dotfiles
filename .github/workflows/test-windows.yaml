@@ -14,15 +14,12 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      - name: Install chezmoi
+      - name: Install and test chezmoi deployment
         run: |
           $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
           & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
           $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
-        shell: powershell
-
-      - name: Test deployment from branch
-        run: |
+          
           if ("${{ github.event_name }}" -eq "pull_request") {
             $branch = "${{ github.head_ref }}"
           } else {

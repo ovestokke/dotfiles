@@ -30,17 +30,13 @@ jobs:
           echo "Testing deployment on ${{ matrix.name }} from branch: $BRANCH"
           sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"
 
-      - name: Install chezmoi (Windows)
+      - name: Test deployment from branch (Windows)
         if: runner.os == 'Windows'
         run: |
           $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
           & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
           $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
-        shell: powershell
-
-      - name: Test deployment from branch (Windows)
-        if: runner.os == 'Windows'
-        run: |
+          
           if ("${{ github.event_name }}" -eq "pull_request") {
             $branch = "${{ github.head_ref }}"
           } else {
