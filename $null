@@ -1,3 +1,0 @@
-rg: home/.chezmoiscripts/*.tmpl: The filename, directory name, or volume label syntax is incorrect. (os error 123)
-rg: home/.chezmoitemplates/**/*.tmpl: The filename, directory name, or volume label syntax is incorrect. (os error 123)
-rg: home/*.tmpl: The filename, directory name, or volume label syntax is incorrect. (os error 123)
