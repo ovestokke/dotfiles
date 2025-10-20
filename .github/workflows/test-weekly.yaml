@@ -20,17 +20,10 @@ jobs:
     name: Full setup test on ${{ matrix.name }}
     
     steps:
-      - name: Install chezmoi (Linux)
-        if: runner.os == 'Linux'
-        uses: action-pack/setup@v1
-        with:
-          repo: twpayne/chezmoi
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Test setup (Linux)
+      - name: Test one-liner setup (Linux)
         if: runner.os == 'Linux'
         run: |
-          chezmoi init --apply ${{ github.repository_owner }}
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }}
 
       - name: Test one-liner setup (Windows)
         if: runner.os == 'Windows'

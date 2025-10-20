@@ -28,10 +28,8 @@ jobs:
 
       - name: Install chezmoi (Linux/macOS)
         if: runner.os != 'Windows'
-        uses: action-pack/setup@v1
-        with:
-          repo: twpayne/chezmoi
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
       - name: Install chezmoi (Windows)
         if: runner.os == 'Windows'
@@ -46,12 +44,11 @@ jobs:
 
       - name: Validate chezmoi configuration
         run: |
-          chezmoi init --source=${{ github.workspace }}
-          chezmoi doctor
+          chezmoi doctor --source=${{ github.workspace }}
 
       - name: Check for template errors (dry-run)
         run: |
-          chezmoi apply --dry-run --verbose
+          chezmoi apply --dry-run --verbose --source=${{ github.workspace }}
 
       - name: Report validation success
         run: |

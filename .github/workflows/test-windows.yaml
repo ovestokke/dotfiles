@@ -32,19 +32,14 @@ jobs:
           chezmoi --version
         shell: powershell
 
-      - name: Initialize chezmoi from local repo
-        run: |
-          chezmoi init --source="${{ github.workspace }}"
-        shell: powershell
-
       - name: Run chezmoi apply (dry-run)
         run: |
-          chezmoi apply --dry-run --verbose
+          chezmoi apply --dry-run --verbose --source="${{ github.workspace }}"
         shell: powershell
 
       - name: Apply dotfiles
         run: |
-          chezmoi apply --verbose
+          chezmoi apply --verbose --source="${{ github.workspace }}"
         shell: powershell
 
       - name: Verify critical files exist

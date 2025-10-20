@@ -18,22 +18,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install chezmoi
-        uses: action-pack/setup@v1
-        with:
-          repo: twpayne/chezmoi
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Initialize chezmoi from local repo
         run: |
-          chezmoi init --source=${{ github.workspace }}
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
       - name: Run chezmoi apply (dry-run)
         run: |
-          chezmoi apply --dry-run --verbose
+          chezmoi apply --dry-run --verbose --source=${{ github.workspace }}
 
       - name: Apply dotfiles
         run: |
-          chezmoi apply --verbose
+          chezmoi apply --verbose --source=${{ github.workspace }}
 
       - name: Verify critical files exist
         run: |
