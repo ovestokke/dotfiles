@@ -16,3 +16,4 @@ packages:
       # Utilities
       - 7zip.7zip
       - wez.wezterm
+      - Spotify.Spotify

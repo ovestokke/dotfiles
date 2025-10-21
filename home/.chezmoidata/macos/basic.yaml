@@ -16,4 +16,5 @@ packages:
       - rectangle
       - scroll-reverser
       - signal
+      - spotify
       - tidal
