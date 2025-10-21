@@ -5,13 +5,9 @@ packages:
     casks:
       - 1password
       - 1password-cli
-      - bentobox
-      - betterdisplay
       - discord
-      - dockdoor
       - firefox
       - google-chrome
-      - jordanbaird-ice
       - obsidian
       - rectangle
       - scroll-reverser

@@ -12,7 +12,7 @@ $failed = @()
 $succeeded = @()
 
 {{ $data := include ".chezmoidata/windows/window-manager.yaml" | fromYaml -}}
-{{ $pkgs := $data.packages.windows."window-manager" -}}
+{{ $pkgs := index $data.packages.windows "window-manager" -}}
 {{ range $pkgs -}}
 Write-Host "Installing: {{ . }}" -ForegroundColor Cyan
 winget install --id {{ . | quote }} --silent --accept-package-agreements --accept-source-agreements
