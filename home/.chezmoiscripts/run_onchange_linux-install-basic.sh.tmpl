@@ -6,6 +6,11 @@ set -uo pipefail
 
 echo "Installing Linux basic packages..."
 
+if ! command -v apt-get &> /dev/null; then
+    echo "[SKIP] apt-get not found, skipping package installation"
+    exit 0
+fi
+
 failed=()
 succeeded=()
 

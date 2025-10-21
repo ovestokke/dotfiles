@@ -1,6 +1,6 @@
 
 packages:
   windows:
-    window-manager:
+    window_manager:
       - LGUG2Z.whkd
       - LGUG2Z.komorebi

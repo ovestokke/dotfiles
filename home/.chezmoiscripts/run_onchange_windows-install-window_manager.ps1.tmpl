@@ -1,18 +1,13 @@
 {{- if eq .chezmoi.os "windows" }}
-# window-manager.yaml hash: {{ include ".chezmoidata/windows/window-manager.yaml" | sha256sum }}
+# window_manager.yaml hash: {{ include ".chezmoidata/windows/window_manager.yaml" | sha256sum }}
 
 Write-Host "Installing Windows window manager packages via winget..." -ForegroundColor Cyan
-
-if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Write-Host "[SKIP] winget not found, skipping package installation" -ForegroundColor Yellow
-    exit 0
-}
 
 $failed = @()
 $succeeded = @()
 
-{{ $data := include ".chezmoidata/windows/window-manager.yaml" | fromYaml -}}
-{{ $pkgs := index $data.packages.windows "window-manager" -}}
+{{ $data := include ".chezmoidata/windows/window_manager.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.windows.window_manager -}}
 {{ range $pkgs -}}
 Write-Host "Installing: {{ . }}" -ForegroundColor Cyan
 winget install --id {{ . | quote }} --silent --accept-package-agreements --accept-source-agreements
