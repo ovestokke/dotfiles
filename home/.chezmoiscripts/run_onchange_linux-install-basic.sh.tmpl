@@ -2,9 +2,9 @@
 #!/bin/bash
 set -uo pipefail
 
-# packages.yaml hash: {{ include ".chezmoidata/linux/packages.yaml" | sha256sum }}
+# basic.yaml hash: {{ include ".chezmoidata/linux/basic.yaml" | sha256sum }}
 
-echo "Installing Linux packages..."
+echo "Installing Linux basic packages..."
 
 failed=()
 succeeded=()
@@ -13,7 +13,9 @@ succeeded=()
 sudo apt-get update
 
 # Install apt packages
-{{ range .packages.linux.apt -}}
+{{ $data := include ".chezmoidata/linux/basic.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.linux -}}
+{{ range $pkgs.apt -}}
 echo "Installing: {{ . }}"
 if sudo apt-get install -y {{ . }} 2>/dev/null; then
     succeeded+=("{{ . }}")

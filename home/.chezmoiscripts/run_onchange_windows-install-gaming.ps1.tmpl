@@ -11,7 +11,9 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
 $failed = @()
 $succeeded = @()
 
-{{ range .packages.windows.gaming -}}
+{{ $data := include ".chezmoidata/windows/gaming.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.windows.gaming -}}
+{{ range $pkgs -}}
 Write-Host "Installing: {{ . }}" -ForegroundColor Cyan
 winget install --id {{ . | quote }} --silent --accept-package-agreements --accept-source-agreements
 if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq -1978335189) {

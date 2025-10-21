@@ -14,7 +14,9 @@ echo "Installing Terminal Homebrew packages..."
 failed=()
 succeeded=()
 
-{{ range .packages.darwin.brews -}}
+{{ $data := include ".chezmoidata/macos/terminal.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.darwin -}}
+{{ range $pkgs.brews -}}
 echo "Installing brew: {{ . }}"
 if brew install {{ . | quote }} 2>/dev/null; then
     succeeded+=("brew:{{ . }}")
@@ -23,7 +25,7 @@ else
 fi
 {{ end -}}
 
-{{ range .packages.darwin.casks -}}
+{{ range $pkgs.casks -}}
 echo "Installing cask: {{ . }}"
 if brew install --cask {{ . | quote }} 2>/dev/null; then
     succeeded+=("cask:{{ . }}")
