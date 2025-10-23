@@ -41,3 +41,4 @@ packages:
       - sharkdp.bat
       - GnuPG.GnuPG
       - GnuPG.Gpg4win
+      - ShiningLight.OpenSSL
