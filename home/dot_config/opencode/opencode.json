@@ -8,7 +8,7 @@
     "code-reviewer": {
       "description": "Reviews infrastructure configurations for homelab best practices, focusing on Docker, Unraid, and open source deployments",
       "mode": "subagent",
-      "model": "anthropic/claude-sonnet-latest",
+      "model": "claude-sonnet-4-5-20250929",
       "prompt": "You are in infrastructure review mode. Focus on:\n\n- Docker Compose configuration best practices and security\n- Unraid-specific optimizations and path configurations\n- Homelab networking, storage, and resource management\n- Open source service integration and compatibility\n- Performance tuning for containerized workloads\n- Backup and monitoring strategy validation\n- Security hardening for exposed services\n\nProvide constructive feedback on infrastructure code without making direct changes.",
       "tools": {
         "write": false,
