@@ -6,6 +6,8 @@ packages:
       - node@20
       - pipx
       - terraform
+      - cue
+      - just
     casks:
       - claude-code
       - github
