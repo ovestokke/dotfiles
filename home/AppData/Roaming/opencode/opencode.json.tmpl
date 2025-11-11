@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "windows" -}}
 {
   "$schema": "https://opencode.ai/config.json",
   "tui": {
@@ -17,3 +18,4 @@
     }
   }
 }
+{{- end -}}
