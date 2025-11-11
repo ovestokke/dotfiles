@@ -1,23 +1,25 @@
 # Agent Guidelines for Dotfiles Repository
 
 ## Build/Lint/Test Commands
-- **Deploy Configs**: `chezmoi apply` (Applies all configurations to the home directory.)
-- **Preview Changes**: `chezmoi diff` (Shows what will change before deployment.)
-- **Validate Templates**: `chezmoi execute-template --dry-run` (Checks Go template syntax validity.)
-- **Single File Validation**: Use `chezmoi cat <path>` to preview rendered output of specific files.
-- **Error Handling**: Configuration errors are caught by `chezmoi apply`; use `chezmoi doctor` to diagnose setup issues.
+- **Deploy All**: `chezmoi apply` (deploys all configs to home directory)
+- **Preview Changes**: `chezmoi diff` (shows what will change before deployment)
+- **Test Single File**: `chezmoi cat home/dot_zshrc.tmpl` (preview rendered output without applying)
+- **Validate Templates**: `chezmoi execute-template < home/dot_zshrc.tmpl` (test Go template syntax)
+- **Full Test**: `chezmoi init --apply <repo> --branch=<branch> && chezmoi managed && chezmoi doctor` (simulates CI workflow)
+- **Diagnose Issues**: `chezmoi doctor` (checks setup, identifies configuration problems)
 
 ## Code Style & Conventions
-- **File Naming**: `dot_` prefix for dotfiles (`dot_zshrc` → `~/.zshrc`), `private_` for secrets, `run_once_` or `run_onchange_` for scripts.
-- **Templates**: Use `.tmpl` suffix for Go templates. OS conditionals: `{{ if eq .chezmoi.os "darwin" }}...{{- else }}...{{- end }}`. Always use `{{-` to trim whitespace.
-- **Lua**: 2-space indent, `local` scope, `snake_case` variables, use `require()`, platform checks with `wezterm.target_triple`.
-- **Shell (Zsh)**: Oh My Zsh style, double-quote all paths, use `eval "$(cmd)"` for initialization, check command exists with `[[ $+commands[cmd] ]]`.
-- **PowerShell**: Template inclusion pattern: `#{{- includeTemplate "powershell/profile.ps1" . | trim }}`.
-- **Packages**: Declare in YAML under `.chezmoidata/{os}/` directories, reference with `{{ range .packages.{os}.{manager} }}`.
-- **Theme**: Catppuccin Mocha is the standard color scheme across all applications.
-- **Keybinds**: Prefer vim-style navigation (hjkl) in all tools (WezTerm, Neovim).
+- **File Naming**: `dot_` prefix for dotfiles (`dot_zshrc` → `~/.zshrc`), `private_` for secrets, `run_once_` for one-time scripts, `run_onchange_` for hash-tracked scripts that re-run on change
+- **Go Templates**: Use `.tmpl` suffix. OS conditionals: `{{ if eq .chezmoi.os "darwin" }}...{{- else }}...{{- end }}`. Always use `{{-` to trim whitespace. Access data with `{{ .packages.darwin.brews }}`
+- **YAML Data Files**: Declare packages in `.chezmoidata/{os}/*.yaml` with structure `packages.{os}.{manager}` (e.g., `packages.darwin.brews`, `packages.darwin.casks`)
+- **Shell Scripts**: Use `set -uo pipefail`, double-quote all paths, track package changes with `# packages.yaml hash: {{ include "..." | sha256sum }}`, check errors with arrays: `failed=()`, `succeeded=()`
+- **Zsh Config**: Check command exists: `[[ $+commands[cmd] ]]`, use `eval "$(cmd)"` for init, source completions: `source <(chezmoi completion zsh)`
+- **PowerShell**: Include templates: `#{{- includeTemplate "powershell/profile.ps1" . | trim }}`, use `-ErrorAction SilentlyContinue` for module imports
+- **Lua (WezTerm)**: 2-space indent, `local` scope, `snake_case` naming, platform detection: `wezterm.target_triple == 'x86_64-apple-darwin'`, cross-platform leader key handling
+- **Theme Standard**: Catppuccin Mocha everywhere (WezTerm, Neovim, Oh My Posh, Powerlevel10k)
+- **Keybind Philosophy**: Vim-style navigation (hjkl) preferred, cross-platform leader keys (CMD on macOS, CTRL elsewhere)
 
 ## Important Notes
-- **Never commit secrets**: Check for sensitive data before committing (API keys, tokens, passwords).
-- **Cross-platform awareness**: Always test changes affect the intended OS using chezmoi conditionals.
-- **Package hash tracking**: Scripts include `# packages.yaml hash: {{ include "..." | sha256sum }}` to trigger re-runs on changes.
+- **Never commit secrets**: Always check for API keys, tokens, passwords before committing
+- **Cross-platform testing**: Use OS conditionals (`{{ if eq .chezmoi.os "darwin" }}`) and test changes on target platforms
+- **Error handling**: Scripts should track success/failure, continue on errors, report summary at end
