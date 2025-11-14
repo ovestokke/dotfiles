@@ -2,10 +2,6 @@
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
-  "azureTerraform.survey": {
-    "surveyPromptDate": "2025-10-17T10:02:29.920Z",
-    "surveyPromptIgnoredCount": 3
-  },
   "github.copilot.nextEditSuggestions.enabled": true,
   "[dockercompose]": {
     "editor.insertSpaces": true,
