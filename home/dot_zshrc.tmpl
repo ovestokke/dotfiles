@@ -11,6 +11,8 @@ fi
 {{- end }}
 export PATH="$HOME/.local/bin:$PATH"
 
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
