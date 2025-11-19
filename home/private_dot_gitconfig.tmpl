@@ -34,7 +34,7 @@
 		{{- $fullPath := print $opPath "/" $latest "/op-ssh-sign.exe" | replace "\\" "/" }}
     		program = "{{ $fullPath }}"
 		{{- else }}
-    		program = "C:/Users/{{ .chezmoi.username }}/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+		program = "C:/Users/{{ .chezmoi.username }}/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
 		{{- end }}
 	{{- else if eq .chezmoi.os "linux" }}
 		{{- $opPath := "/mnt/c/Users/ovsto/AppData/Local/1Password/app" }}
