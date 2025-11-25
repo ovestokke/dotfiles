@@ -1,0 +1,35 @@
+{{- if eq .chezmoi.os "windows" }}
+# npm-packages.yaml hash: {{ include ".chezmoidata/windows/npm-packages.yaml" | sha256sum }}
+
+Write-Host "Installing npm packages..." -ForegroundColor Cyan
+
+# Check if npm is available
+if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+    Write-Host "npm not found. Please install Node.js first." -ForegroundColor Red
+    exit 1
+}
+
+$failed = @()
+$succeeded = @()
+
+{{ $data := include ".chezmoidata/windows/npm-packages.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.windows.npm -}}
+{{ range $pkgs -}}
+Write-Host "Installing: {{ . }}" -ForegroundColor Cyan
+npm install -g {{ . | quote }}
+if ($LASTEXITCODE -eq 0) {
+    $succeeded += "{{ . }}"
+} else {
+    $failed += "{{ . }}"
+}
+{{ end -}}
+
+Write-Host "`nInstallation Summary:" -ForegroundColor Cyan
+Write-Host "Succeeded: $($succeeded.Count)" -ForegroundColor Green
+Write-Host "Failed: $($failed.Count)" -ForegroundColor $(if ($failed.Count -gt 0) { "Red" } else { "Green" })
+
+if ($failed.Count -gt 0) {
+    Write-Host "`nFailed packages:" -ForegroundColor Red
+    $failed | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+}
+{{- end }}

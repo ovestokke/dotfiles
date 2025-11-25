@@ -1,0 +1,5 @@
+packages:
+  windows:
+    npm:
+      # AI Development Tools
+      - "@google/gemini-cli"
