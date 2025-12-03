@@ -15,5 +15,6 @@ packages:
       - AgileBits.1Password
       # Utilities
       - 7zip.7zip
+      - FilesCommunity.Files
       - wez.wezterm
       - Spotify.Spotify
