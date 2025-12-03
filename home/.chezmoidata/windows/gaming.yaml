@@ -8,6 +8,7 @@ packages:
       - ElectronicArts.EADesktop
       # Gaming Peripherals
       - Logitech.GHUB
+      - Elgato.StreamDeck
       # System Monitoring (crucial for gaming performance)
       - REALiX.HWiNFO
       - CPUID.CPU-Z
