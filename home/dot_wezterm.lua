@@ -25,6 +25,7 @@ config.font_size = 16
 config.initial_cols = 120
 config.initial_rows = 30
 
+config.enable_mouse_reporting = false
 config.enable_tab_bar = true
 
 config.window_decorations = "TITLE | RESIZE"
