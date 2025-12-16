@@ -13,7 +13,7 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" or wezterm.target_triple ==
 elseif wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
 	config.default_prog = { "zsh", "-l" }
 	config.font = wezterm.font("MesloLGS Nerd Font Mono")
-	config.send_composed_key_when_left_alt_is_pressed = false
+	config.send_composed_key_when_left_alt_is_pressed = true
 end
 
 config.color_scheme = "Catppuccin Mocha"
