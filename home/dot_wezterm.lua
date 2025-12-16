@@ -20,7 +20,7 @@ config.color_scheme = "Catppuccin Mocha"
 -- config.color_scheme = 'Lunaria Dark (Gogh)'
 -- config.font = wezterm.font("MesloLGS NF")
 -- config.font = wezterm.font("MesloLGS Nerd Font Mono")
-config.font_size = 16
+config.font_size = 14
 
 -- Set initial window size (columns x rows)
 config.initial_cols = 120
