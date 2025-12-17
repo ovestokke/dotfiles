@@ -38,6 +38,7 @@ packages:
       # Shell Enhancement
       - JanDeDobbeleer.OhMyPosh
       # Utilities
+      - Charmbracelet.crush
       - sharkdp.bat
       - GnuPG.GnuPG
       - GnuPG.Gpg4win
