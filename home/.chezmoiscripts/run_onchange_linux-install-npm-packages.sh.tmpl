@@ -1,0 +1,41 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -uo pipefail
+
+# npm-packages.yaml hash: {{ include ".chezmoidata/linux/npm-packages.yaml" | sha256sum }}
+
+echo "Installing npm packages..."
+
+# Check if npm is available
+if ! command -v npm &> /dev/null; then
+    echo "[SKIP] npm not found. Please install Node.js first."
+    echo "  Arch: sudo pacman -S nodejs npm"
+    echo "  Debian/Ubuntu: sudo apt install nodejs npm"
+    exit 0
+fi
+
+failed=()
+succeeded=()
+
+{{ $data := include ".chezmoidata/linux/npm-packages.yaml" | fromYaml -}}
+{{ $pkgs := $data.packages.linux.npm -}}
+{{ range $pkgs -}}
+echo "Installing: {{ . }}"
+if npm install -g {{ . | quote }} 2>/dev/null; then
+    succeeded+=("{{ . }}")
+else
+    failed+=("{{ . }}")
+fi
+{{ end }}
+
+echo ""
+echo "Installation Summary:"
+echo "Succeeded: ${#succeeded[@]}"
+echo "Failed: ${#failed[@]}"
+
+if [ ${#failed[@]} -gt 0 ]; then
+    echo ""
+    echo "Failed packages:"
+    printf '  - %s\n' "${failed[@]}"
+fi
+{{- end }}

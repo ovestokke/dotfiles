@@ -18,6 +18,9 @@ packages:
       - neovim
       - build-essential
       - wezterm
+      # Node.js for npm packages
+      - nodejs
+      - npm
       # LazyVim dependencies
       - lazygit
       - tree-sitter-cli
@@ -40,6 +43,9 @@ packages:
       - fish
       - neovim
       - build-essential
+      # Node.js for npm packages
+      - nodejs
+      - npm
       # LazyVim dependencies
       - lazygit
       - tree-sitter-cli
@@ -64,6 +70,9 @@ packages:
       - base-devel
       - wezterm
       - ttf-meslo-nerd
+      # Node.js for npm packages
+      - nodejs
+      - npm
       # LazyVim dependencies
       - lazygit
       - tree-sitter-cli
@@ -86,6 +95,9 @@ packages:
       - fish
       - neovim
       - base-devel
+      # Node.js for npm packages
+      - nodejs
+      - npm
       # LazyVim dependencies
       - lazygit
       - tree-sitter-cli

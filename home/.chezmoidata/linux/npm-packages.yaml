@@ -1,0 +1,6 @@
+packages:
+  linux:
+    npm:
+      # AI CLI Tools
+      - "@anthropic-ai/claude-code"
+      - "@google/gemini-cli"
