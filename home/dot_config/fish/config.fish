@@ -64,8 +64,17 @@ alias gco="git checkout"
 alias gb="git branch"
 alias glog="git log --oneline --graph --decorate"
 
-# Chezmoi alias
-alias dots="chezmoi"
+# Chezmoi aliases
+alias ch="chezmoi"
+alias chd="chezmoi diff"
+alias chst="chezmoi status"
+alias cha="chezmoi add"
+alias chr="chezmoi re-add"
+alias che="chezmoi edit"
+alias chea="chezmoi edit --apply"
+alias chcd="chezmoi cd"
+alias chap="chezmoi apply"
+alias chup="chezmoi update"
 alias dotsync="chezmoi git add . && chezmoi git commit && chezmoi git pull --rebase && chezmoi git push"
 
 # Catppuccin Mocha colors for Fish
