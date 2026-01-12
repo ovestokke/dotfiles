@@ -19,9 +19,9 @@ Library/**
 .config/fish/
 .config/fish/**
 # macOS/Linux shell configs
-dot_zshrc.tmpl
-dot_zprofile.tmpl
-dot_p10k.zsh
+.zshrc
+.zprofile
+.p10k.zsh
 # Kept in repo but not managed by chezmoi
 komorebi.json
 komorebi.bar.json
@@ -37,10 +37,10 @@ AppData/**
 komorebi.json
 komorebi.bar.json
 applications.json
-# macOS/Linux zsh (using fish on Linux)
-dot_zshrc.tmpl
-dot_zprofile.tmpl
-dot_p10k.zsh
+# macOS zsh (using fish on Linux)
+.zshrc
+.zprofile
+.p10k.zsh
 {{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
 {{- $isWSL := false -}}
 {{- $kernelRelease := output "uname" "-r" | trim -}}
@@ -49,6 +49,6 @@ dot_p10k.zsh
 {{- end -}}
 {{- if $isWSL }}
 # WSL - skip desktop apps
-dot_wezterm.lua
+.wezterm.lua
 {{- end }}
 {{- end }}
