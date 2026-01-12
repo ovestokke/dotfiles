@@ -7,6 +7,10 @@ AppData/**
 .config/powershell/**
 .config/fish/
 .config/fish/**
+# Windows-only files
+komorebi.json
+komorebi.bar.json
+applications.json
 {{- else if eq .chezmoi.os "windows" }}
 Library/
 Library/**
@@ -14,6 +18,14 @@ Library/**
 .config/powershell/**
 .config/fish/
 .config/fish/**
+# macOS/Linux shell configs
+dot_zshrc.tmpl
+dot_zprofile.tmpl
+dot_p10k.zsh
+# Kept in repo but not managed by chezmoi
+komorebi.json
+komorebi.bar.json
+applications.json
 {{- else if eq .chezmoi.os "linux" }}
 Library/
 Library/**
@@ -21,6 +33,14 @@ Documents/
 Documents/**
 AppData/
 AppData/**
+# Windows-only files
+komorebi.json
+komorebi.bar.json
+applications.json
+# macOS/Linux zsh (using fish on Linux)
+dot_zshrc.tmpl
+dot_zprofile.tmpl
+dot_p10k.zsh
 {{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
 {{- $isWSL := false -}}
 {{- $kernelRelease := output "uname" "-r" | trim -}}
