@@ -5,11 +5,15 @@ AppData/
 AppData/**
 .config/powershell/
 .config/powershell/**
+.config/fish/
+.config/fish/**
 {{- else if eq .chezmoi.os "windows" }}
 Library/
 Library/**
 .config/powershell/
 .config/powershell/**
+.config/fish/
+.config/fish/**
 {{- else if eq .chezmoi.os "linux" }}
 Library/
 Library/**
@@ -17,5 +21,14 @@ Documents/
 Documents/**
 AppData/
 AppData/**
+{{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
+{{- $isWSL := false -}}
+{{- $kernelRelease := output "uname" "-r" | trim -}}
+{{- if contains "microsoft" (lower $kernelRelease) -}}
+{{-   $isWSL = true -}}
+{{- end -}}
+{{- if $isWSL }}
+# WSL - skip desktop apps
 dot_wezterm.lua
+{{- end }}
 {{- end }}

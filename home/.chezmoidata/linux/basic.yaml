@@ -1,5 +1,6 @@
 packages:
   linux:
+    # Debian/Ubuntu packages (apt) - full desktop
     apt:
       - git
       - eza
@@ -13,6 +14,82 @@ packages:
       - bat
       - gh
       - gnupg
-      - zsh
+      - fish
       - neovim
       - build-essential
+      - wezterm
+      # LazyVim dependencies
+      - lazygit
+      - tree-sitter-cli
+      - luajit
+
+    # Debian/Ubuntu packages for WSL (minimal, no desktop apps)
+    apt_wsl:
+      - git
+      - eza
+      - fzf
+      - zoxide
+      - curl
+      - wget
+      - unzip
+      - ripgrep
+      - fd-find
+      - bat
+      - gh
+      - gnupg
+      - fish
+      - neovim
+      - build-essential
+      # LazyVim dependencies
+      - lazygit
+      - tree-sitter-cli
+      - luajit
+
+    # Arch Linux packages (pacman) - full desktop
+    pacman:
+      - git
+      - eza
+      - fzf
+      - zoxide
+      - curl
+      - wget
+      - unzip
+      - ripgrep
+      - fd
+      - bat
+      - github-cli
+      - gnupg
+      - fish
+      - neovim
+      - base-devel
+      - wezterm
+      - ttf-meslo-nerd
+      # LazyVim dependencies
+      - lazygit
+      - tree-sitter-cli
+      - luajit
+
+    # Arch Linux packages for WSL (minimal, no desktop apps)
+    pacman_wsl:
+      - git
+      - eza
+      - fzf
+      - zoxide
+      - curl
+      - wget
+      - unzip
+      - ripgrep
+      - fd
+      - bat
+      - github-cli
+      - gnupg
+      - fish
+      - neovim
+      - base-devel
+      # LazyVim dependencies
+      - lazygit
+      - tree-sitter-cli
+      - luajit
+
+    # AUR packages (yay/paru) - packages not in official repos
+    aur: []

@@ -6,109 +6,180 @@ set -uo pipefail
 
 echo "Installing Linux basic packages..."
 
-if ! command -v apt-get &> /dev/null; then
-    echo "[SKIP] apt-get not found, skipping package installation"
-    exit 0
-fi
-
 failed=()
 succeeded=()
 
-# Update package list
-sudo apt-get update
+# Detect WSL
+IS_WSL=false
+if grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
+    IS_WSL=true
+    echo "Detected WSL environment - using minimal package set"
+fi
 
-# Install apt packages
+# Detect package manager and distribution
+detect_distro() {
+    if command -v pacman &> /dev/null; then
+        echo "arch"
+    elif command -v apt-get &> /dev/null; then
+        echo "debian"
+    else
+        echo "unknown"
+    fi
+}
+
+DISTRO=$(detect_distro)
+
 {{ $data := include ".chezmoidata/linux/basic.yaml" | fromYaml -}}
 {{ $pkgs := $data.packages.linux -}}
-{{ range $pkgs.apt -}}
-echo "Installing: {{ . }}"
-if sudo apt-get install -y {{ . }} 2>/dev/null; then
-    succeeded+=("{{ . }}")
-else
-    failed+=("{{ . }}")
-fi
-{{ end -}}
 
-# Install oh-my-zsh if not already installed
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "Installing oh-my-zsh..."
-    if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 2>/dev/null; then
-        succeeded+=("oh-my-zsh")
-    else
-        failed+=("oh-my-zsh")
-    fi
-fi
+case "$DISTRO" in
+    arch)
+        echo "Detected Arch Linux (pacman)"
 
-# Install/Update Powerlevel10k theme
-p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-if [ ! -d "$p10k_dir" ]; then
-    echo "Installing Powerlevel10k theme..."
-    if git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir" 2>/dev/null; then
-        succeeded+=("powerlevel10k")
+        # Update package database
+        sudo pacman -Sy
+
+        if [ "$IS_WSL" = true ]; then
+            # WSL minimal packages
+            {{ range $pkgs.pacman_wsl -}}
+            echo "Installing: {{ . }}"
+            if sudo pacman -S --noconfirm --needed {{ . }} 2>/dev/null; then
+                succeeded+=("{{ . }}")
+            else
+                failed+=("{{ . }}")
+            fi
+            {{ end }}
+        else
+            # Full desktop packages
+            {{ range $pkgs.pacman -}}
+            echo "Installing: {{ . }}"
+            if sudo pacman -S --noconfirm --needed {{ . }} 2>/dev/null; then
+                succeeded+=("{{ . }}")
+            else
+                failed+=("{{ . }}")
+            fi
+            {{ end }}
+
+            # Check for AUR helper (yay or paru)
+            AUR_HELPER=""
+            if command -v yay &> /dev/null; then
+                AUR_HELPER="yay"
+            elif command -v paru &> /dev/null; then
+                AUR_HELPER="paru"
+            fi
+
+            if [ -n "$AUR_HELPER" ]; then
+                echo "Using $AUR_HELPER for AUR packages..."
+                {{ range $pkgs.aur -}}
+                echo "Installing AUR: {{ . }}"
+                if $AUR_HELPER -S --noconfirm --needed {{ . }} 2>/dev/null; then
+                    succeeded+=("{{ . }} (AUR)")
+                else
+                    failed+=("{{ . }} (AUR)")
+                fi
+                {{ end }}
+            else
+                echo "[INFO] No AUR helper found (yay/paru)."
+                echo "Install yay: git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si"
+            fi
+        fi
+        ;;
+
+    debian)
+        echo "Detected Debian/Ubuntu (apt)"
+
+        # Update package list
+        sudo apt-get update
+
+        if [ "$IS_WSL" = true ]; then
+            # WSL minimal packages
+            {{ range $pkgs.apt_wsl -}}
+            echo "Installing: {{ . }}"
+            if sudo apt-get install -y {{ . }} 2>/dev/null; then
+                succeeded+=("{{ . }}")
+            else
+                failed+=("{{ . }}")
+            fi
+            {{ end }}
+        else
+            # Full desktop packages
+            {{ range $pkgs.apt -}}
+            echo "Installing: {{ . }}"
+            if sudo apt-get install -y {{ . }} 2>/dev/null; then
+                succeeded+=("{{ . }}")
+            else
+                failed+=("{{ . }}")
+            fi
+            {{ end }}
+        fi
+        ;;
+
+    *)
+        echo "[SKIP] Unknown distribution. Neither pacman nor apt-get found."
+        echo "Supported distributions: Arch Linux, Debian, Ubuntu"
+        exit 0
+        ;;
+esac
+
+# Install Fisher (fish plugin manager) if fish is installed and Fisher is not
+if command -v fish &> /dev/null; then
+    if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
+        echo "Installing Fisher (fish plugin manager)..."
+        if fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher" 2>/dev/null; then
+            succeeded+=("fisher")
+        else
+            failed+=("fisher")
+        fi
     else
-        failed+=("powerlevel10k")
+        echo "Fisher already installed"
+        succeeded+=("fisher (exists)")
+    fi
+
+    # Install Tide prompt (Powerlevel10k-like for fish)
+    if fish -c "fisher list" 2>/dev/null | grep -q "ilancosman/tide"; then
+        echo "Tide prompt already installed"
+        succeeded+=("tide (exists)")
+    else
+        echo "Installing Tide prompt..."
+        if fish -c "fisher install ilancosman/tide@v6" 2>/dev/null; then
+            succeeded+=("tide")
+        else
+            failed+=("tide")
+        fi
+    fi
+
+    # Install other useful fish plugins
+    for plugin in "patrickf1/fzf.fish" "jethrokuan/z"; do
+        plugin_name=$(echo "$plugin" | cut -d'/' -f2)
+        if fish -c "fisher list" 2>/dev/null | grep -q "$plugin"; then
+            echo "$plugin_name already installed"
+            succeeded+=("$plugin_name (exists)")
+        else
+            echo "Installing $plugin_name..."
+            if fish -c "fisher install $plugin" 2>/dev/null; then
+                succeeded+=("$plugin_name")
+            else
+                failed+=("$plugin_name")
+            fi
+        fi
+    done
+
+    # Set fish as default shell if not already
+    if [ "$SHELL" != "$(command -v fish)" ]; then
+        echo "Setting fish as default shell..."
+        fish_path=$(command -v fish)
+        if ! grep -q "$fish_path" /etc/shells; then
+            echo "$fish_path" | sudo tee -a /etc/shells
+        fi
+        if chsh -s "$fish_path" 2>/dev/null; then
+            succeeded+=("fish (default shell)")
+        else
+            echo "[INFO] Could not change default shell. Run: chsh -s $fish_path"
+            failed+=("fish (default shell)")
+        fi
     fi
 else
-    echo "Updating Powerlevel10k theme..."
-    if git -C "$p10k_dir" pull 2>/dev/null; then
-        succeeded+=("powerlevel10k (updated)")
-    else
-        failed+=("powerlevel10k (update)")
-    fi
-fi
-
-# Install/Update zsh-autosuggestions plugin
-autosugg_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-if [ ! -d "$autosugg_dir" ]; then
-    echo "Installing zsh-autosuggestions..."
-    if git clone https://github.com/zsh-users/zsh-autosuggestions "$autosugg_dir" 2>/dev/null; then
-        succeeded+=("zsh-autosuggestions")
-    else
-        failed+=("zsh-autosuggestions")
-    fi
-else
-    echo "Updating zsh-autosuggestions..."
-    if git -C "$autosugg_dir" pull 2>/dev/null; then
-        succeeded+=("zsh-autosuggestions (updated)")
-    else
-        failed+=("zsh-autosuggestions (update)")
-    fi
-fi
-
-# Install/Update zsh-syntax-highlighting plugin
-syntax_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
-if [ ! -d "$syntax_dir" ]; then
-    echo "Installing zsh-syntax-highlighting..."
-    if git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$syntax_dir" 2>/dev/null; then
-        succeeded+=("zsh-syntax-highlighting")
-    else
-        failed+=("zsh-syntax-highlighting")
-    fi
-else
-    echo "Updating zsh-syntax-highlighting..."
-    if git -C "$syntax_dir" pull 2>/dev/null; then
-        succeeded+=("zsh-syntax-highlighting (updated)")
-    else
-        failed+=("zsh-syntax-highlighting (update)")
-    fi
-fi
-
-# Install/Update zsh-async plugin
-async_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-async"
-if [ ! -d "$async_dir" ]; then
-    echo "Installing zsh-async..."
-    if git clone https://github.com/mafredri/zsh-async.git "$async_dir" 2>/dev/null; then
-        succeeded+=("zsh-async")
-    else
-        failed+=("zsh-async")
-    fi
-else
-    echo "Updating zsh-async..."
-    if git -C "$async_dir" pull 2>/dev/null; then
-        succeeded+=("zsh-async (updated)")
-    else
-        failed+=("zsh-async (update)")
-    fi
+    echo "[SKIP] Fish not installed, skipping plugin installation"
 fi
 
 echo ""
