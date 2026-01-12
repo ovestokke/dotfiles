@@ -1,0 +1,21 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -uo pipefail
+
+# Install Claude Code using native installer
+# Docs: https://code.claude.com/docs/en/setup
+
+echo "Installing Claude Code..."
+
+if command -v claude &> /dev/null; then
+    echo "Claude Code already installed: $(claude --version 2>/dev/null || echo 'unknown version')"
+    echo "Run 'claude update' to update to the latest version"
+else
+    echo "Installing Claude Code via native installer..."
+    if curl -fsSL https://claude.ai/install.sh | bash; then
+        echo "Claude Code installed successfully"
+    else
+        echo "[FAILED] Claude Code installation failed"
+    fi
+fi
+{{- end }}
