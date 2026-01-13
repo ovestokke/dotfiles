@@ -5,7 +5,7 @@ packages:
       - node # Node.js JavaScript runtime (latest)
       - node@20 # Node.js LTS version 20
       - pipx # Install Python apps in isolated environments
-      - terraform # Infrastructure as code tool
+      - hashicorp/tap/terraform # Infrastructure as code tool
       - cue # Data constraint language
       - just # Command runner (like make)
     casks:
