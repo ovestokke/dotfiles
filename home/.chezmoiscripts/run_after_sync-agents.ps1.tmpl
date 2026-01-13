@@ -1,0 +1,14 @@
+# Auto-add any new Claude Code agent files to chezmoi
+
+$agentsDir = Join-Path $env:USERPROFILE ".claude\agents"
+
+# Check if agents directory exists
+if (-not (Test-Path $agentsDir)) {
+    exit 0
+}
+
+# Add all .md files in agents directory
+Get-ChildItem -Path $agentsDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+    # Add to chezmoi (silently ignore if already tracked)
+    chezmoi add $_.FullName 2>$null
+}
