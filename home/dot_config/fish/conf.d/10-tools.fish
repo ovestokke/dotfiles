@@ -6,7 +6,7 @@ if status is-interactive
         source (code --locate-shell-integration-path fish)
     end
 
-    # Oh My Posh themes (most have OS icon at start)
+    # Oh My Posh themes (user curated)
     set -g OMP_THEMES \
         catppuccin_mocha \
         powerlevel10k_rainbow \
@@ -16,7 +16,22 @@ if status is-interactive
         atomic \
         negligible \
         quick-term \
-        cert
+        cert \
+        iterm2 \
+        jblab_2021 \
+        wholespace \
+        M365Princess \
+        blue-owl \
+        clean-detailed \
+        easy-term \
+        unicorn \
+        if_tea \
+        kushal \
+        multiverse-neon \
+        montys \
+        mojada \
+        microverse-power \
+        paradox
 
     # Default theme (use universal variable to persist across sessions)
     if not set -q OMP_THEME
