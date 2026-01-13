@@ -1,3 +1,4 @@
+{{ if ne .chezmoi.os "windows" -}}
 #!/bin/bash
 # Auto-add any new Claude Code agent files to chezmoi
 
@@ -16,3 +17,4 @@ for agent in "$agents_dir"/*.md; do
     # Add to chezmoi (silently ignore if already tracked)
     chezmoi add "$agent" 2>/dev/null || true
 done
+{{- end }}
