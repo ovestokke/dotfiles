@@ -66,10 +66,8 @@ if status is-interactive
         chezmoi completion fish | source
     end
 
-    # Zoxide: alias cd to z
-    if type -q zoxide
-        abbr --add cd z
-    end
+    # Zoxide: smart cd function (defined in 10-tools.fish)
+    # Use 'z' for zoxide jumps, 'cd' works normally for paths
 
     # Python
     abbr --add python python3
