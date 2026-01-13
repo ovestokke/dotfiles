@@ -1,15 +1,14 @@
-
 packages:
   windows:
     gaming:
       # Gaming Platforms
-      - Valve.Steam
-      - EpicGames.EpicGamesLauncher
-      - ElectronicArts.EADesktop
+      - Valve.Steam # Steam game store and launcher
+      - EpicGames.EpicGamesLauncher # Epic Games store and launcher
+      - ElectronicArts.EADesktop # EA game launcher
       # Gaming Peripherals
-      - Logitech.GHUB
-      - Elgato.StreamDeck
-      # System Monitoring (crucial for gaming performance)
-      - REALiX.HWiNFO
-      - CPUID.CPU-Z
-      - TechPowerUp.GPU-Z
+      - Logitech.GHUB # Logitech gaming device manager
+      - Elgato.StreamDeck # Stream Deck controller software
+      # System Monitoring
+      - REALiX.HWiNFO # Hardware monitoring and diagnostics
+      - CPUID.CPU-Z # CPU information utility
+      - TechPowerUp.GPU-Z # GPU information utility

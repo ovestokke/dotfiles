@@ -1,8 +1,7 @@
-
 modules:
   windows:
     powershell:
-      - PSReadLine
-      - Terminal-Icons
-      - PSFzf
-      - z
+      - PSReadLine # Enhanced command line editing
+      - Terminal-Icons # File and folder icons in terminal
+      - PSFzf # PowerShell wrapper for fzf fuzzy finder
+      - z # Directory jumper (zoxide-like)

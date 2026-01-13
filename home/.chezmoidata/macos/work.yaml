@@ -1,14 +1,14 @@
 packages:
   darwin:
     brews:
-      - azure-cli
-      - node
-      - node@20
-      - pipx
-      - terraform
-      - cue
-      - just
+      - azure-cli # Microsoft Azure CLI
+      - node # Node.js JavaScript runtime (latest)
+      - node@20 # Node.js LTS version 20
+      - pipx # Install Python apps in isolated environments
+      - terraform # Infrastructure as code tool
+      - cue # Data constraint language
+      - just # Command runner (like make)
     casks:
-      - claude-code
-      - github
-      - slack
+      - claude-code # Anthropic Claude Code IDE
+      - github # GitHub Desktop app
+      - slack # Team communication platform

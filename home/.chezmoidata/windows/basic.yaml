@@ -1,20 +1,19 @@
-
 packages:
   windows:
     basic:
       # Browsers
-      - Mozilla.Firefox
-      # Development Tools - Absolute essentials
-      - Git.Git
-      - GitHub.cli
-      - Microsoft.VisualStudioCode
+      - Mozilla.Firefox # Mozilla web browser
+      # Development Tools
+      - Git.Git # Version control system
+      - GitHub.cli # GitHub CLI (gh)
+      - Microsoft.VisualStudioCode # Code editor
       # Terminal
-      - Microsoft.WindowsTerminal
-      - Microsoft.PowerShell
+      - Microsoft.WindowsTerminal # Modern Windows terminal
+      - Microsoft.PowerShell # Cross-platform PowerShell
       # Password Management
-      - AgileBits.1Password
+      - AgileBits.1Password # Password manager
       # Utilities
-      - 7zip.7zip
-      - alexx2000.DoubleCommander
-      - wez.wezterm
-      - Spotify.Spotify
+      - 7zip.7zip # File archive utility
+      - alexx2000.DoubleCommander # Dual-pane file manager
+      - wez.wezterm # GPU-accelerated terminal emulator
+      - Spotify.Spotify # Music streaming service

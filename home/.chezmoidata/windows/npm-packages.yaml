@@ -1,5 +1,4 @@
 packages:
   windows:
     npm:
-      # AI Development Tools
-      - "@google/gemini-cli"
+      - "@google/gemini-cli" # Google Gemini AI CLI tool

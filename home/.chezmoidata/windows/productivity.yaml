@@ -1,26 +1,24 @@
-
 packages:
   windows:
     productivity:
       # Browsers
-      - Google.Chrome
+      - Google.Chrome # Google web browser
       # Productivity & Organization
-      - Obsidian.Obsidian
-      - Microsoft.PowerToys
-      - Flow-Launcher.Flow-Launcher
+      - Obsidian.Obsidian # Markdown-based knowledge base
+      - Microsoft.PowerToys # Windows power user utilities
+      - Flow-Launcher.Flow-Launcher # Quick launcher (like Spotlight)
       # Communication
-      - SlackTechnologies.Slack
-      - Discord.Discord
-      - OpenWhisperSystems.Signal
+      - SlackTechnologies.Slack # Team communication platform
+      - Discord.Discord # Voice, video & text chat app
+      - OpenWhisperSystems.Signal # Encrypted messaging app
       # File Management & Sync
-      - Google.GoogleDrive
-      - BillStewart.SyncthingWindowsSetup
+      - Google.GoogleDrive # Google Drive cloud storage
+      - BillStewart.SyncthingWindowsSetup # P2P file synchronization
       # Media & Entertainment
-      - TIDALMusicAS.TIDAL
-      # Utilities - Essential
-      - JAMSoftware.TreeSize.Free
-      # Utilities - Advanced
-      - Klocman.BulkCrapUninstaller
-      - BleachBit.BleachBit
+      - TIDALMusicAS.TIDAL # Hi-fi music streaming service
+      # Utilities
+      - JAMSoftware.TreeSize.Free # Disk space analyzer
+      - Klocman.BulkCrapUninstaller # Bulk uninstaller tool
+      - BleachBit.BleachBit # System cleaner and privacy tool
       # Privacy & Security
-      - OO-Software.ShutUp10
+      - OO-Software.ShutUp10 # Windows 10/11 privacy settings manager

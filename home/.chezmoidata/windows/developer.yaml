@@ -1,45 +1,43 @@
-
 packages:
   windows:
     developer:
       # Version Control
-      - Git.Git
-      - GitHub.GitHubDesktop
-      - GitHub.cli
+      - Git.Git # Version control system
+      - GitHub.GitHubDesktop # GitHub Desktop app
+      - GitHub.cli # GitHub CLI (gh)
       # Editors & IDEs
-      - Microsoft.VisualStudioCode
-      # Neovim
-      - JesseDuffield.lazygit
-      - Neovim.Neovim
-      - ajeetdsouza.zoxide
-      - cURL.cURL
-      - sharkdp.fd
-      - BurntSushi.ripgrep.MSVC
-      - junegunn.fzf
-      - BrechtSanders.WinLibs.POSIX.UCRT
+      - Microsoft.VisualStudioCode # Code editor
+      # Neovim & Dependencies
+      - JesseDuffield.lazygit # Terminal UI for git
+      - Neovim.Neovim # Vim-fork text editor
+      - ajeetdsouza.zoxide # Smarter cd command (z)
+      - cURL.cURL # URL data transfer tool
+      - sharkdp.fd # Fast find alternative
+      - BurntSushi.ripgrep.MSVC # Fast recursive grep alternative (rg)
+      - junegunn.fzf # Fuzzy finder for terminal
+      - BrechtSanders.WinLibs.POSIX.UCRT # GCC compiler toolchain for Windows
       # Terminals
-      - Microsoft.WindowsTerminal
-      - wez.wezterm
-      - Microsoft.PowerShell
+      - Microsoft.WindowsTerminal # Modern Windows terminal
+      - wez.wezterm # GPU-accelerated terminal emulator
+      - Microsoft.PowerShell # Cross-platform PowerShell
       # Languages & Runtimes
-      - OpenJS.NodeJS.LTS
-      - Python.Python.3.12
+      - OpenJS.NodeJS.LTS # Node.js JavaScript runtime (LTS)
+      - Python.Python.3.12 # Python programming language
       # Containers
-      - Docker.DockerDesktop
+      - Docker.DockerDesktop # Docker container platform
       # Cloud & DevOps
-      - Microsoft.AzureCLI
-      - Google.CloudSDK
-      - Hashicorp.Terraform
-      - Tailscale.Tailscale
+      - Microsoft.AzureCLI # Microsoft Azure CLI
+      - Google.CloudSDK # Google Cloud CLI (gcloud)
+      - Hashicorp.Terraform # Infrastructure as code tool
+      - Tailscale.Tailscale # Mesh VPN service
       # AI Development Tools
-      - Anthropic.Claude
-      - Anthropic.ClaudeCode
-      - SST.opencode
+      - Anthropic.Claude # Claude AI desktop app
+      - Anthropic.ClaudeCode # Claude Code IDE
       # Shell Enhancement
-      - JanDeDobbeleer.OhMyPosh
+      - JanDeDobbeleer.OhMyPosh # Cross-shell prompt theme engine
       # Utilities
-      - Charmbracelet.crush
-      - sharkdp.bat
-      - GnuPG.GnuPG
-      - GnuPG.Gpg4win
-      - ShiningLight.OpenSSL
+      - Charmbracelet.crush # PNG image compression tool
+      - sharkdp.bat # Cat clone with syntax highlighting
+      - GnuPG.GnuPG # GNU Privacy Guard encryption
+      - GnuPG.Gpg4win # GnuPG for Windows with GUI
+      - ShiningLight.OpenSSL # SSL/TLS cryptography library

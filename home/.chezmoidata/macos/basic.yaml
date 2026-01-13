@@ -1,16 +1,16 @@
 packages:
   darwin:
     brews:
-      - gemini-cli
+      - gemini-cli # Google Gemini AI CLI tool
     casks:
-      - 1password
-      - 1password-cli
-      - discord
-      - firefox
-      - google-chrome
-      - obsidian
-      - rectangle
-      - scroll-reverser
-      - signal
-      - spotify
-      - tidal
+      - 1password # Password manager
+      - 1password-cli # 1Password command-line tool
+      - discord # Voice, video & text chat app
+      - firefox # Mozilla web browser
+      - google-chrome # Google web browser
+      - obsidian # Markdown-based knowledge base
+      - rectangle # Window manager with keyboard shortcuts
+      - scroll-reverser # Reverse scroll direction per device
+      - signal # Encrypted messaging app
+      - spotify # Music streaming service
+      - tidal # Hi-fi music streaming service
