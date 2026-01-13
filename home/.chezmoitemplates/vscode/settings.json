@@ -23,7 +23,7 @@
   "editor.largeFileOptimizations": false,
   "editor.semanticTokenColorCustomizations": {},
   "workbench.iconTheme": "catppuccin-mocha",
-  "workbench.colorTheme": "Catppuccin Alt Mocha",
+  "workbench.colorTheme": "Catppuccin by tpsTech Macchiato",
   "remote.SSH.remotePlatform": {
     "192.168.1.230": "linux"
   },
