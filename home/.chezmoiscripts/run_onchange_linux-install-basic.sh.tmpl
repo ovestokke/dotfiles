@@ -164,11 +164,21 @@ if command -v fish &> /dev/null; then
         fi
     done
 
-    # Remind user to set fish as default shell
+    # Remind user about fish shell
     if [ "$SHELL" != "$(command -v fish)" ]; then
         echo ""
-        echo "[INFO] To set fish as your default shell, run:"
-        echo "  chsh -s $(command -v fish)"
+        echo "=========================================="
+        echo "  Fish shell installed!"
+        echo "=========================================="
+        echo ""
+        echo "  To try fish, just type:"
+        echo "    fish"
+        echo ""
+        echo "  To set fish as your default shell:"
+        echo "    chsh -s $(command -v fish)"
+        echo ""
+        echo "  Then log out and back in."
+        echo "=========================================="
     fi
 else
     echo "[SKIP] Fish not installed, skipping plugin installation"

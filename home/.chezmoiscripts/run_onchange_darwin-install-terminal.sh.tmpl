@@ -44,5 +44,23 @@ if [ ${#failed[@]} -gt 0 ]; then
     echo "Failed packages:"
     printf '  - %s\n' "${failed[@]}"
 fi
+
+# Remind user about fish shell
+if command -v fish &> /dev/null && [ "$SHELL" != "$(command -v fish)" ]; then
+    echo ""
+    echo "=========================================="
+    echo "  Fish shell installed!"
+    echo "=========================================="
+    echo ""
+    echo "  To try fish, just type:"
+    echo "    fish"
+    echo ""
+    echo "  To set fish as your default shell:"
+    echo "    sudo sh -c 'echo $(which fish) >> /etc/shells'"
+    echo "    chsh -s $(which fish)"
+    echo ""
+    echo "  Then open a new terminal."
+    echo "=========================================="
+fi
 {{- end }}
 
