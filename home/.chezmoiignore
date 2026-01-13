@@ -5,8 +5,6 @@ AppData/
 AppData/**
 .config/powershell/
 .config/powershell/**
-.config/fish/
-.config/fish/**
 # Windows-only files
 komorebi.json
 komorebi.bar.json

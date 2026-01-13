@@ -16,6 +16,11 @@ set -gx XDG_CACHE_HOME $HOME/.cache
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.cargo/bin
 
+# Initialize Oh My Posh prompt
+if type -q oh-my-posh
+    oh-my-posh init fish --config ~/.config/oh-my-posh/catppuccin_mocha.omp.json | source
+end
+
 # Initialize zoxide (better cd)
 if type -q zoxide
     zoxide init fish | source

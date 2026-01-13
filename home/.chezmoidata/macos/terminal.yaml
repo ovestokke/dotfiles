@@ -4,6 +4,7 @@ packages:
       - bash
       - bat
       - chezmoi
+      - fish
       - charmbracelet/tap/crush
       - eza
       - fd

@@ -121,6 +121,19 @@ case "$DISTRO" in
         ;;
 esac
 
+# Install Oh My Posh (cross-shell prompt)
+if command -v oh-my-posh &> /dev/null; then
+    echo "Oh My Posh already installed"
+    succeeded+=("oh-my-posh (exists)")
+else
+    echo "Installing Oh My Posh..."
+    if curl -s https://ohmyposh.dev/install.sh | bash -s 2>/dev/null; then
+        succeeded+=("oh-my-posh")
+    else
+        failed+=("oh-my-posh")
+    fi
+fi
+
 # Install Fisher (fish plugin manager) if fish is installed and Fisher is not
 if command -v fish &> /dev/null; then
     if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
@@ -135,20 +148,7 @@ if command -v fish &> /dev/null; then
         succeeded+=("fisher (exists)")
     fi
 
-    # Install Tide prompt (Powerlevel10k-like for fish)
-    if fish -c "fisher list" 2>/dev/null | grep -q "ilancosman/tide"; then
-        echo "Tide prompt already installed"
-        succeeded+=("tide (exists)")
-    else
-        echo "Installing Tide prompt..."
-        if fish -c "fisher install ilancosman/tide@v6" 2>/dev/null; then
-            succeeded+=("tide")
-        else
-            failed+=("tide")
-        fi
-    fi
-
-    # Install other useful fish plugins
+    # Install useful fish plugins
     for plugin in "patrickf1/fzf.fish" "jethrokuan/z"; do
         plugin_name=$(echo "$plugin" | cut -d'/' -f2)
         if fish -c "fisher list" 2>/dev/null | grep -q "$plugin"; then
