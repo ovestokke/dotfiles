@@ -17,7 +17,7 @@ packages:
       - htop # Interactive process viewer
       - lazygit # Terminal UI for git
       - neovim # Vim-fork text editor
-      - oh-my-posh # Cross-shell prompt theme engine
+      - jandedobbeleer/oh-my-posh/oh-my-posh # Cross-shell prompt theme engine
       - powerlevel10k # Zsh theme (legacy, using oh-my-posh now)
       - pure # Minimal Zsh prompt (legacy)
       - ripgrep # Fast recursive grep alternative (rg)
