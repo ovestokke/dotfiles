@@ -1,3 +1,8 @@
 {
   "alwaysThinkingEnabled": true
+  "statusLine": {
+    "type": command
+    "command": "oh-my-posh claude"
+    "padding": 0
+  }
 }
