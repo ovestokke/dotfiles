@@ -1,4 +1,4 @@
-oh-my-posh init pwsh --config "$HOME/.config/oh-my-posh/catppuccin_mocha.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_mocha.omp.json | Invoke-Expression
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 Import-Module Terminal-Icons -ErrorAction SilentlyContinue

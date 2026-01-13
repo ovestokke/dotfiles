@@ -18,7 +18,7 @@ fish_add_path $HOME/.cargo/bin
 
 # Initialize Oh My Posh prompt
 if type -q oh-my-posh
-    oh-my-posh init fish --config ~/.config/oh-my-posh/catppuccin_mocha.omp.json | source
+    oh-my-posh init fish --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_mocha.omp.json | source
 end
 
 # Initialize zoxide (better cd)
