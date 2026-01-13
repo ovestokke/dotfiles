@@ -19,6 +19,12 @@
   },
   "terminal.integrated.fontFamily": "MesloLGS Nerd Font Mono",
   "terminal.integrated.fontLigatures.enabled": true,
+  "terminal.integrated.profiles.osx": {
+    "fish": {
+      "path": "/opt/homebrew/bin/fish"
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "fish",
   "terminal.external.linuxExec": "zsh",
   "editor.largeFileOptimizations": false,
   "editor.semanticTokenColorCustomizations": {},
@@ -120,5 +126,12 @@
     "eval": false,
     "Invoke-Expression": false,
     "iex": false
-  }
+  },
+  "terminal.integrated.ignoreProcessNames": [
+    "starship",
+    "oh-my-posh",
+    "bash",
+    "zsh",
+    "fish"
+  ]
 }
