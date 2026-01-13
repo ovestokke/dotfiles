@@ -149,7 +149,8 @@ if command -v fish &> /dev/null; then
     fi
 
     # Install useful fish plugins
-    for plugin in "patrickf1/fzf.fish" "jethrokuan/z"; do
+    # Note: Using zoxide instead of jethrokuan/z for 'z' command
+    for plugin in "patrickf1/fzf.fish"; do
         plugin_name=$(echo "$plugin" | cut -d'/' -f2)
         if fish -c "fisher list" 2>/dev/null | grep -q "$plugin"; then
             echo "$plugin_name already installed"

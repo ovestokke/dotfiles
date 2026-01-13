@@ -50,6 +50,7 @@ if status is-interactive
     abbr --add ch chezmoi
     abbr --add chd 'chezmoi diff'
     abbr --add chst 'chezmoi status'
+    abbr --add chdoc 'chezmoi doctor'
     abbr --add cha 'chezmoi add'
     abbr --add chr 'chezmoi re-add'
     abbr --add che 'chezmoi edit'
@@ -57,5 +58,19 @@ if status is-interactive
     abbr --add chcd 'chezmoi cd'
     abbr --add chap 'chezmoi apply'
     abbr --add chup 'chezmoi update'
+    abbr --add chug 'chezmoi upgrade'
     abbr --add dotsync 'chezmoi git add . && chezmoi git commit && chezmoi git pull --rebase && chezmoi git push'
+
+    # Chezmoi completions
+    if type -q chezmoi
+        chezmoi completion fish | source
+    end
+
+    # Zoxide: alias cd to z
+    if type -q zoxide
+        abbr --add cd z
+    end
+
+    # Python
+    abbr --add python python3
 end

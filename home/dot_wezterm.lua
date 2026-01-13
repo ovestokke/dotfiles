@@ -11,7 +11,7 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" or wezterm.target_triple ==
 	config.default_prog = { "pwsh.exe" }
 	config.font = wezterm.font("MesloLGS NF")
 elseif wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
-	config.default_prog = { "zsh", "-l" }
+	config.default_prog = { "/opt/homebrew/bin/fish", "-l" }
 	config.font = wezterm.font("MesloLGS Nerd Font Mono")
 	config.send_composed_key_when_left_alt_is_pressed = true
 elseif wezterm.target_triple == "x86_64-unknown-linux-gnu" or wezterm.target_triple == "aarch64-unknown-linux-gnu" then
