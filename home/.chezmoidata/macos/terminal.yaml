@@ -4,7 +4,7 @@ packages:
       - bash
       - bat
       - chezmoi
-      - crush
+      - charmbracelet/tap/crush
       - eza
       - fd
       - fzf
