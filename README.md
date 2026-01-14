@@ -21,28 +21,55 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Setup
 
-One-line install (recommended):
+### Prerequisites
 
+This dotfiles repo uses **Age encryption** for SSH keys and secrets. Before initializing, you need:
+
+1. **Age encryption tool**
+2. **Age identity key** (stored in Proton Pass as "Chezmoi Age Identity Key")
+
+### Installation
+
+**macOS/Linux:**
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
-```
+# Install chezmoi and age
+brew install chezmoi age  # macOS
+# OR
+sudo pacman -S chezmoi age  # Arch Linux
+# OR
+sudo apt install chezmoi age  # Debian/Ubuntu
 
-Or install manually:
+# Create config directory
+mkdir -p ~/.config/chezmoi
 
-```bash
-# Install chezmoi
-brew install chezmoi
+# Copy Age key from Proton Pass to ~/.config/chezmoi/key.txt
+# Set permissions
+chmod 600 ~/.config/chezmoi/key.txt
 
 # Initialize and apply dotfiles
-chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+chezmoi init --apply https://github.com/ovestokke/dotfiles.git
 ```
 
+**Windows:**
 ```pwsh
-# Install chezmoi
-winget install chezmoi
+# Install chezmoi and age
+winget install twpayne.chezmoi FiloSottile.age
+
+# Create config directory
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.config\chezmoi"
+
+# Copy Age key from Proton Pass to $env:USERPROFILE\.config\chezmoi\key.txt
+
 # Initialize and apply dotfiles
-chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+chezmoi init --apply https://github.com/ovestokke/dotfiles.git
 ```
+
+### What Gets Decrypted
+
+On `chezmoi apply`, Age automatically decrypts:
+- **SSH private keys** (6 keys: general, GitHub, signing, demeter, hetzner, vultr)
+- **SSH config** (multi-key management)
+- All keys are encrypted in the repo, only decrypted locally
 
 ## Usage
 
@@ -63,16 +90,19 @@ chezmoi add ~/.newfile
 ## What's Included
 
 ### Cross-Platform
+- **Age Encryption**: SSH keys and secrets encrypted at rest, decrypted on apply
+- **SSH Keys**: 6 encrypted keys (general, GitHub auth, git signing, servers)
+- **Git Signing**: SSH-based commit signing (separate auth/signing keys)
 - **VS Code**: Settings and extensions (auto-installs on `chezmoi apply`)
 - **Neovim**: LazyVim configuration with Catppuccin Mocha theme
-- **Git**: Global gitconfig with user settings
+- **Git**: Global gitconfig with SSH signing configured
 - **WezTerm**: Terminal emulator with Catppuccin Mocha theme and vim keybinds
 
 ### macOS
-- **Zsh**: Shell configuration with Oh My Zsh and Powerlevel10k theme
+- **Fish**: Modern shell with Oh My Posh, zoxide, and syntax highlighting
+- **Zsh**: Alternative shell with Oh My Zsh and Powerlevel10k theme
 - **Tools**: eza, zoxide, fzf, ripgrep, fd, bat, gh, lazygit
 - **Packages**: Declarative Homebrew management (git, terraform, neovim, etc.)
-- **1Password**: CLI integration with Zsh
 
 ### Windows
 - **PowerShell**: Profile with Oh My Posh and zoxide integration
@@ -81,8 +111,8 @@ chezmoi add ~/.newfile
 - **PowerShell Modules**: Terminal-Icons, PSReadLine, z, posh-git
 
 ### Linux
-- **Zsh**: Shell configuration with Oh My Zsh and Powerlevel10k theme
-- Fish: Shell
+- **Fish**: Modern shell with Oh My Posh, zoxide, and syntax highlighting
+- **Zsh**: Alternative shell with Oh My Zsh and Powerlevel10k theme
 - **Tools**: eza, zoxide, fzf, ripgrep, fd, bat, gh, neovim
 - **Packages**: Declarative apt package management
 
