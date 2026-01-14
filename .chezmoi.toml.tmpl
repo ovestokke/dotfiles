@@ -1,0 +1,31 @@
+encryption = "age"
+
+[edit]
+{{- if eq .chezmoi.os "windows" }}
+    command = "code"
+    args = ["--wait"]
+{{- else }}
+    command = "nvim"
+{{- end }}
+
+[merge]
+{{- if eq .chezmoi.os "windows" }}
+    command = "code"
+    args = ["--wait", "--diff", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}"]
+{{- else }}
+    command = "nvim"
+    args = ["-d", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}"]
+{{- end }}
+
+[git]
+    # autoAdd = true
+    autoCommit = true # add + commit
+    autoPush = true
+
+[age]
+{{- if eq .chezmoi.os "windows" }}
+    identity = "{{ .chezmoi.homeDir }}\\.config\\chezmoi\\key.txt"
+{{- else }}
+    identity = "{{ .chezmoi.homeDir }}/.config/chezmoi/key.txt"
+{{- end }}
+    recipient = "age15c2dapl29gx4uvmcdyrf2ydlylmq3cd2tn9ema6sp7pgj0gtxchqld5t8n"
