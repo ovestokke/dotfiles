@@ -206,7 +206,7 @@ git commit -m "test signing"
 git log --show-signature
 ```
 
-### Phase 5: Store Age Key in Proton Pass
+### Phase 5: Store Age Key and SSH Keys in Proton Pass
 
 #### 5.1 Copy Age Key
 ```bash
@@ -214,7 +214,7 @@ git log --show-signature
 cat ~/.config/chezmoi/key.txt
 ```
 
-#### 5.2 Store in Proton Pass
+#### 5.2 Store Age Key in Proton Pass
 1. Open Proton Pass
 2. Create new secure note: "Chezmoi Age Identity Key"
 3. Paste contents of `key.txt`
@@ -242,6 +242,64 @@ In the same note, add:
 
 5. Done! SSH keys are decrypted and ready.
 ```
+
+#### 5.4 Backup SSH Keys to Proton Pass (Optional)
+
+While Age-encrypted keys in chezmoi are the primary method, you can also backup SSH keys directly to Proton Pass for redundancy using `pass-cli`:
+
+```bash
+# Login to Proton Pass (if not already logged in)
+pass-cli auth login
+
+# Import all SSH keys to Proton Pass
+# Note: Use --vault-name to specify which vault to store keys in
+
+# 1. General SSH key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519 \
+  --title "Ove General SSH" \
+  --vault-name Personal
+
+# 2. GitHub Authentication key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519_github \
+  --title "GitHub SSH" \
+  --vault-name Personal
+
+# 3. Demeter server key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519_demeter \
+  --title "Demeter SSH" \
+  --vault-name Personal
+
+# 4. Hetzner Gateway VM key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519_hetzner \
+  --title "Hetzner Gateway VM SSH" \
+  --vault-name Personal
+
+# 5. Vultr server key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519_vultr \
+  --title "Vultr SSH" \
+  --vault-name Personal
+
+# 6. Git commit signing key (separate from auth)
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519_signing \
+  --title "Git Signing Key" \
+  --vault-name Personal
+
+# Verify all keys are imported
+pass-cli ssh list
+```
+
+**Benefits of dual backup:**
+- Age-encrypted keys in chezmoi (primary, version controlled)
+- Proton Pass backup (redundancy, accessible via web/mobile)
+- Both methods work offline after initial setup
+
+**Note:** The `--vault-name` flag is optional. If not specified, keys are added to the default vault.
 
 ### Phase 6: Commit and Push
 

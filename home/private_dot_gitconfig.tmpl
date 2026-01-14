@@ -7,9 +7,9 @@
 	name = Ove Stokke
 	email = 14012923+ovestokke@users.noreply.github.com
 	{{- if eq .chezmoi.os "windows" }}
-	signingkey = {{ .chezmoi.homeDir }}\.ssh\id_ed25519_github.pub
+	signingkey = {{ .chezmoi.homeDir }}\.ssh\id_ed25519_signing.pub
 	{{- else }}
-	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519_github.pub
+	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519_signing.pub
 	{{- end }}
 [commit]
 	gpgsign = true
