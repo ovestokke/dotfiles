@@ -6,54 +6,23 @@
 [user]
 	name = Ove Stokke
 	email = 14012923+ovestokke@users.noreply.github.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP7yAfFk29GTdBYRYorVyYpDHVv/0cWwjtGrcnaqrAEm
+	{{- if eq .chezmoi.os "windows" }}
+	signingkey = {{ .chezmoi.homeDir }}\.ssh\id_ed25519_github.pub
+	{{- else }}
+	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519_github.pub
+	{{- end }}
 [commit]
 	gpgsign = true
 [gpg]
-	{{- if eq .chezmoi.os "darwin" }}
-    		program = /opt/homebrew/bin/gpg
-	{{- else if eq .chezmoi.os "windows" }}
-    		program = C:/Program Files/GnuPG/bin/gpg.exe
-	{{- else if eq .chezmoi.os "linux" }}
-    		program = /usr/bin/gpg
-	{{- end }}	
 	format = ssh
 [gpg "ssh"]
 	{{- if eq .chezmoi.os "darwin" }}
-    		program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	program = /usr/bin/ssh-keygen
+	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
 	{{- else if eq .chezmoi.os "windows" }}
-		{{- $opPath := (joinPath (env "LOCALAPPDATA") "1Password" "app") }}
-		{{- $versions := list }}
-		{{- range glob (print $opPath "/*") }}
-		{{- if regexMatch "^[0-9]+$" (base .) }}
-		{{- $versions = append $versions (base .) }}
-		{{- end }}
-		{{- end }}
-		{{- if $versions }}
-		{{- $latest := $versions | sortAlpha | last }}
-		{{- $fullPath := print $opPath "/" $latest "/op-ssh-sign.exe" | replace "\\" "/" }}
-    		program = "{{ $fullPath }}"
-		{{- else }}
-		program = "C:/Users/ovsto/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
-		{{- end }}
+	program = C:/Windows/System32/OpenSSH/ssh-keygen.exe
+	allowedSignersFile = {{ .chezmoi.homeDir }}\.ssh\allowed_signers
 	{{- else if eq .chezmoi.os "linux" }}
-		{{- if .chezmoi.kernel.osrelease | lower | contains "microsoft" }}
-		{{- /* WSL - use Windows 1Password through mount */}}
-		{{- $opPath := "/mnt/c/Users/ovsto/AppData/Local/1Password/app" }}
-		{{- $versions := list }}
-		{{- range glob (print $opPath "/*") }}
-		{{- if regexMatch "^[0-9]+$" (base .) }}
-		{{- $versions = append $versions (base .) }}
-		{{- end }}
-		{{- end }}
-		{{- if $versions }}
-		{{- $latest := $versions | sortAlpha | last }}
-    		program = {{ $opPath }}/{{ $latest }}/op-ssh-sign.exe
-		{{- else }}
-    		program = /mnt/c/Users/ovsto/AppData/Local/1Password/app/8/op-ssh-sign.exe
-		{{- end }}
-		{{- else }}
-		{{- /* Native Linux - use Linux 1Password */}}
-    		# program = /opt/1Password/op-ssh-sign
-		{{- end }}
+	program = /usr/bin/ssh-keygen
+	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
 	{{- end }}
