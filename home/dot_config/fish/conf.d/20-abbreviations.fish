@@ -59,7 +59,7 @@ if status is-interactive
     abbr --add chap 'chezmoi apply'
     abbr --add chup 'chezmoi update'
     abbr --add chug 'chezmoi upgrade'
-    abbr --add dotsync 'chezmoi git add . && chezmoi git commit && chezmoi git pull --rebase && chezmoi git push'
+    abbr --add dotsync 'cd (chezmoi source-path) && git add . && git commit && git pull --rebase && git push'
 
     # Chezmoi completions
     if type -q chezmoi

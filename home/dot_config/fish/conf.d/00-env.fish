@@ -6,7 +6,7 @@ set -g fish_greeting
 # Homebrew (macOS)
 if test -x /opt/homebrew/bin/brew
     eval (/opt/homebrew/bin/brew shellenv)
-# Linuxbrew
+    # Linuxbrew
 else if test -x /home/linuxbrew/.linuxbrew/bin/brew
     eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
@@ -15,7 +15,8 @@ end
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
-# 1Password SSH Agent
+# SSH Agent (1Password - Proton Pass only loads 1 key currently)
+#set -gx SSH_AUTH_SOCK $HOME/.1password/agent.sock
 set -gx SSH_AUTH_SOCK $HOME/.1password/agent.sock
 
 # XDG Base Directory
