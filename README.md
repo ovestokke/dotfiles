@@ -82,6 +82,7 @@ chezmoi add ~/.newfile
 
 ### Linux
 - **Zsh**: Shell configuration with Oh My Zsh and Powerlevel10k theme
+- Fish: Shell
 - **Tools**: eza, zoxide, fzf, ripgrep, fd, bat, gh, neovim
 - **Packages**: Declarative apt package management
 
