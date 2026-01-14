@@ -15,6 +15,9 @@ end
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
+# 1Password SSH Agent
+set -gx SSH_AUTH_SOCK $HOME/.1password/agent.sock
+
 # XDG Base Directory
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx XDG_DATA_HOME $HOME/.local/share
