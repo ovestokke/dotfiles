@@ -12,6 +12,7 @@ packages:
       - Microsoft.PowerShell # Cross-platform PowerShell
       # Password Management
       - AgileBits.1Password # Password manager
+      - Proton.ProtonPass.CLI # Proton Pass CLI for password management
       # Utilities
       - 7zip.7zip # File archive utility
       - alexx2000.DoubleCommander # Dual-pane file manager

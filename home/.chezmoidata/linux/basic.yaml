@@ -100,4 +100,5 @@ packages:
       - luajit # Just-In-Time Lua compiler
 
     # AUR packages (yay/paru) - packages not in official repos
-    aur: []
+    aur:
+      - proton-pass-bin # Proton Pass CLI for password management (pre-built binary)

@@ -2,6 +2,7 @@ packages:
   darwin:
     brews:
       - gemini-cli # Google Gemini AI CLI tool
+      - protonpass/tap/pass-cli # Proton Pass CLI for password management
     casks:
       - 1password # Password manager
       - 1password-cli # 1Password command-line tool
