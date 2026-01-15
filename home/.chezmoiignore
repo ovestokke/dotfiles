@@ -48,5 +48,7 @@ applications.json
 {{- if $isWSL }}
 # WSL - skip desktop apps
 .wezterm.lua
+.config/ghostty/
+.config/ghostty/**
 {{- end }}
 {{- end }}

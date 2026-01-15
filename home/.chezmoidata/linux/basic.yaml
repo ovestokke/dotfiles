@@ -101,4 +101,5 @@ packages:
 
     # AUR packages (yay/paru) - packages not in official repos
     aur:
+      - ghostty # Fast GPU-accelerated terminal emulator
       - proton-pass-bin # Proton Pass CLI for password management (pre-built binary)

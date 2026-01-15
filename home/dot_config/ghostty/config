@@ -1,0 +1,30 @@
+# Ghostty Terminal Configuration
+# https://ghostty.org/docs/config/reference
+
+# Theme
+theme = tokyo-night
+
+# Font Configuration
+font-family = MesloLGS Nerd Font Mono
+font-size = 14
+
+# Window Appearance
+window-opacity = 0.98
+background-blur-radius = 10
+window-padding-x = 8
+window-padding-y = 8
+
+# Window Decorations
+window-decoration = true
+window-title-font-family = MesloLGS Nerd Font Mono
+
+# Tab Bar Configuration
+tab-bar-position = top
+tab-bar-style = fancy
+
+# Behavior
+confirm-close-surface = true
+copy-on-select = false
+
+# Shell (uses system default login shell)
+# No shell override - inherits from system

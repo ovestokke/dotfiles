@@ -30,6 +30,7 @@ packages:
       - zsh-syntax-highlighting # Syntax highlighting for Zsh
     casks:
       - font-meslo-lg-nerd-font # Nerd Font patched Meslo font
+      - ghostty # Fast GPU-accelerated terminal emulator
       - iterm2 # macOS terminal emulator
       - powershell # Microsoft PowerShell
       - wezterm # GPU-accelerated terminal emulator
