@@ -1,2 +1,7 @@
 # Git worktrees directory
 .worktrees/
+
+# Age encryption keys (should only exist in ~/.config/chezmoi/)
+key.txt
+*.key
+key.txt.age
