@@ -1,9 +1,12 @@
 {
+  "model": "sonnet",
   "statusLine": {
     "type": "command",
     "command": "oh-my-posh claude",
     "padding": 0
   },
   "alwaysThinkingEnabled": true,
-  "model": "sonnet"
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  }
 }
