@@ -36,7 +36,6 @@ packages:
       # Shell Enhancement
       - JanDeDobbeleer.OhMyPosh # Cross-shell prompt theme engine
       # Utilities
-      - Charmbracelet.crush # PNG image compression tool
       - sharkdp.bat # Cat clone with syntax highlighting
       - GnuPG.GnuPG # GNU Privacy Guard encryption
       - GnuPG.Gpg4win # GnuPG for Windows with GUI

@@ -5,7 +5,6 @@ packages:
       - bat # Cat clone with syntax highlighting
       - chezmoi # Dotfiles manager
       - fish # Friendly Interactive SHell
-      - charmbracelet/tap/crush # PNG image compression tool
       - eza # Modern ls replacement with icons
       - fd # Fast find alternative
       - fzf # Fuzzy finder for terminal
