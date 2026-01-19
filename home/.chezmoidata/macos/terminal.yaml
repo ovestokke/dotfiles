@@ -20,6 +20,7 @@ packages:
       - powerlevel10k # Zsh theme (legacy, using oh-my-posh now)
       - pure # Minimal Zsh prompt (legacy)
       - ripgrep # Fast recursive grep alternative (rg)
+      - tealdeer # Fast tldr client in Rust
       - tree-sitter # Parser generator for syntax highlighting
       - uv # Fast Python package installer
       - wget # Network file downloader

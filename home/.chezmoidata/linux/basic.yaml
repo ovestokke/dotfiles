@@ -12,6 +12,7 @@ packages:
       - ripgrep # Fast recursive grep alternative (rg)
       - fd-find # Fast find alternative (fdfind on Debian)
       - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
       - gh # GitHub CLI
       - gnupg # GNU Privacy Guard encryption
       - fish # Friendly Interactive SHell
@@ -37,6 +38,7 @@ packages:
       - ripgrep # Fast recursive grep alternative (rg)
       - fd-find # Fast find alternative (fdfind on Debian)
       - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
       - gh # GitHub CLI
       - gnupg # GNU Privacy Guard encryption
       - fish # Friendly Interactive SHell
@@ -61,6 +63,7 @@ packages:
       - ripgrep # Fast recursive grep alternative (rg)
       - fd # Fast find alternative
       - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
       - github-cli # GitHub CLI (gh)
       - gnupg # GNU Privacy Guard encryption
       - fish # Friendly Interactive SHell
@@ -87,6 +90,7 @@ packages:
       - ripgrep # Fast recursive grep alternative (rg)
       - fd # Fast find alternative
       - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
       - github-cli # GitHub CLI (gh)
       - gnupg # GNU Privacy Guard encryption
       - fish # Friendly Interactive SHell
