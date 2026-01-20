@@ -15,7 +15,7 @@ packages:
       - sharkdp.fd # Fast find alternative
       - BurntSushi.ripgrep.MSVC # Fast recursive grep alternative (rg)
       - junegunn.fzf # Fuzzy finder for terminal
-      - BrechtSanders.WinLibs.POSIX.UCRT # GCC compiler toolchain for Windows
+      #- BrechtSanders.WinLibs.POSIX.UCRT # GCC compiler toolchain for Windows
       # Terminals
       - Microsoft.WindowsTerminal # Modern Windows terminal
       - wez.wezterm # GPU-accelerated terminal emulator
