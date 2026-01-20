@@ -17,8 +17,6 @@ packages:
       - lazygit # Terminal UI for git
       - neovim # Vim-fork text editor
       - jandedobbeleer/oh-my-posh/oh-my-posh # Cross-shell prompt theme engine
-      - powerlevel10k # Zsh theme (legacy, using oh-my-posh now)
-      - pure # Minimal Zsh prompt (legacy)
       - ripgrep # Fast recursive grep alternative (rg)
       - tealdeer # Fast tldr client in Rust
       - tree-sitter # Parser generator for syntax highlighting
@@ -28,6 +26,7 @@ packages:
       - zsh-async # Async library for Zsh
       - zsh-autosuggestions # Fish-like autosuggestions for Zsh
       - zsh-syntax-highlighting # Syntax highlighting for Zsh
+      - btop # Resource monitor
     casks:
       - font-meslo-lg-nerd-font # Nerd Font patched Meslo font
       - ghostty # Fast GPU-accelerated terminal emulator

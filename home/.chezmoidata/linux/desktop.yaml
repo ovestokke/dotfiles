@@ -1,0 +1,15 @@
+packages:
+  linux:
+    # Debian/Ubuntu packages (apt) - Desktop/GUI applications
+    apt:
+      - wezterm # GPU-accelerated terminal emulator
+
+    # Arch Linux packages (pacman) - Desktop/GUI applications
+    pacman:
+      - wezterm # GPU-accelerated terminal emulator
+      - ttf-meslo-nerd # Nerd Font patched Meslo font
+
+    # AUR packages (yay/paru) - Desktop apps not in official repos
+    aur:
+      - ghostty # Fast GPU-accelerated terminal emulator
+      - proton-pass-bin # Proton Pass CLI for password management (pre-built binary)

@@ -1,0 +1,54 @@
+packages:
+  linux:
+    # Debian/Ubuntu packages (apt)
+    apt:
+      - git # Version control system
+      - eza # Modern ls replacement with icons
+      - fzf # Fuzzy finder for terminal
+      - zoxide # Smarter cd command (z)
+      - curl # URL data transfer tool
+      - wget # Network file downloader
+      - unzip # ZIP archive extractor
+      - ripgrep # Fast recursive grep alternative (rg)
+      - fd-find # Fast find alternative (fdfind on Debian)
+      - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
+      - gh # GitHub CLI
+      - gnupg # GNU Privacy Guard encryption
+      - fish # Friendly Interactive SHell
+      - neovim # Vim-fork text editor
+      - build-essential # GCC, make, and other build tools
+      - nodejs # Node.js JavaScript runtime
+      - npm # Node.js package manager
+      # LazyVim dependencies
+      - lazygit # Terminal UI for git
+      - tree-sitter-cli # Parser generator for syntax highlighting
+      - luajit # Just-In-Time Lua compiler
+
+    # Arch Linux packages (pacman)
+    pacman:
+      - git # Version control system
+      - eza # Modern ls replacement with icons
+      - fzf # Fuzzy finder for terminal
+      - zoxide # Smarter cd command (z)
+      - curl # URL data transfer tool
+      - wget # Network file downloader
+      - unzip # ZIP archive extractor
+      - ripgrep # Fast recursive grep alternative (rg)
+      - fd # Fast find alternative
+      - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
+      - github-cli # GitHub CLI (gh)
+      - gnupg # GNU Privacy Guard encryption
+      - fish # Friendly Interactive SHell
+      - neovim # Vim-fork text editor
+      - base-devel # GCC, make, and other build tools
+      - nodejs # Node.js JavaScript runtime
+      - npm # Node.js package manager
+      # LazyVim dependencies
+      - lazygit # Terminal UI for git
+      - tree-sitter-cli # Parser generator for syntax highlighting
+      - luajit # Just-In-Time Lua compiler
+
+    # AUR packages (yay/paru) - CLI tools not in official repos
+    aur: []

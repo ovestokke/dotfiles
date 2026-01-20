@@ -1,0 +1,129 @@
+{{ if eq .chezmoi.os "linux" -}}
+{{ if lookPath "apt-get" -}}
+#!/bin/bash
+set -uo pipefail
+
+# terminal.yaml hash: {{ include ".chezmoidata/linux/terminal.yaml" | sha256sum }}
+# desktop.yaml hash: {{ include ".chezmoidata/linux/desktop.yaml" | sha256sum }}
+
+echo "Installing Debian/Ubuntu packages..."
+
+failed=()
+succeeded=()
+
+# Detect WSL
+IS_WSL=false
+if grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
+    IS_WSL=true
+    echo "Detected WSL environment - skipping desktop packages"
+fi
+
+{{ $terminal := include ".chezmoidata/linux/terminal.yaml" | fromYaml -}}
+{{ $desktop := include ".chezmoidata/linux/desktop.yaml" | fromYaml -}}
+{{ $terminal_pkgs := $terminal.packages.linux.apt -}}
+{{ $desktop_pkgs := $desktop.packages.linux.apt -}}
+
+# Update package list
+sudo apt-get update
+
+# Install terminal packages (always)
+echo "Installing terminal packages..."
+{{ range $terminal_pkgs -}}
+echo "Installing: {{ . }}"
+if sudo apt-get install -y {{ . }} 2>/dev/null; then
+    succeeded+=("{{ . }}")
+else
+    failed+=("{{ . }}")
+fi
+{{ end }}
+
+# Install desktop packages (only if not WSL)
+if [ "$IS_WSL" = false ]; then
+    echo "Installing desktop packages..."
+    {{ range $desktop_pkgs -}}
+    echo "Installing: {{ . }}"
+    if sudo apt-get install -y {{ . }} 2>/dev/null; then
+        succeeded+=("{{ . }}")
+    else
+        failed+=("{{ . }}")
+    fi
+    {{ end }}
+else
+    echo "Skipping desktop packages (WSL detected)"
+fi
+
+# Install Oh My Posh (cross-shell prompt)
+if command -v oh-my-posh &> /dev/null; then
+    echo "Oh My Posh already installed"
+    succeeded+=("oh-my-posh (exists)")
+else
+    echo "Installing Oh My Posh to ~/.local/bin..."
+    if curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin 2>/dev/null; then
+        succeeded+=("oh-my-posh")
+    else
+        failed+=("oh-my-posh")
+    fi
+fi
+
+# Install Fisher (fish plugin manager) if fish is installed and Fisher is not
+if command -v fish &> /dev/null; then
+    if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
+        echo "Installing Fisher (fish plugin manager)..."
+        if fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher" 2>/dev/null; then
+            succeeded+=("fisher")
+        else
+            failed+=("fisher")
+        fi
+    else
+        echo "Fisher already installed"
+        succeeded+=("fisher (exists)")
+    fi
+
+    # Install useful fish plugins
+    for plugin in "patrickf1/fzf.fish"; do
+        plugin_name=$(echo "$plugin" | cut -d'/' -f2)
+        if fish -c "fisher list" 2>/dev/null | grep -q "$plugin"; then
+            echo "$plugin_name already installed"
+            succeeded+=("$plugin_name (exists)")
+        else
+            echo "Installing $plugin_name..."
+            if fish -c "fisher install $plugin" 2>/dev/null; then
+                succeeded+=("$plugin_name")
+            else
+                failed+=("$plugin_name")
+            fi
+        fi
+    done
+
+    # Remind user about fish shell
+    if [ "$SHELL" != "$(command -v fish)" ]; then
+        echo ""
+        echo "=========================================="
+        echo "  Fish shell installed!"
+        echo "=========================================="
+        echo ""
+        echo "  To try fish, just type:"
+        echo "    fish"
+        echo ""
+        echo "  To set fish as your default shell:"
+        echo "    chsh -s $(command -v fish)"
+        echo ""
+        echo "  Then log out and back in."
+        echo "=========================================="
+    fi
+else
+    echo "[SKIP] Fish not installed, skipping plugin installation"
+fi
+
+echo ""
+echo "Installation Summary:"
+echo "Succeeded: ${#succeeded[@]}"
+echo "Failed: ${#failed[@]}"
+
+if [ ${#failed[@]} -gt 0 ]; then
+    echo ""
+    echo "Failed packages:"
+    printf '  - %s\n' "${failed[@]}"
+fi
+{{- end }}
+{{- end }}
