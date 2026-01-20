@@ -9,6 +9,11 @@ AppData/**
 komorebi.json
 komorebi.bar.json
 applications.json
+# Platform-specific scripts
+.chezmoiscripts/*windows*.ps1
+.chezmoiscripts/*windows*.ps1.tmpl
+.chezmoiscripts/*linux*.sh
+.chezmoiscripts/*linux*.sh.tmpl
 {{- else if eq .chezmoi.os "windows" }}
 Library/
 Library/**
@@ -24,6 +29,11 @@ Library/**
 komorebi.json
 komorebi.bar.json
 applications.json
+# Platform-specific scripts
+.chezmoiscripts/*darwin*.sh
+.chezmoiscripts/*darwin*.sh.tmpl
+.chezmoiscripts/*linux*.sh
+.chezmoiscripts/*linux*.sh.tmpl
 {{- else if eq .chezmoi.os "linux" }}
 Library/
 Library/**
@@ -39,6 +49,11 @@ applications.json
 .zshrc
 .zprofile
 .p10k.zsh
+# Platform-specific scripts
+.chezmoiscripts/*darwin*.sh
+.chezmoiscripts/*darwin*.sh.tmpl
+.chezmoiscripts/*windows*.ps1
+.chezmoiscripts/*windows*.ps1.tmpl
 {{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
 {{- $isWSL := false -}}
 {{- $kernelRelease := output "uname" "-r" | trim -}}
