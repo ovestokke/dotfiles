@@ -3,8 +3,6 @@ packages:
     # Debian/Ubuntu packages (apt) - Desktop/GUI applications
     apt:
       - wezterm # GPU-accelerated terminal emulator
-      - ghostty # Fast GPU-accelerated terminal emulator
-      - ttf-meslo-nerd # Nerd Font patched Meslo font
 
     # Arch Linux packages (pacman) - Desktop/GUI applications
     pacman:
