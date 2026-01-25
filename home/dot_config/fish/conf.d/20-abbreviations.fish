@@ -66,6 +66,12 @@ if status is-interactive
         chezmoi completion fish | source
     end
 
+    # Custum application abbr
+    #
+    if type -q flatpak
+        alias gittyup='flatpak run com.github.Murmele.Gittyup'
+    end
+
     # Zoxide: smart cd function (defined in 10-tools.fish)
     # Use 'z' for zoxide jumps, 'cd' works normally for paths
 

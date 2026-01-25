@@ -7,7 +7,7 @@ packages:
     # Arch Linux packages (pacman) - Desktop/GUI applications
     pacman:
       - wezterm # GPU-accelerated terminal emulator
-      - ttf-meslo-nerd # Nerd Font patched Meslo font
+      - ttf-meslo-nerd-font-powerlevel10k # MesloLGS NF font for Powerlevel10k
 
     # AUR packages (yay/paru) - Desktop apps not in official repos
     aur:
