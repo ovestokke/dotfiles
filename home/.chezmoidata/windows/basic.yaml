@@ -16,6 +16,5 @@ packages:
       - Proton.ProtonPass.CLI # Proton Pass CLI for password management
       # Utilities
       - 7zip.7zip # File archive utility
-      - alexx2000.DoubleCommander # Dual-pane file manager
       - wez.wezterm # GPU-accelerated terminal emulator
       - Spotify.Spotify # Music streaming service
