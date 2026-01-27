@@ -49,6 +49,7 @@ packages:
       - lazygit # Terminal UI for git
       - tree-sitter-cli # Parser generator for syntax highlighting
       - luajit # Just-In-Time Lua compiler
+      - navi
 
     # AUR packages (yay/paru) - CLI tools not in official repos
     aur: []

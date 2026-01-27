@@ -27,6 +27,7 @@ packages:
       - zsh-autosuggestions # Fish-like autosuggestions for Zsh
       - zsh-syntax-highlighting # Syntax highlighting for Zsh
       - btop # Resource monitor
+      - navi
     casks:
       - font-meslo-lg-nerd-font # Nerd Font patched Meslo font
       - ghostty # Fast GPU-accelerated terminal emulator
