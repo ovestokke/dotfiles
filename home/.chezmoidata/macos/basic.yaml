@@ -6,6 +6,7 @@ packages:
     casks:
       - 1password # Password manager
       - 1password-cli # 1Password command-line tool
+      - proton-pass
       - discord # Voice, video & text chat app
       - firefox # Mozilla web browser
       - google-chrome # Google web browser
