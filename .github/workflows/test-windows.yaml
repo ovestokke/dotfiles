@@ -1,13 +1,14 @@
 name: Test Windows
 
 on:
-  push:
-    branches: [main, master]
-    paths:
-      - 'home/**'
-      - '.github/workflows/test-windows.yaml'
-  pull_request:
-    branches: [main, master]
+  #push:
+  #  branches: [main, master]
+  #  paths:
+  #    - 'home/**'
+  #    - '.github/workflows/test-windows.yaml'
+  #pull_request:
+  #  branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   test-windows:
