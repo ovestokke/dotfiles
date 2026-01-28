@@ -14,21 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CHEZMOI_VERSION: 2.52.3 #latest  # Change to pin version: e.g., 2.52.3
-    
+
     steps:
       - name: Test deployment from branch
         run: |
           BRANCH="${{ github.head_ref || github.ref_name }}"
           echo "Installing chezmoi version: $CHEZMOI_VERSION"
           echo "Testing deployment from branch: $BRANCH"
-          
+
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply --exclude encrypted ${{ github.repository_owner }} --branch="$BRANCH"
           else
             curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
             sudo install /tmp/chezmoi /usr/local/bin/
-            chezmoi init --apply ${{ github.repository_owner }} --branch="$BRANCH"
+            chezmoi init --apply --exclude encrypted ${{ github.repository_owner }} --branch="$BRANCH"
           fi
-          
+
           chezmoi managed
           chezmoi doctor

@@ -23,7 +23,7 @@ jobs:
           echo "Testing deployment from branch: $BRANCH"
           
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ${{ github.repository_owner }} --branch="$BRANCH"
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply --exclude encrypted ${{ github.repository_owner }} --branch="$BRANCH"
           else
             # Detect architecture
             if [[ "$(uname -m)" == "arm64" ]]; then
@@ -33,7 +33,7 @@ jobs:
             fi
             curl -fsSL "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_darwin_${ARCH}.tar.gz" | tar -xz -C /tmp
             sudo install /tmp/chezmoi /usr/local/bin/
-            chezmoi init --apply ${{ github.repository_owner }} --branch="$BRANCH"
+            chezmoi init --apply --exclude encrypted ${{ github.repository_owner }} --branch="$BRANCH"
           fi
           chezmoi managed
           chezmoi doctor
