@@ -62,6 +62,7 @@ New-Item -ItemType Directory -Force "$env:USERPROFILE\.config\chezmoi"
 
 # Initialize and apply dotfiles
 chezmoi init --apply https://github.com/ovestokke/dotfiles.git
+chezmoi init --apply git@github.com:ovestokke/dotfiles.git
 ```
 
 ### What Gets Decrypted
