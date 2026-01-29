@@ -13,6 +13,7 @@ AppData/
 AppData/**
 .config/powershell/
 .config/powershell/**
+.config/tealdeer/**
 komorebi.json
 komorebi.bar.json
 applications.json
