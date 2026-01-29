@@ -72,6 +72,10 @@ if status is-interactive
         alias gittyup='flatpak run com.github.Murmele.Gittyup'
     end
 
+    if type -q just
+        alias j='just -g'
+    end
+
     # Zoxide: smart cd function (defined in 10-tools.fish)
     # Use 'z' for zoxide jumps, 'cd' works normally for paths
 
