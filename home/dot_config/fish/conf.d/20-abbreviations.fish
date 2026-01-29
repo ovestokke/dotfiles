@@ -73,7 +73,7 @@ if status is-interactive
     end
 
     if type -q just
-        alias j='just -g'
+        abbr --add j 'just -g'
     end
 
     # Zoxide: smart cd function (defined in 10-tools.fish)
