@@ -5,19 +5,19 @@ default_branch := `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed '
 
 # Show available commands
 default:
-    @just --list
+    @just -g --list
 
 # New branch from updated main/master
-new branch:
+new branch-name:
     #!/usr/bin/env bash
     set -euo pipefail
-    if [ -z "{{branch}}" ]; then
+    if [ -z "{{branch-name}}" ]; then
         echo "Usage: just -g new <branch-name>"
         exit 1
     fi
     git checkout {{default_branch}}
     git pull
-    git checkout -b {{branch}}
+    git checkout -b {{branch-name}}
 
 # Merge current branch to main/master
 merge:
