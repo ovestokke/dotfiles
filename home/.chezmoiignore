@@ -1,3 +1,11 @@
+# General Ignores for all plantforms 
+
+Obsidian/OveVault/.obsidian/workspace*.json
+
+#
+# MacOS Ignores
+#
+
 {{- if eq .chezmoi.os "darwin" }}
 Documents/
 Documents/**
@@ -5,7 +13,6 @@ AppData/
 AppData/**
 .config/powershell/
 .config/powershell/**
-# Windows-only files
 komorebi.json
 komorebi.bar.json
 applications.json
@@ -14,6 +21,11 @@ applications.json
 .chezmoiscripts/*windows*.ps1.tmpl
 .chezmoiscripts/*linux*.sh
 .chezmoiscripts/*linux*.sh.tmpl
+
+#
+# Windows Ignores
+#
+
 {{- else if eq .chezmoi.os "windows" }}
 Library/
 Library/**
@@ -25,15 +37,16 @@ Library/**
 .zshrc
 .zprofile
 .p10k.zsh
-# Kept in repo but not managed by chezmoi
-komorebi.json
-komorebi.bar.json
-applications.json
 # Platform-specific scripts
 .chezmoiscripts/*darwin*.sh
 .chezmoiscripts/*darwin*.sh.tmpl
 .chezmoiscripts/*linux*.sh
 .chezmoiscripts/*linux*.sh.tmpl
+
+#
+# Linux Ignores
+#
+
 {{- else if eq .chezmoi.os "linux" }}
 Library/
 Library/**
@@ -41,10 +54,6 @@ Documents/
 Documents/**
 AppData/
 AppData/**
-# Windows-only files
-komorebi.json
-komorebi.bar.json
-applications.json
 # macOS zsh (using fish on Linux)
 .zshrc
 .zprofile
@@ -54,6 +63,11 @@ applications.json
 .chezmoiscripts/*darwin*.sh.tmpl
 .chezmoiscripts/*windows*.ps1
 .chezmoiscripts/*windows*.ps1.tmpl
+
+#
+# WSL Ignores
+#
+
 {{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
 {{- $isWSL := false -}}
 {{- $kernelRelease := output "uname" "-r" | trim -}}
