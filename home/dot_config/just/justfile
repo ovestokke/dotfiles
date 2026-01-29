@@ -1,0 +1,71 @@
+# https://just.systems
+
+
+
+#Finn hovedbranch (main eller master)
+
+default_branch := `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main"`# Vis tilgjengelige kommandoer
+
+default:
+    @just --list# Ny branch fra oppdatert main/master
+
+
+new branch:
+    git checkout {{default_branch}}
+    git pull
+    git checkout -b {{branch}}# Merge current branch til main/master
+
+    #!/usr/bin/env bash
+    set -euo pipefail
+    current=$(git branch --show-current)
+    if [ "$current" = "{{default_branch}}" ]; then
+        echo "Allerede på {{default_branch}}"
+        exit 1
+    fi
+    git checkout {{default_branch}}
+    git pull
+    git merge --no-ff "$current"
+    echo "Merget $current → {{default_branch}}"# Merge og slett branch etterpå
+merge-delete:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    current=$(git branch --show-current)
+    just merge
+    git branch -d "$current"
+    echo "Slettet $current"# Push current branch og lag PR (krever gh cli)
+
+pr:
+    git push -u origin HEAD
+    gh pr create --fill# Pull main og rebase current branch på toppen
+
+sync:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    current=$(git branch --show-current)
+    git fetch origin
+    git rebase origin/{{default_branch}}
+    echo "Rebaset $current på {{default_branch}}"# Slett alle lokale branches som er merget til main
+
+cleanup:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    git checkout {{default_branch}}
+    git pull
+    branches=$(git branch --merged | grep -v "^\*" | grep -v "{{default_branch}}" || true)
+    if [ -z "$branches" ]; then
+        echo "Ingen merged branches å slette"
+    else
+        echo "$branches" | xargs git branch -d
+        echo "Slettet merged branches"
+    fi# Rask WIP commit
+
+wip:
+    git add -A
+    git commit -m "WIP"# WIP commit med melding
+
+wip-msg msg:
+    git add -A
+    git commit -m "WIP: {{msg}}"# Angre siste WIP commit (behold endringer)
+
+unwip:
+    git reset HEAD~1
