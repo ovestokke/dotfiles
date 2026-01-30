@@ -9,7 +9,7 @@ packages:
       - Microsoft.VisualStudioCode # Code editor
       # Neovim & Dependencies
       - JesseDuffield.lazygit # Terminal UI for git
-      - just # Just a Command runner
+      - Casey.Just # Just a Command runner
       - Neovim.Neovim # Vim-fork text editor
       - ajeetdsouza.zoxide # Smarter cd command (z)
       - cURL.cURL # URL data transfer tool

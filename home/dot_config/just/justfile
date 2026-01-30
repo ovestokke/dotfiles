@@ -19,7 +19,7 @@ new branch-name:
     git pull
     git checkout -b {{branch-name}}
 
-# Merge current branch to main/master
+# Merge current branch to main/master and push
 merge:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -31,15 +31,17 @@ merge:
     git checkout {{default_branch}}
     git pull
     git merge --no-ff "$current"
+    git push
     echo "Merged $current → {{default_branch}}"
 
-# Merge and delete branch afterwards
+# Merge, push, and delete branch afterwards
 merge-delete:
     #!/usr/bin/env bash
     set -euo pipefail
     current=$(git branch --show-current)
     just -g merge
     git branch -d "$current"
+    git push origin --delete "$current" 2>/dev/null || true
     echo "Deleted $current"
 
 # Push current branch and create PR (requires gh cli)
