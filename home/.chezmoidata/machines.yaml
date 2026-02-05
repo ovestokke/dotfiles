@@ -1,0 +1,11 @@
+machines:
+  # Add server hostnames here (must match `hostname` output exactly)
+  # Example:
+  # servers:
+  #   - demeter
+  #   - myserver
+  servers: 
+    - "gateway"
+    - "hermes100"
+    - "hermes102"
+

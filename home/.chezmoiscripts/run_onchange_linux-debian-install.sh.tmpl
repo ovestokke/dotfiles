@@ -6,12 +6,33 @@ set -uo pipefail
 
 # terminal.yaml hash: {{ include ".chezmoidata/linux/terminal.yaml" | sha256sum }}
 # desktop.yaml hash: {{ include ".chezmoidata/linux/desktop.yaml" | sha256sum }}
+# server.yaml hash: {{ include ".chezmoidata/linux/server.yaml" | sha256sum }}
 
 echo "Installing Debian/Ubuntu packages..."
 
 failed=()
 succeeded=()
 
+{{ $isServer := has .chezmoi.hostname .machines.servers -}}
+{{ if $isServer -}}
+# Server detected — install minimal server packages only
+{{ $server := include ".chezmoidata/linux/server.yaml" | fromYaml -}}
+{{ $server_pkgs := $server.packages.linux.server_apt -}}
+
+# Update package list
+sudo apt-get update
+
+echo "Installing server packages..."
+{{ range $server_pkgs -}}
+echo "Installing: {{ . }}"
+if sudo apt-get install -y {{ . }} 2>/dev/null; then
+    succeeded+=("{{ . }}")
+else
+    failed+=("{{ . }}")
+fi
+{{ end }}
+{{ else -}}
+# Desktop/WSL — install terminal + desktop packages
 # Detect WSL
 IS_WSL=false
 if grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
@@ -52,6 +73,7 @@ if [ "$IS_WSL" = false ]; then
 else
     echo "Skipping desktop packages (WSL detected)"
 fi
+{{ end -}}
 
 # Install Oh My Posh (cross-shell prompt)
 if command -v oh-my-posh &> /dev/null; then

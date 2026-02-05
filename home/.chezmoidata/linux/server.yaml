@@ -1,0 +1,21 @@
+packages:
+  linux:
+    # Server-only Debian/Ubuntu packages (apt) — minimal subset of terminal.yaml
+    server_apt:
+      - git # Version control system
+      - eza # Modern ls replacement with icons
+      - fzf # Fuzzy finder for terminal
+      - zoxide # Smarter cd command (z)
+      - curl # URL data transfer tool
+      - wget # Network file downloader
+      - unzip # ZIP archive extractor
+      - ripgrep # Fast recursive grep alternative (rg)
+      - fd-find # Fast find alternative (fdfind on Debian)
+      - bat # Cat clone with syntax highlighting
+      - tealdeer # Fast tldr client in Rust
+      - gh # GitHub CLI
+      - gnupg # GNU Privacy Guard encryption
+      - fish # Friendly Interactive SHell
+      - neovim # Vim-fork text editor (vanilla, no LazyVim)
+      - lazygit # Terminal UI for git
+      - just # Command runner

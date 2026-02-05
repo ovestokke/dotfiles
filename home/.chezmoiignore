@@ -81,4 +81,27 @@ AppData/**
 .config/ghostty/
 .config/ghostty/**
 {{- end }}
+
+{{- /* Detect server by checking hostname against machines.servers list */ -}}
+{{- $isServer := has .chezmoi.hostname .machines.servers -}}
+{{- if $isServer }}
+# Server - skip desktop apps and heavy dev tooling
+.config/nvim/
+.config/nvim/**
+.wezterm.lua
+.config/ghostty/
+.config/ghostty/**
+.config/Code/
+.config/Code/**
+.config/opencode/
+.config/opencode/**
+Obsidian/
+Obsidian/**
+.claude/
+.claude/**
+.chezmoiscripts/*vscode*
+.chezmoiscripts/*npm*
+.chezmoiscripts/*claude*
+.chezmoiscripts/*sync-agents*
+{{- end }}
 {{- end }}
