@@ -12,7 +12,8 @@ Write-Host "Installing VS Code extensions..."
 {{ includeTemplate "vscode/extensions.txt" . }}
 '@ -split "`n" | ForEach-Object {
     $extension = $_.Trim()
-    if ($extension) {
+    # Skip empty lines and comments
+    if ($extension -and -not $extension.StartsWith('#')) {
         Write-Host "Installing: $extension"
         code --install-extension $extension --force
     }

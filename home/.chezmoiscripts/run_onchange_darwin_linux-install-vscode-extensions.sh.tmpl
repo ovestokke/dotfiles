@@ -12,7 +12,8 @@ fi
 echo "Installing VS Code extensions..."
 
 while IFS= read -r extension; do
-    if [ -n "$extension" ]; then
+    # Skip empty lines and comments
+    if [ -n "$extension" ] && [[ ! "$extension" =~ ^# ]]; then
         echo "Installing: $extension"
         code --install-extension "$extension" --force
     fi
