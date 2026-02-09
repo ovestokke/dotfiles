@@ -2,19 +2,25 @@
 #!/bin/bash
 # Auto-add any new Claude Code agent files to chezmoi
 
-agents_dir="$HOME/.claude/agents"
+sync_agents_dir() {
+    local dir="$1"
+    [ -d "$dir" ] || return 0
 
-# Check if agents directory exists
-if [ ! -d "$agents_dir" ]; then
-    exit 0
-fi
+    # Add all .md files in agents directory
+    for agent in "$dir"/*.md; do
+        [ -f "$agent" ] || continue
+        chezmoi add "$agent" 2>/dev/null || true
+    done
 
-# Add all .md files in agents directory
-for agent in "$agents_dir"/*.md; do
-    # Skip if no .md files exist
-    [ -f "$agent" ] || continue
+    # Add all files in agents/skills directory
+    if [ -d "$dir/skills" ]; then
+        for skill in "$dir/skills"/*; do
+            [ -f "$skill" ] || continue
+            chezmoi add "$skill" 2>/dev/null || true
+        done
+    fi
+}
 
-    # Add to chezmoi (silently ignore if already tracked)
-    chezmoi add "$agent" 2>/dev/null || true
-done
+sync_agents_dir "$HOME/.claude/agents"
+sync_agents_dir "$HOME/.agents"
 {{- end }}

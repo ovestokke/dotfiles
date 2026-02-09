@@ -1,16 +1,25 @@
 {{- if eq .chezmoi.os "windows" }}
 # Auto-add any new Claude Code agent files to chezmoi
 
-$agentsDir = Join-Path $env:USERPROFILE ".claude\agents"
+function Sync-AgentsDir {
+    param([string]$Dir)
 
-# Check if agents directory exists
-if (-not (Test-Path $agentsDir)) {
-    exit 0
+    if (-not (Test-Path $Dir)) { return }
+
+    # Add all .md files in agents directory
+    Get-ChildItem -Path $Dir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+        chezmoi add $_.FullName 2>$null
+    }
+
+    # Add all files in agents/skills directory
+    $skillsDir = Join-Path $Dir "skills"
+    if (Test-Path $skillsDir) {
+        Get-ChildItem -Path $skillsDir -File -ErrorAction SilentlyContinue | ForEach-Object {
+            chezmoi add $_.FullName 2>$null
+        }
+    }
 }
 
-# Add all .md files in agents directory
-Get-ChildItem -Path $agentsDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-    # Add to chezmoi (silently ignore if already tracked)
-    chezmoi add $_.FullName 2>$null
-}
+Sync-AgentsDir (Join-Path $env:USERPROFILE ".claude\agents")
+Sync-AgentsDir (Join-Path $env:USERPROFILE ".agents")
 {{- end }}
