@@ -1,25 +1,19 @@
 # Code Quality & Documentation
 aaron-bond.better-comments          # Colorful comment annotations (TODO, FIXME, etc.)
 davidanson.vscode-markdownlint      # Markdown linting and style checking
-fnando.linter                       # Generic linter integration
 njpwerner.autodocstring             # Auto-generate Python docstrings
 streetsidesoftware.code-spell-checker  # Spell checker for code and comments
 usernamehw.errorlens                # Inline error/warning display
 
-# Theme & Appearance
+# Theme & Appearance 1
 alexdauenhauer.catppuccin-noctis    # Catppuccin Noctis color theme
 catppuccin.catppuccin-vsc           # Official Catppuccin theme
 catppuccin.catppuccin-vsc-icons     # Catppuccin file icons
-dooez.alt-catppuccin-vsc            # Alternative Catppuccin theme
-siris01.catppuccin-theme            # Another Catppuccin variant
 tpstech.tpstech-catppuccin-vsc      # TPS Tech Catppuccin theme
 oderwat.indent-rainbow              # Colorize indentation levels
 
 # AI Assistants
 anthropic.claude-code               # Claude AI coding assistant
-github.copilot                      # GitHub Copilot AI completion
-github.copilot-chat                 # GitHub Copilot chat interface
-google.gemini-cli-vscode-ide-companion  # Google Gemini AI integration
 
 # Git & GitHub
 github.vscode-github-actions        # GitHub Actions workflow support
@@ -27,32 +21,31 @@ github.vscode-pull-request-github   # GitHub PR and issue management
 
 # Python Development
 ms-python.python                    # Core Python language support
-ms-python.vscode-pylance            # Python language server (IntelliSense)
 ms-python.debugpy                   # Python debugger
 ms-python.vscode-python-envs        # Python environment management
 ms-python.black-formatter           # Black code formatter for Python
 
 # Remote Development
-ms-vscode-remote.remote-containers  # Develop inside containers
-ms-vscode-remote.remote-ssh         # SSH remote development
-ms-vscode-remote.remote-ssh-edit    # Edit SSH config files
-ms-vscode.remote-explorer           # Remote explorer sidebar
+#ms-vscode-remote.remote-containers  # Develop inside containers
+#ms-vscode-remote.remote-ssh         # SSH remote development
+#ms-vscode-remote.remote-ssh-edit    # Edit SSH config files
+#ms-vscode.remote-explorer           # Remote explorer sidebar
 
 # Docker & Containers
-ms-azuretools.vscode-docker         # Docker file and container support
-ms-azuretools.vscode-containers     # Azure container tools
+#ms-azuretools.vscode-docker         # Docker file and container support
+#ms-azuretools.vscode-containers     # Azure container tools
 
 # Infrastructure & Config
-hashicorp.terraform                 # Terraform language support
-ms-azuretools.vscode-azureterraform # Azure Terraform integration
+#hashicorp.terraform                 # Terraform language support
+#ms-azuretools.vscode-azureterraform # Azure Terraform integration
 matthewpi.caddyfile-support         # Caddyfile syntax highlighting
 redhat.vscode-yaml                  # YAML language support
 tamasfe.even-better-toml            # TOML language support
-cuelangorg.vscode-cue               # CUE configuration language
+#cuelangorg.vscode-cue               # CUE configuration language
 
 # Other Languages & Frameworks
 ms-vscode.powershell                # PowerShell language support
-vue.volar                           # Vue.js language support
+#vue.volar                           # Vue.js language support
 geequlim.godot-tools                # Godot game engine integration
 
 # Utilities

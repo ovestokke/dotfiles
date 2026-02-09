@@ -1,6 +1,7 @@
-# General Ignores for all plantforms 
+# General Ignores for all plantforms
 
 Obsidian/OveVault/.obsidian/workspace*.json
+.agents/.skill-lock.json
 
 #
 # MacOS Ignores
