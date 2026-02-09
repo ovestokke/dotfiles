@@ -26,8 +26,10 @@ packages:
       - zsh-async # Async library for Zsh
       - zsh-autosuggestions # Fish-like autosuggestions for Zsh
       - zsh-syntax-highlighting # Syntax highlighting for Zsh
+      - age # File encryption tool
       - btop # Resource monitor
-      - navi 
+      - fastfetch # System info display
+      - navi
       - just # Just a Command runner
     casks:
       - font-meslo-lg-nerd-font # Nerd Font patched Meslo font
