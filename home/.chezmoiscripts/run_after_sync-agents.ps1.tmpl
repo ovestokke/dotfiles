@@ -1,27 +1,38 @@
 {{- if eq .chezmoi.os "windows" }}
-# Auto-add any new Claude Code agent files to chezmoi
+# Sync agent and skill files to chezmoi
+# Agents live in ~/.claude/agents/
+# Skills live in ~/.agents/skills/ and are symlinked into ~/.claude/skills/
 
-function Sync-AgentsDir {
-    param([string]$Dir)
+$AgentsDir = Join-Path $env:USERPROFILE ".agents"
+$ClaudeAgentsDir = Join-Path $env:USERPROFILE ".claude\agents"
+$ClaudeSkillsDir = Join-Path $env:USERPROFILE ".claude\skills"
 
-    if (-not (Test-Path $Dir)) { return }
+New-Item -ItemType Directory -Force -Path (Join-Path $AgentsDir "skills") | Out-Null
+New-Item -ItemType Directory -Force -Path $ClaudeSkillsDir | Out-Null
 
-    # Add all .md files in agents directory
-    Get-ChildItem -Path $Dir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-        chezmoi add $_.FullName 2>$null
-    }
+Write-Host "Syncing agent files..."
 
-    # Add all files in agents/skills directory
-    $skillsDir = Join-Path $Dir "skills"
-    if (Test-Path $skillsDir) {
-        Get-ChildItem -Path $skillsDir -File -ErrorAction SilentlyContinue | ForEach-Object {
-            chezmoi add $_.FullName 2>$null
-        }
+# Add agent .md files from ~/.claude/agents/ to chezmoi
+Get-ChildItem -Path $ClaudeAgentsDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+    chezmoi add $_.FullName 2>$null
+}
+
+# Symlink skill dirs from ~/.agents/skills/ into ~/.claude/skills/
+$skillsPath = Join-Path $AgentsDir "skills"
+Get-ChildItem -Path $skillsPath -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+    $target = Join-Path $ClaudeSkillsDir $_.Name
+    if (-not (Test-Path $target)) {
+        New-Item -ItemType SymbolicLink -Path $target -Target $_.FullName | Out-Null
     }
 }
 
-Write-Host "Syncing agent files to chezmoi..."
-Sync-AgentsDir (Join-Path $env:USERPROFILE ".claude\agents")
-Sync-AgentsDir (Join-Path $env:USERPROFILE ".agents")
+# Add skill files to chezmoi
+Get-ChildItem -Path $skillsPath -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+    chezmoi add $_.FullName 2>$null
+}
+
+$lockFile = Join-Path $AgentsDir ".skill-lock.json"
+if (Test-Path $lockFile) { chezmoi add $lockFile 2>$null }
+
 Write-Host "Agent sync complete."
 {{- end }}

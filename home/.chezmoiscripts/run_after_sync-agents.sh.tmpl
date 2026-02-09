@@ -1,28 +1,39 @@
 {{ if ne .chezmoi.os "windows" -}}
 #!/bin/bash
-# Auto-add any new Claude Code agent files to chezmoi
+# Sync agent and skill files to chezmoi
+# Agents live in ~/.claude/agents/
+# Skills live in ~/.agents/skills/ and are symlinked into ~/.claude/skills/
 
-sync_agents_dir() {
-    local dir="$1"
-    [ -d "$dir" ] || return 0
+AGENTS_DIR="$HOME/.agents"
+CLAUDE_AGENTS_DIR="$HOME/.claude/agents"
+CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 
-    # Add all .md files in agents directory
-    for agent in "$dir"/*.md; do
-        [ -f "$agent" ] || continue
-        chezmoi add "$agent" 2>/dev/null || true
-    done
+mkdir -p "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR"
 
-    # Add all files in agents/skills directory
-    if [ -d "$dir/skills" ]; then
-        for skill in "$dir/skills"/*; do
-            [ -f "$skill" ] || continue
-            chezmoi add "$skill" 2>/dev/null || true
-        done
-    fi
-}
+echo "Syncing agent files..."
 
-echo "Syncing agent files to chezmoi..."
-sync_agents_dir "$HOME/.claude/agents"
-sync_agents_dir "$HOME/.agents"
+# Add agent .md files from ~/.claude/agents/ to chezmoi
+for agent in "$CLAUDE_AGENTS_DIR"/*.md; do
+    [ -f "$agent" ] || continue
+    chezmoi add "$agent" 2>/dev/null || true
+done
+
+# Symlink skill dirs from ~/.agents/skills/ into ~/.claude/skills/
+for skill in "$AGENTS_DIR/skills"/*/; do
+    [ -d "$skill" ] || continue
+    name="$(basename "$skill")"
+    target="$CLAUDE_SKILLS_DIR/$name"
+    [ -L "$target" ] && continue
+    ln -sf "../../.agents/skills/$name" "$target"
+done
+
+# Add skill files to chezmoi
+for skill in "$AGENTS_DIR/skills"/*/*; do
+    [ -f "$skill" ] || continue
+    chezmoi add "$skill" 2>/dev/null || true
+done
+
+[ -f "$AGENTS_DIR/.skill-lock.json" ] && chezmoi add "$AGENTS_DIR/.skill-lock.json" 2>/dev/null || true
+
 echo "Agent sync complete."
 {{- end }}
