@@ -21,6 +21,8 @@ sync_agents_dir() {
     fi
 }
 
+echo "Syncing agent files to chezmoi..."
 sync_agents_dir "$HOME/.claude/agents"
 sync_agents_dir "$HOME/.agents"
+echo "Agent sync complete."
 {{- end }}

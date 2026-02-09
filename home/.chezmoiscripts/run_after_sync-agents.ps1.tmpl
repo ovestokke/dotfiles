@@ -20,6 +20,8 @@ function Sync-AgentsDir {
     }
 }
 
+Write-Host "Syncing agent files to chezmoi..."
 Sync-AgentsDir (Join-Path $env:USERPROFILE ".claude\agents")
 Sync-AgentsDir (Join-Path $env:USERPROFILE ".agents")
+Write-Host "Agent sync complete."
 {{- end }}
