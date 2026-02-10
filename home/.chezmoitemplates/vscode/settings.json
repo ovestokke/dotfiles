@@ -134,4 +134,7 @@
     "zsh",
     "fish"
   ]
+{{- if lookPath "kwalletd6" }},
+  "password-store": "kwallet5"
+{{- end }}
 }
