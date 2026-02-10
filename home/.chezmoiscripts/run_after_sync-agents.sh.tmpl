@@ -3,12 +3,30 @@
 # Sync agent and skill files to chezmoi
 # Agents live in ~/.claude/agents/
 # Skills live in ~/.agents/skills/ and are symlinked into ~/.claude/skills/
+# Only runs when monitored directories have changed.
 
 AGENTS_DIR="$HOME/.agents"
 CLAUDE_AGENTS_DIR="$HOME/.claude/agents"
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
+HASH_FILE="$HOME/.cache/chezmoi-agent-sync.hash"
 
-mkdir -p "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR"
+mkdir -p "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" "$(dirname "$HASH_FILE")"
+
+# Compute a hash of all monitored files (names + mtimes + sizes)
+current_hash="$(
+    {
+        find "$CLAUDE_AGENTS_DIR" -name '*.md' -printf '%p %T@ %s\n' 2>/dev/null
+        find "$AGENTS_DIR/skills" -type f -printf '%p %T@ %s\n' 2>/dev/null
+        stat -c '%n %Y %s' "$AGENTS_DIR/.skill-lock.json" 2>/dev/null
+    } | sort | sha256sum | cut -d' ' -f1
+)"
+
+previous_hash=""
+[ -f "$HASH_FILE" ] && previous_hash="$(cat "$HASH_FILE")"
+
+if [ "$current_hash" = "$previous_hash" ]; then
+    exit 0
+fi
 
 echo "Syncing agent files..."
 
@@ -35,5 +53,6 @@ done
 
 [ -f "$AGENTS_DIR/.skill-lock.json" ] && chezmoi add "$AGENTS_DIR/.skill-lock.json" 2>/dev/null || true
 
+echo "$current_hash" > "$HASH_FILE"
 echo "Agent sync complete."
 {{- end }}
