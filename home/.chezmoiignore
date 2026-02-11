@@ -18,6 +18,21 @@ AppData/**
 komorebi.json
 komorebi.bar.json
 applications.json
+# Linux desktop configs
+.config/niri/
+.config/niri/**
+.config/noctalia/
+.config/noctalia/**
+.config/alacritty/
+.config/alacritty/**
+.config/cava/
+.config/cava/**
+.config/satty/
+.config/satty/**
+.config/spotify-player/
+.config/spotify-player/**
+.config/xdg-desktop-portal/
+.config/xdg-desktop-portal/**
 # Platform-specific scripts
 .chezmoiscripts/*windows*.ps1
 .chezmoiscripts/*windows*.ps1.tmpl
@@ -39,6 +54,21 @@ Library/**
 .zshrc
 .zprofile
 .p10k.zsh
+# Linux desktop configs
+.config/niri/
+.config/niri/**
+.config/noctalia/
+.config/noctalia/**
+.config/alacritty/
+.config/alacritty/**
+.config/cava/
+.config/cava/**
+.config/satty/
+.config/satty/**
+.config/spotify-player/
+.config/spotify-player/**
+.config/xdg-desktop-portal/
+.config/xdg-desktop-portal/**
 # Platform-specific scripts
 .chezmoiscripts/*darwin*.sh
 .chezmoiscripts/*darwin*.sh.tmpl
@@ -81,6 +111,18 @@ AppData/**
 .wezterm.lua
 .config/ghostty/
 .config/ghostty/**
+.config/niri/
+.config/niri/**
+.config/noctalia/
+.config/noctalia/**
+.config/alacritty/
+.config/alacritty/**
+.config/cava/
+.config/cava/**
+.config/satty/
+.config/satty/**
+.config/xdg-desktop-portal/
+.config/xdg-desktop-portal/**
 {{- end }}
 
 {{- /* Detect server by checking hostname against machines.servers list */ -}}
@@ -96,6 +138,20 @@ AppData/**
 .config/Code/**
 .config/opencode/
 .config/opencode/**
+.config/niri/
+.config/niri/**
+.config/noctalia/
+.config/noctalia/**
+.config/alacritty/
+.config/alacritty/**
+.config/cava/
+.config/cava/**
+.config/satty/
+.config/satty/**
+.config/spotify-player/
+.config/spotify-player/**
+.config/xdg-desktop-portal/
+.config/xdg-desktop-portal/**
 Obsidian/
 Obsidian/**
 .claude/
