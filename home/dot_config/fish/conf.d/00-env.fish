@@ -24,6 +24,9 @@ set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_CACHE_HOME $HOME/.cache
 
+# Python: prevent pip install outside virtualenv
+set -g -x PIP_REQUIRE_VIRTUALENV true
+
 # Path additions
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.cargo/bin

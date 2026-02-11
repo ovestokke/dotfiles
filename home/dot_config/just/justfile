@@ -94,8 +94,13 @@ unwip:
 
 # Python workflows
 
-# Create Python virtual environment
-new-venv:
-    python3 -m venv venv
-    @echo "Created venv. Activate with: source venv/bin/activate (or source venv/bin/activate.fish)"
-    source venv/bin/activate
+# Create .venv, activate it, and exclude from git
+venv:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    python3 -m venv .venv --upgrade-deps
+    git_dir=$(git rev-parse --git-dir 2>/dev/null || true)
+    if [ -n "$git_dir" ]; then
+        grep -qx '.venv' "$git_dir/info/exclude" 2>/dev/null || echo '.venv' >> "$git_dir/info/exclude"
+    fi
+    echo "Created .venv. Activate with: source .venv/bin/activate.fish"
