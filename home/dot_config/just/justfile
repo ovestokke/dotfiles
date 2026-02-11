@@ -91,3 +91,10 @@ wip-msg msg:
 # Undo last WIP commit (keep changes)
 unwip:
     git reset HEAD~1
+
+# Python workflows
+
+# Create Python virtual environment
+new-venv:
+    python3 -m venv venv
+    @echo "Created venv. Activate with: source venv/bin/activate"
