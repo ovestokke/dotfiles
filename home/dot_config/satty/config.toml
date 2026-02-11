@@ -1,0 +1,4 @@
+[general]
+copy-command = "wl-copy"
+early-exit = true
+output-filename = "~/Pictures/Screenshots/screenshot-%Y%m%d-%H%M%S.png"

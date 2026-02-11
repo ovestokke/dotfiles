@@ -1,0 +1,20 @@
+workspace "tools" {
+    
+}
+
+
+workspace "gaming" {
+
+}
+
+window-rule {
+    match app-id="discord"
+    match app-id="signal"
+    match app-id="spotify"
+    open-on-workspace "tools"
+}
+
+window-rule {
+    match app-id="steam"
+    open-on-workspace "gaming"
+}

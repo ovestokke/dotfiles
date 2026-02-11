@@ -309,13 +309,6 @@ config.keys = {
 	},
 
 	-- ==== SHORTCUTS ====
-	-- Quick ~/ (AltGr+å) — avoids dead key pain on Norwegian keyboard
-	{
-		key = "å",
-		mods = "ALT",
-		action = wezterm.action.SendString("~/"),
-	},
-
 	-- ==== UTILITY ====
 	-- Clear screen
 	{

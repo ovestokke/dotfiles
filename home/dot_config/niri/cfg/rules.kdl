@@ -1,0 +1,29 @@
+    window-rule {
+        geometry-corner-radius 10 // Set every window radius to 15
+        clip-to-geometry true
+    }
+
+    layer-rule {
+        match namespace="^noctalia-wallpaper*"
+        place-within-backdrop true
+    }
+
+    window-rule {
+        match app-id=r#"^org\.wezfurlong\.wezterm$"#
+        default-column-width {}
+    }
+
+    window-rule {
+        match app-id="com.gabm.satty"
+        open-floating true
+    }
+
+    window-rule {
+        match app-id="org.kde.plasma.emojier"
+        open-floating true
+    }
+
+    window-rule {
+        match app-id="it.mijorus.smile"
+        open-floating true
+    }
