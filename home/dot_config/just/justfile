@@ -98,3 +98,4 @@ unwip:
 new-venv:
     python3 -m venv venv
     @echo "Created venv. Activate with: source venv/bin/activate"
+    source venv/gin/activate
