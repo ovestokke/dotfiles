@@ -33,7 +33,7 @@ config.enable_tab_bar = true
 
 config.window_decorations = "TITLE | RESIZE"
 
-config.window_background_opacity = 0.98
+config.window_background_opacity = 0.93
 config.macos_window_background_blur = 10
 
 -- my coolnight colorscheme (comment out if using color_scheme above):
