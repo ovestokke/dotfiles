@@ -3,11 +3,20 @@
     IdentityFile ~/.ssh/id_ed25519_github
     IdentitiesOnly yes
 
-  # Hetzner Gateway VM
-  Host hetzner 46.224.94.101
+  # Gateway (Hetzner VPS - reverse proxy)
+  Host gateway 46.224.94.101
     HostName 46.224.94.101
+    User ove
     IdentityFile ~/.ssh/id_ed25519_hetzner
     IdentitiesOnly yes
+
+  # Claw (Hetzner VPS - OpenClaw)
+  Host claw 46.225.139.112
+    HostName 46.225.139.112
+    User ove
+    IdentityFile ~/.ssh/id_ed25519_hetzner
+    IdentitiesOnly yes
+    LocalForward 18789 127.0.0.1:18789
 
   # Demeter
   Host demeter 192.168.1.230
@@ -24,6 +33,3 @@
   Host *
     IdentityFile ~/.ssh/id_ed25519
     AddKeysToAgent yes
-
-
-  
