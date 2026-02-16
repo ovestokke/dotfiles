@@ -2,7 +2,6 @@
 aaron-bond.better-comments          # Colorful comment annotations (TODO, FIXME, etc.)
 davidanson.vscode-markdownlint      # Markdown linting and style checking
 njpwerner.autodocstring             # Auto-generate Python docstrings
-streetsidesoftware.code-spell-checker  # Spell checker for code and comments
 usernamehw.errorlens                # Inline error/warning display
 
 # Theme & Appearance 1
