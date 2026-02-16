@@ -128,7 +128,9 @@ AppData/**
 {{- /* Detect server by checking hostname against machines.servers list */ -}}
 {{- $isServer := has .chezmoi.hostname .machines.servers -}}
 {{- if $isServer }}
-# Server - skip desktop apps and heavy dev tooling
+# Server - skip SSH keys, desktop apps, and heavy dev tooling
+.ssh/
+.ssh/**
 .config/nvim/
 .config/nvim/**
 .wezterm.lua

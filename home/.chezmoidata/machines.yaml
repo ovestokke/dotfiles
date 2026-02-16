@@ -8,4 +8,5 @@ machines:
     - "gateway"
     - "hermes100"
     - "hermes102"
+    - "claw"
 
