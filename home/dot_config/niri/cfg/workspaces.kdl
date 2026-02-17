@@ -11,6 +11,7 @@ window-rule {
     match app-id="discord"
     match app-id="signal"
     match app-id="spotify"
+    match app-id="org.telegram.desktop"
     open-on-workspace "tools"
 }
 
