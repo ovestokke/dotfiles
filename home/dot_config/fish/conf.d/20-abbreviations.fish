@@ -51,7 +51,7 @@ if status is-interactive
     abbr --add chd 'chezmoi diff'
     abbr --add chst 'chezmoi status'
     abbr --add chdoc 'chezmoi doctor'
-    abbr --add cha 'chezmoi add'
+    abbr --add chadd 'chezmoi add'
     abbr --add chr 'chezmoi re-add'
     abbr --add che 'chezmoi edit'
     abbr --add chea 'chezmoi edit --apply'
