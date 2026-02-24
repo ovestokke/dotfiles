@@ -59,12 +59,12 @@ config.keys = {
 	-- ==== PANE MANAGEMENT ====
 	-- Pane splitting (intuitive: | for vertical split, - for horizontal split)
 	{
-		key = "\\",
+		key = ".",
 		mods = leader,
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
-		key = "-",
+		key = ",",
 		mods = leader,
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
