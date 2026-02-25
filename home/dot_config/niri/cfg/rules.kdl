@@ -27,3 +27,12 @@
         match app-id="it.mijorus.smile"
         open-floating true
     }
+
+    window-rule {
+        match app-id="com.mitchellh.ghostty" title="poecampain"
+        open-floating true
+        default-floating-position x=2240 y=1100
+        default-column-width { fixed 620; }
+        default-window-height { fixed 120; }
+        opacity 0.7
+    }

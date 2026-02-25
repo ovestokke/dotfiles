@@ -6,4 +6,5 @@
     spawn-sh-at-startup "swayidle -w timeout 300 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'"
     spawn-at-startup "env" "XDG_MENU_PREFIX=plasma-" "kbuildsycoca6"
     spawn-at-startup "trayscale" "--hide-window"
-    spawn-at-startup "kwalletd6"
+  //  spawn-at-startup "kwalletd6"
+   // spawn-at-startup "gnome-keyring"

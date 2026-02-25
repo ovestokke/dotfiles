@@ -130,6 +130,7 @@ binds {
     Mod+Shift+F                         { fullscreen-window; }
     Mod+F                               { maximize-column; }
     Mod+W                               { toggle-column-tabbed-display; }
+    Mod+ALT+F                          { maximize-window-to-edges; }
 
     // ─── Screenshots ───
     CTRL+Shift+1                        { screenshot; }
@@ -137,7 +138,7 @@ binds {
     CTRL+Shift+3                        { screenshot-window; }
     Mod+Print                           { screenshot-window; }
     // Mod+Shift+S                         { screenshot; }
-    Mod+Shift+S                         { spawn-sh "grim -g \"$(slurp)\" - | satty --filename -"; }
+    Mod+Shift+S                         { spawn "satty-screenshot"; }
 
     // ─── Miscellaneous ───
     Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "smile"; }
