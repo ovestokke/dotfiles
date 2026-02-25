@@ -81,41 +81,8 @@ if status is-interactive
         oh-my-posh init fish --config "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/$OMP_THEME.omp.json" | source
     end
 
-    # Initialize zoxide (better cd)
+    # Initialize zoxide (better cd) — --cmd cd replaces cd and adds cdi for interactive fzf
     if type -q zoxide
-        zoxide init fish | source
-
-        # Remove old cd abbreviation if it exists
-        abbr --erase cd 2>/dev/null
-
-        # Smart cd: use zoxide for jumps, builtin cd for paths
-        function cd -d "Smart cd with zoxide support"
-            if test (count $argv) -eq 0
-                # No args: go home
-                builtin cd ~
-            else if test "$argv[1]" = -
-                # cd - : go to previous directory
-                builtin cd -
-            else if string match -qr '^[./~]' -- "$argv[1]"; or test -d "$argv[1]"
-                # Relative path, absolute path, or existing directory: use builtin cd
-                builtin cd $argv
-            else
-                # Otherwise: use zoxide
-                __zoxide_z $argv
-            end
-        end
-
-        # Also wrap 'z' command to handle relative paths
-        function z -d "Smart zoxide with fallback to builtin cd"
-            if test (count $argv) -eq 0
-                builtin cd ~
-            else if test "$argv[1]" = -
-                builtin cd -
-            else if string match -qr '^[./~]' -- "$argv[1]"; or test -d "$argv[1]"
-                builtin cd $argv
-            else
-                __zoxide_z $argv
-            end
-        end
+        zoxide init fish --cmd cd | source
     end
 end
