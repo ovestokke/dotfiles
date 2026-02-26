@@ -1,23 +1,65 @@
 {{ if ne .chezmoi.os "windows" -}}
 #!/bin/bash
-# Sync agent and skill files to chezmoi
-# Agents live in ~/.claude/agents/
-# Skills live in ~/.agents/skills/ and are symlinked into ~/.claude/skills/
+# Sync agent and skill files between canonical source and tool-specific directories.
+#
+# Canonical agents:  ~/.agents/agents/*.md   (unified frontmatter for all tools)
+# Claude Code:       ~/.claude/agents/*.md   (Claude-specific frontmatter)
+# OpenCode:          ~/.config/opencode/agents/*.md (OpenCode-specific frontmatter)
+# Skills:            ~/.agents/skills/       (symlinked into ~/.claude/skills/)
+#
+# The script:
+#   1. Deploys canonical agents -> Claude + OpenCode (stripping irrelevant fields)
+#   2. Adds changed files to chezmoi (triggers auto-commit/push)
 # Only runs when monitored directories have changed.
 
+set -uo pipefail
+
 AGENTS_DIR="$HOME/.agents"
+CANONICAL_AGENTS="$AGENTS_DIR/agents"
 CLAUDE_AGENTS_DIR="$HOME/.claude/agents"
+OPENCODE_AGENTS_DIR="$HOME/.config/opencode/agents"
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 HASH_FILE="$HOME/.cache/chezmoi-agent-sync.hash"
 
-mkdir -p "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" "$(dirname "$HASH_FILE")"
+mkdir -p "$CANONICAL_AGENTS" "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR" \
+         "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" "$(dirname "$HASH_FILE")"
 
-# Compute a hash of all monitored files (names + mtimes + sizes)
+# --- Cross-platform file info (works on both GNU/Linux and macOS/BSD) ---
+file_info() {
+    local dir="$1" pattern="$2"
+    {{- if eq .chezmoi.os "darwin" }}
+    find "$dir" -name "$pattern" -exec stat -f '%N %m %z' {} \; 2>/dev/null
+    {{- else }}
+    find "$dir" -name "$pattern" -printf '%p %T@ %s\n' 2>/dev/null
+    {{- end }}
+}
+
+file_info_recurse() {
+    local dir="$1"
+    {{- if eq .chezmoi.os "darwin" }}
+    find "$dir" -type f -exec stat -f '%N %m %z' {} \; 2>/dev/null
+    {{- else }}
+    find "$dir" -type f -printf '%p %T@ %s\n' 2>/dev/null
+    {{- end }}
+}
+
+stat_file() {
+    local file="$1"
+    {{- if eq .chezmoi.os "darwin" }}
+    stat -f '%N %m %z' "$file" 2>/dev/null
+    {{- else }}
+    stat -c '%n %Y %s' "$file" 2>/dev/null
+    {{- end }}
+}
+
+# --- Hash check: skip if nothing changed ---
 current_hash="$(
     {
-        find "$CLAUDE_AGENTS_DIR" -name '*.md' -printf '%p %T@ %s\n' 2>/dev/null
-        find "$AGENTS_DIR/skills" -type f -printf '%p %T@ %s\n' 2>/dev/null
-        stat -c '%n %Y %s' "$AGENTS_DIR/.skill-lock.json" 2>/dev/null
+        file_info "$CANONICAL_AGENTS" '*.md'
+        file_info "$CLAUDE_AGENTS_DIR" '*.md'
+        file_info "$OPENCODE_AGENTS_DIR" '*.md'
+        file_info_recurse "$AGENTS_DIR/skills"
+        stat_file "$AGENTS_DIR/.skill-lock.json"
     } | sort | sha256sum | cut -d' ' -f1
 )"
 
@@ -30,13 +72,92 @@ fi
 
 echo "Syncing agent files..."
 
-# Add agent .md files from ~/.claude/agents/ to chezmoi
-for agent in "$CLAUDE_AGENTS_DIR"/*.md; do
+# =============================================================================
+# Helper: convert canonical agent to Claude format
+# Strips opencode_* fields from YAML frontmatter, keeps everything else
+# =============================================================================
+to_claude() {
+    awk '
+    BEGIN { in_front=0; front_done=0; skipping=0 }
+    /^---$/ && !in_front && !front_done { in_front=1; print; next }
+    /^---$/ && in_front { in_front=0; front_done=1; print; next }
+    in_front {
+        if ($0 ~ /^opencode_/) { skipping=1; next }
+        if (skipping && /^  /) { next }
+        skipping=0
+        print
+        next
+    }
+    { print }
+    '
+}
+
+# =============================================================================
+# Helper: convert canonical agent to OpenCode format
+# Strips Claude-specific fields (name, tools, allowedTools, model)
+# Renames opencode_* fields by removing the prefix
+# =============================================================================
+to_opencode() {
+    awk '
+    BEGIN { in_front=0; front_done=0; skipping=0 }
+    /^---$/ && !in_front && !front_done { in_front=1; print; next }
+    /^---$/ && in_front { in_front=0; front_done=1; print; next }
+    in_front {
+        # Skip Claude-specific fields
+        if ($0 ~ /^name:/) { skipping=1; next }
+        if ($0 ~ /^tools:/ && $0 !~ /^opencode_tools:/) { skipping=1; next }
+        if ($0 ~ /^allowedTools:/) { skipping=1; next }
+        if ($0 ~ /^model:/ && $0 !~ /^opencode_model:/) { skipping=1; next }
+        # Continuation lines (indented) for skipped fields
+        if (skipping && /^  /) { next }
+        skipping=0
+        # Rename opencode_* fields -> strip prefix
+        if ($0 ~ /^opencode_model:/) { sub(/^opencode_model:/, "model:"); print; next }
+        if ($0 ~ /^opencode_mode:/) { sub(/^opencode_mode:/, "mode:"); print; next }
+        if ($0 ~ /^opencode_tools:/) { sub(/^opencode_tools:/, "tools:"); print; next }
+        print
+        next
+    }
+    { print }
+    '
+}
+
+# =============================================================================
+# Deploy: canonical -> Claude + OpenCode
+# =============================================================================
+for canonical in "$CANONICAL_AGENTS"/*.md; do
+    [ -f "$canonical" ] || continue
+    name="$(basename "$canonical")"
+
+    # Deploy to Claude
+    to_claude < "$canonical" > "$CLAUDE_AGENTS_DIR/$name"
+
+    # Deploy to OpenCode
+    to_opencode < "$canonical" > "$OPENCODE_AGENTS_DIR/$name"
+done
+
+# Clean up agents that no longer exist in canonical
+for target_dir in "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR"; do
+    for agent in "$target_dir"/*.md; do
+        [ -f "$agent" ] || continue
+        name="$(basename "$agent")"
+        if [ ! -f "$CANONICAL_AGENTS/$name" ]; then
+            rm -f "$agent"
+        fi
+    done
+done
+
+# =============================================================================
+# Add canonical agents to chezmoi
+# =============================================================================
+for agent in "$CANONICAL_AGENTS"/*.md; do
     [ -f "$agent" ] || continue
     chezmoi add "$agent" 2>/dev/null || true
 done
 
-# Symlink skill dirs from ~/.agents/skills/ into ~/.claude/skills/
+# =============================================================================
+# Skills: symlink into ~/.claude/skills/ and add to chezmoi
+# =============================================================================
 for skill in "$AGENTS_DIR/skills"/*/; do
     [ -d "$skill" ] || continue
     name="$(basename "$skill")"
@@ -45,7 +166,6 @@ for skill in "$AGENTS_DIR/skills"/*/; do
     ln -sf "../../.agents/skills/$name" "$target"
 done
 
-# Add skill files to chezmoi
 for skill in "$AGENTS_DIR/skills"/*/*; do
     [ -f "$skill" ] || continue
     chezmoi add "$skill" 2>/dev/null || true
@@ -53,6 +173,18 @@ done
 
 [ -f "$AGENTS_DIR/.skill-lock.json" ] && chezmoi add "$AGENTS_DIR/.skill-lock.json" 2>/dev/null || true
 
+# =============================================================================
+# Update hash (recompute after deployments)
+# =============================================================================
+current_hash="$(
+    {
+        file_info "$CANONICAL_AGENTS" '*.md'
+        file_info "$CLAUDE_AGENTS_DIR" '*.md'
+        file_info "$OPENCODE_AGENTS_DIR" '*.md'
+        file_info_recurse "$AGENTS_DIR/skills"
+        stat_file "$AGENTS_DIR/.skill-lock.json"
+    } | sort | sha256sum | cut -d' ' -f1
+)"
 echo "$current_hash" > "$HASH_FILE"
 echo "Agent sync complete."
 {{- end }}

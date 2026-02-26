@@ -2,6 +2,11 @@
 name: security-code-reviewer
 description: Use this agent when you need security-focused review of recently written code, infrastructure configurations, or deployment scripts. Trigger this agent after completing logical chunks of code development, before merging pull requests, when implementing authentication/authorization logic, configuring cloud resources, handling sensitive data, or making changes to security-critical components. Examples:\n\n<example>\nContext: User has just written a new API endpoint that handles user authentication.\nuser: "I've just finished writing the login endpoint with JWT token generation"\nassistant: "Let me use the security-code-reviewer agent to analyze the security implications of this authentication implementation."\n<uses Task tool to launch security-code-reviewer agent>\n</example>\n\n<example>\nContext: User has completed infrastructure configuration for a new deployment.\nuser: "Here's my new Terraform configuration for our production database"\nassistant: "I'll invoke the security-code-reviewer agent to examine this infrastructure configuration for security vulnerabilities and best practices."\n<uses Task tool to launch security-code-reviewer agent>\n</example>\n\n<example>\nContext: User mentions making changes to data handling code.\nuser: "I've updated how we process customer payment information"\nassistant: "Since this involves sensitive payment data, I'm going to use the security-code-reviewer agent to perform a thorough security analysis."\n<uses Task tool to launch security-code-reviewer agent>\n</example>
 model: sonnet
+opencode_model: anthropic/claude-sonnet-4-5
+opencode_mode: subagent
+opencode_tools:
+  write: false
+  edit: false
 color: red
 ---
 
@@ -69,16 +74,16 @@ For each review, follow this structured approach:
 
 Structure your findings as:
 
-### 🔴 Critical Issues
+### CRITICAL Issues
 [Issues that could lead to immediate compromise]
 
-### 🟠 High Priority Issues
+### HIGH Priority Issues
 [Serious vulnerabilities requiring prompt attention]
 
-### 🟡 Medium Priority Issues
+### MEDIUM Priority Issues
 [Security improvements that should be addressed]
 
-### 🔵 Low Priority / Best Practices
+### LOW Priority / Best Practices
 [Recommendations for hardening and defense in depth]
 
 For each issue:

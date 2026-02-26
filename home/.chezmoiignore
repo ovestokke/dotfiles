@@ -156,6 +156,8 @@ AppData/**
 .config/xdg-desktop-portal/**
 Obsidian/
 Obsidian/**
+.agents/
+.agents/**
 .claude/
 .claude/**
 .chezmoiscripts/*vscode*

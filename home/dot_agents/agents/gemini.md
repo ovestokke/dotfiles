@@ -3,6 +3,12 @@ name: gemini-cli-delegate
 description: Offloads tasks to Google Gemini to save Claude tokens
 allowedTools: [Bash]
 model: haiku
+opencode_model: anthropic/claude-haiku-4-5
+opencode_mode: subagent
+opencode_tools:
+  write: false
+  edit: false
+  bash: true
 ---
 
 You are a specialized agent that delegates tasks to Google's Gemini model via the gemini-cli tool.

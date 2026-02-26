@@ -1,23 +1,37 @@
 {{- if eq .chezmoi.os "windows" }}
-# Sync agent and skill files to chezmoi
-# Agents live in ~/.claude/agents/
-# Skills live in ~/.agents/skills/ and are symlinked into ~/.claude/skills/
+# Sync agent and skill files between canonical source and tool-specific directories.
+#
+# Canonical agents:  ~/.agents/agents/*.md   (unified frontmatter for all tools)
+# Claude Code:       ~/.claude/agents/*.md   (Claude-specific frontmatter)
+# OpenCode:          %APPDATA%/opencode/agents/*.md (OpenCode-specific frontmatter)
+# Skills:            ~/.agents/skills/       (symlinked into ~/.claude/skills/)
+#
+# The script:
+#   1. Deploys canonical agents -> Claude + OpenCode (stripping irrelevant fields)
+#   2. Adds changed files to chezmoi (triggers auto-commit/push)
 # Only runs when monitored directories have changed.
 
 $AgentsDir = Join-Path $env:USERPROFILE ".agents"
+$CanonicalAgents = Join-Path $AgentsDir "agents"
 $ClaudeAgentsDir = Join-Path $env:USERPROFILE ".claude\agents"
+$OpenCodeAgentsDir = Join-Path $env:APPDATA "opencode\agents"
 $ClaudeSkillsDir = Join-Path $env:USERPROFILE ".claude\skills"
 $CacheDir = Join-Path $env:LOCALAPPDATA "chezmoi"
 $HashFile = Join-Path $CacheDir "agent-sync.hash"
 
+New-Item -ItemType Directory -Force -Path $CanonicalAgents | Out-Null
+New-Item -ItemType Directory -Force -Path $ClaudeAgentsDir | Out-Null
+New-Item -ItemType Directory -Force -Path $OpenCodeAgentsDir | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $AgentsDir "skills") | Out-Null
 New-Item -ItemType Directory -Force -Path $ClaudeSkillsDir | Out-Null
 New-Item -ItemType Directory -Force -Path $CacheDir | Out-Null
 
-# Compute a hash of all monitored files (names + last-write-times + sizes)
+# --- Hash check: skip if nothing changed ---
 $entries = @()
-Get-ChildItem -Path $ClaudeAgentsDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-    $entries += "$($_.FullName) $($_.LastWriteTimeUtc.Ticks) $($_.Length)"
+foreach ($dir in @($CanonicalAgents, $ClaudeAgentsDir, $OpenCodeAgentsDir)) {
+    Get-ChildItem -Path $dir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+        $entries += "$($_.FullName) $($_.LastWriteTimeUtc.Ticks) $($_.Length)"
+    }
 }
 $skillsPath = Join-Path $AgentsDir "skills"
 Get-ChildItem -Path $skillsPath -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
@@ -34,18 +48,150 @@ $sha = [System.Security.Cryptography.SHA256]::Create()
 $currentHash = [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($blob))).Replace("-","").ToLower()
 
 $previousHash = ""
-if (Test-Path $HashFile) { $previousHash = Get-Content $HashFile -Raw }
+if (Test-Path $HashFile) { $previousHash = (Get-Content $HashFile -Raw).Trim() }
 
-if ($currentHash -eq $previousHash.Trim()) { exit 0 }
+if ($currentHash -eq $previousHash) { exit 0 }
 
 Write-Host "Syncing agent files..."
 
-# Add agent .md files from ~/.claude/agents/ to chezmoi
-Get-ChildItem -Path $ClaudeAgentsDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+# =============================================================================
+# Helper: Convert canonical agent to Claude format (strip opencode_* fields)
+# =============================================================================
+function ConvertTo-Claude {
+    param([string]$Content)
+    $lines = $Content -split "`n"
+    $result = @()
+    $inFront = $false
+    $frontDone = $false
+    $skipping = $false
+
+    foreach ($line in $lines) {
+        if ($line -match '^---$' -and -not $inFront -and -not $frontDone) {
+            $inFront = $true
+            $result += $line
+            continue
+        }
+        if ($line -match '^---$' -and $inFront) {
+            $inFront = $false
+            $frontDone = $true
+            $result += $line
+            continue
+        }
+        if ($inFront) {
+            if ($line -match '^opencode_') {
+                $skipping = $true
+                continue
+            }
+            if ($skipping -and $line -match '^  ') {
+                continue
+            }
+            $skipping = $false
+            $result += $line
+        } else {
+            $result += $line
+        }
+    }
+    return $result -join "`n"
+}
+
+# =============================================================================
+# Helper: Convert canonical agent to OpenCode format
+# Strips Claude fields (name, tools, allowedTools), renames opencode_* -> *
+# =============================================================================
+function ConvertTo-OpenCode {
+    param([string]$Content)
+    $lines = $Content -split "`n"
+    $result = @()
+    $inFront = $false
+    $frontDone = $false
+    $skipping = $false
+
+    foreach ($line in $lines) {
+        if ($line -match '^---$' -and -not $inFront -and -not $frontDone) {
+            $inFront = $true
+            $result += $line
+            continue
+        }
+        if ($line -match '^---$' -and $inFront) {
+            $inFront = $false
+            $frontDone = $true
+            $result += $line
+            continue
+        }
+        if ($inFront) {
+            # Skip Claude-specific fields
+            if ($line -match '^name:' -or
+                ($line -match '^tools:' -and $line -notmatch '^opencode_tools:') -or
+                $line -match '^allowedTools:') {
+                $skipping = $true
+                continue
+            }
+            # Skip 'model:' (replaced by opencode_model)
+            if ($line -match '^model:' -and $line -notmatch '^opencode_model:') {
+                $skipping = $true
+                continue
+            }
+            # Continuation lines for skipped fields
+            if ($skipping -and $line -match '^  ') {
+                continue
+            }
+            $skipping = $false
+            # Rename opencode_* fields
+            if ($line -match '^opencode_model:') {
+                $result += $line -replace '^opencode_model:', 'model:'
+                continue
+            }
+            if ($line -match '^opencode_mode:') {
+                $result += $line -replace '^opencode_mode:', 'mode:'
+                continue
+            }
+            if ($line -match '^opencode_tools:') {
+                $result += $line -replace '^opencode_tools:', 'tools:'
+                continue
+            }
+            $result += $line
+        } else {
+            $result += $line
+        }
+    }
+    return $result -join "`n"
+}
+
+# =============================================================================
+# Deploy: canonical -> Claude + OpenCode
+# =============================================================================
+Get-ChildItem -Path $CanonicalAgents -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+    $content = Get-Content $_.FullName -Raw -Encoding UTF8
+    $name = $_.Name
+
+    # Deploy to Claude
+    $claudeContent = ConvertTo-Claude -Content $content
+    $claudeContent | Set-Content (Join-Path $ClaudeAgentsDir $name) -Encoding UTF8 -NoNewline
+
+    # Deploy to OpenCode
+    $openCodeContent = ConvertTo-OpenCode -Content $content
+    $openCodeContent | Set-Content (Join-Path $OpenCodeAgentsDir $name) -Encoding UTF8 -NoNewline
+}
+
+# Clean up agents that no longer exist in canonical
+foreach ($targetDir in @($ClaudeAgentsDir, $OpenCodeAgentsDir)) {
+    Get-ChildItem -Path $targetDir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+        if (-not (Test-Path (Join-Path $CanonicalAgents $_.Name))) {
+            Remove-Item $_.FullName -Force
+        }
+    }
+}
+
+# =============================================================================
+# Add canonical agents to chezmoi
+# =============================================================================
+Get-ChildItem -Path $CanonicalAgents -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
     chezmoi add $_.FullName 2>$null
 }
 
-# Symlink skill dirs from ~/.agents/skills/ into ~/.claude/skills/
+# =============================================================================
+# Skills: symlink into ~/.claude/skills/ and add to chezmoi
+# =============================================================================
 Get-ChildItem -Path $skillsPath -Directory -ErrorAction SilentlyContinue | ForEach-Object {
     $target = Join-Path $ClaudeSkillsDir $_.Name
     if (-not (Test-Path $target)) {
@@ -53,13 +199,32 @@ Get-ChildItem -Path $skillsPath -Directory -ErrorAction SilentlyContinue | ForEa
     }
 }
 
-# Add skill files to chezmoi
 Get-ChildItem -Path $skillsPath -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
     chezmoi add $_.FullName 2>$null
 }
 
 if (Test-Path $lockFile) { chezmoi add $lockFile 2>$null }
 
-$currentHash | Set-Content $HashFile -NoNewline
+# =============================================================================
+# Update hash
+# =============================================================================
+$entries = @()
+foreach ($dir in @($CanonicalAgents, $ClaudeAgentsDir, $OpenCodeAgentsDir)) {
+    Get-ChildItem -Path $dir -Filter "*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+        $entries += "$($_.FullName) $($_.LastWriteTimeUtc.Ticks) $($_.Length)"
+    }
+}
+Get-ChildItem -Path $skillsPath -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+    $entries += "$($_.FullName) $($_.LastWriteTimeUtc.Ticks) $($_.Length)"
+}
+if (Test-Path $lockFile) {
+    $lf = Get-Item $lockFile
+    $entries += "$($lf.FullName) $($lf.LastWriteTimeUtc.Ticks) $($lf.Length)"
+}
+$blob = ($entries | Sort-Object) -join "`n"
+$sha2 = [System.Security.Cryptography.SHA256]::Create()
+$finalHash = [BitConverter]::ToString($sha2.ComputeHash([Text.Encoding]::UTF8.GetBytes($blob))).Replace("-","").ToLower()
+$finalHash | Set-Content $HashFile -NoNewline
+
 Write-Host "Agent sync complete."
 {{- end }}
