@@ -9,6 +9,7 @@
         XDG_CURRENT_DESKTOP "niri"
         QT_QPA_PLATFORMTHEME "gtk3"
         GTK_IM_MODULE "simple"
+        GNOME_KEYRING_CONTROL "/run/user/1000/keyring"
     }
 
     debug {
