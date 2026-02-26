@@ -2,8 +2,8 @@
 # https://ghostty.org/docs/config/reference
 
 # Theme
-#theme = TokyoNight Moon
-theme = noctalia
+theme = TokyoNight Moon
+#theme = noctalia
  
 # Font Configuration
 font-family = MesloLGS Nerd Font Mono
