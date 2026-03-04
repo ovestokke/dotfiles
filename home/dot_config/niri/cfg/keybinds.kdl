@@ -9,11 +9,11 @@ binds {
     Mod+Shift+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    //Mod+Return                          hotkey-overlay-title="Open Terminal: Alacritty" { spawn "alacritty"; }
+    Mod+Shift+Return                    hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
     Mod+Return                          hotkey-overlay-title="Open Terminal: Wezterm" { spawn "wezterm"; }
-    // Mod+CTRL+Return                     hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     Mod+Space                           hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-
+    //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: Rofi" { spawn "rofi -show drun"; }
+    //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: aside" { spawn "aside"; }
     Mod+B                               hotkey-overlay-title="Open Browser: firefox" { spawn "firefox"; }
     Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
     Mod+Shift+Q                         hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
@@ -140,6 +140,11 @@ binds {
     // Mod+Shift+S                         { screenshot; }
     Mod+Shift+S                         { spawn "satty-screenshot"; }
 
+    // ─── Aside (AI overlay) ───
+    Mod+ALT+Space                       hotkey-overlay-title="Aside: Text input" { spawn "aside-input"; }
+    Mod+ALT+V                           hotkey-overlay-title="Aside: Voice input" { spawn "aside" "query" "--mic"; }
+    Mod+ALT+X                           hotkey-overlay-title="Aside: Cancel query" { spawn "aside" "cancel"; }
+
     // ─── Miscellaneous ───
     Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "smile"; }
 
@@ -152,4 +157,11 @@ binds {
     CTRL+ALT+Delete                     { quit; } // Also quits Niri
     Mod+Shift+P                         { power-off-monitors; } // Turn off screens (useful for OLED or privacy)
     Mod+O                               repeat=false { toggle-overview; }
+
+
+    // Wayland Poe Trade keybinds
+    CTRL+D                       hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
+    //MOD+D                       hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
+    SHIFT+CTRL+D                    hotkey-overlay-title="Poe Trade: Open Trade" { spawn "poe-trade-trigger" "open-trade"; }
+
 }
