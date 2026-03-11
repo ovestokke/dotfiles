@@ -3,17 +3,8 @@
   "tui": {
     "scroll_speed": 3
   },
-  "theme": "catppuccin",
-  "agent": {
-    "code-reviewer": {
-      "description": "Reviews infrastructure configurations for homelab best practices, focusing on Docker, Unraid, and open source deployments",
-      "mode": "subagent",
-      "model": "anthropic/claude-haiku-4-5",
-      "prompt": "You are in infrastructure review mode. Focus on:\n\n- Docker Compose configuration best practices and security\n- Unraid-specific optimizations and path configurations\n- Homelab networking, storage, and resource management\n- Open source service integration and compatibility\n- Performance tuning for containerized workloads\n- Backup and monitoring strategy validation\n- Security hardening for exposed services\n\nProvide constructive feedback on infrastructure code without making direct changes.",
-      "tools": {
-        "write": false,
-        "edit": false
-      }
+  "theme": "catppuccin"
+}
     },
     "dotfile-validator": {
       "description": "Validates chezmoi dotfiles for cross-platform compatibility, naming conventions, and template correctness across macOS and Windows",
