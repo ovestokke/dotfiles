@@ -133,5 +133,11 @@
     "bash",
     "zsh",
     "fish"
+  ],
+  "json.schemas": [
+    {
+      "fileMatch": ["**/opencode.json"],
+      "url": "https://opencode.ai/config.json"
+    }
   ]
 }
