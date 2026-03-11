@@ -160,8 +160,10 @@ binds {
 
 
     // Wayland Poe Trade keybinds
-    CTRL+D                       hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
-    //MOD+D                       hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
-    SHIFT+CTRL+D                    hotkey-overlay-title="Poe Trade: Open Trade" { spawn "poe-trade-trigger" "open-trade"; }
-
+    //CTRL+D                                  hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
+    //MOD+D                                 hotkey-overlay-title="Poe Trade: Search Item" { spawn "poe-trade-trigger" "price-check"; }
+    //SHIFT+CTRL+D                          hotkey-overlay-title="Poe Trade: Open Trade" { spawn "poe-trade-trigger" "open-trade"; }
+    //CTRL+Shift+D                             { spawn "poe-trade-trigger" "toggle-ui"; }
+    //CTRL+F5                                  { spawn "poe-trade-trigger" "chat" "/hideout"; }
+    //CTRL+F9                                  { spawn "poe-trade-trigger" "chat" "/exit"; }
 }
