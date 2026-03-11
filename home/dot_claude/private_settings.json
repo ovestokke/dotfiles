@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "model": "opus",
+  "model": "sonnet",
   "statusLine": {
     "type": "command",
     "command": "oh-my-posh claude",
@@ -11,5 +11,19 @@
     "frontend-design@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "WebSearch",
+      "Bash(curl *)"
+    ],
+    "ask": [
+      "Bash(gh pr create:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [
+    ],
+    "defaultMode": "default"
+  }
 }
