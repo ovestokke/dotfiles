@@ -1,0 +1,5 @@
+// ────────────── iris (laptop) ──────────────
+// ASUS Vivobook S 14 M5406
+
+// Lock screen before suspend (lid close)
+spawn-at-startup "swayidle" "-w" "before-sleep" "qs -c noctalia-shell ipc call lockScreen lock"
