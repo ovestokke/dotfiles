@@ -25,7 +25,7 @@ window-show-tab-bar = auto
 # Behavior
 confirm-close-surface = true
 copy-on-select = false
-auto-update-config = true
+auto-update = check
 
 # Shell (uses system default login shell)
 # No shell override - inherits from system
