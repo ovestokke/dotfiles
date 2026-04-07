@@ -1,7 +1,9 @@
-# General Ignores for all plantforms
+# General Ignores for all platforms
 
 Obsidian/OveVault/.obsidian/workspace*.json
 .agents/.skill-lock.json
+# Machine-specific display config — managed locally
+.config/niri/cfg/display.kdl
 
 #
 # MacOS Ignores
