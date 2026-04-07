@@ -1,0 +1,56 @@
+// ────────────── iris (desktop) ──────────────
+// 5120x1440 ultrawide desktop configuration
+
+// ─── Input ───
+input {
+    mouse {
+        accel-speed 0
+        accel-profile "flat"
+    }
+}
+
+// ─── Layout (ultrawide optimized) ───
+layout {
+    default-column-width { proportion 0.33; }
+
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 0.75
+        proportion 1.0
+    }
+}
+
+// ─── Workspaces ───
+workspace "gaming" {
+
+}
+
+// ─── Window Rules ───
+window-rule {
+    match app-id="steam"
+    open-on-workspace "gaming"
+}
+
+window-rule {
+    match app-id="org.wezfurlong.wezterm"
+    default-column-width { proportion 0.33; }
+}
+
+window-rule {
+    match app-id="com.mitchellh.ghostty" title="poecampain"
+    open-floating true
+    default-floating-position x=2240 y=1100
+    default-column-width { fixed 620; }
+    default-window-height { fixed 120; }
+    opacity 0.7
+}
+
+window-rule {
+    match app-id="poe-wayland-trade"
+    open-floating true
+    focus-ring { off; }
+    border { off; }
+}

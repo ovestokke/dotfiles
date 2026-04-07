@@ -1,9 +1,4 @@
 workspace "tools" {
-    
-}
-
-
-workspace "gaming" {
 
 }
 
@@ -15,7 +10,4 @@ window-rule {
     open-on-workspace "tools"
 }
 
-window-rule {
-    match app-id="steam"
-    open-on-workspace "gaming"
-}
+// Machine-specific workspaces (gaming, etc.) are in cfg/host/<hostname>.kdl

@@ -14,10 +14,7 @@ input {
         natural-scroll // Enable natural (macOS-style) scrolling
     }
 
-    mouse {
-        accel-speed 0
-        accel-profile "flat"
-    }
+    // mouse config is in cfg/host/<hostname>.kdl
 
     // focus-follows-mouse // Automatically focus windows under the mouse pointer
     workspace-auto-back-and-forth // Enable workspace back & forth switching

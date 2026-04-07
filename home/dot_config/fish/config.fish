@@ -21,3 +21,4 @@ if status is-interactive
     end
     alias q 'qs -c ii'
 end
+export PATH="$HOME/.local/bin:$PATH"

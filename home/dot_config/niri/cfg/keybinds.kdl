@@ -9,8 +9,8 @@ binds {
     Mod+Shift+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    Mod+Shift+Return                    hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
-    Mod+Return                          hotkey-overlay-title="Open Terminal: Wezterm" { spawn "wezterm"; }
+    Mod+Return                          hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
+    Mod+Shift+Return                    hotkey-overlay-title="Open Terminal: Wezterm" { spawn "wezterm"; }
     Mod+Space                           hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: Rofi" { spawn "rofi -show drun"; }
     //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: aside" { spawn "aside"; }

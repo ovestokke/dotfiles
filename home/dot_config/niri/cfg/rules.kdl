@@ -9,11 +9,6 @@
     }
 
     window-rule {
-        match app-id="org.wezfurlong.wezterm"
-        default-column-width { proportion 0.33; }
-    }
-
-    window-rule {
         match app-id="com.gabm.satty"
         open-floating true
     }
@@ -36,18 +31,4 @@
         opacity 0.9
     }
 
-    window-rule {
-        match app-id="com.mitchellh.ghostty" title="poecampain"
-        open-floating true
-        default-floating-position x=2240 y=1100
-        default-column-width { fixed 620; }
-        default-window-height { fixed 120; }
-        opacity 0.7
-    }
-
-    window-rule {
-        match app-id="poe-wayland-trade"
-        open-floating true
-        focus-ring { off; }
-        border { off; }
-    }
+    // Machine-specific window rules (poe, wezterm) are in cfg/host/<hostname>.kdl

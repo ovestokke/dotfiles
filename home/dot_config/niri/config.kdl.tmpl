@@ -1,0 +1,15 @@
+include "./cfg/autostart.kdl"
+include "./cfg/keybinds.kdl"
+include "./cfg/input.kdl"
+include "./cfg/layout.kdl"
+include "./cfg/rules.kdl"
+include "./cfg/misc.kdl"
+include "./cfg/workspaces.kdl"
+include "./noctalia.kdl"
+
+// Machine-specific overrides
+{{ if stat (joinPath .chezmoi.sourceDir "dot_config/niri/cfg/host" (printf "%s.kdl" .chezmoi.hostname)) -}}
+include "./cfg/host/{{ .chezmoi.hostname }}.kdl"
+{{- else -}}
+include "./cfg/host/default.kdl"
+{{- end }}
