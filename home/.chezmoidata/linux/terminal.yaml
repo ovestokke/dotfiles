@@ -55,4 +55,4 @@ packages:
 
     # AUR packages (yay/paru) - CLI tools not in official repos
     aur:
-      - wezterm-git # GPU-accelerated terminal emulator (git version)
+

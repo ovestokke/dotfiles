@@ -7,9 +7,11 @@ packages:
     # Arch Linux packages (pacman) - Desktop/GUI applications
     pacman:
       - wezterm # GPU-accelerated terminal emulator
-      - ttf-meslo-nerd-font-powerlevel10k # MesloLGS NF font for Powerlevel10k
+      - ttf-meslo-nerd # Patched Meslo LG font from nerd fonts (includes Powerlevel10k glyphs)
+      - gnome-keyring # GNOME keyring for secret/credential storage
 
     # AUR packages (yay/paru) - Desktop apps not in official repos
     aur:
       - ghostty # Fast GPU-accelerated terminal emulator
       - proton-pass-bin # Proton Pass CLI for password management (pre-built binary)
+      - visual-studio-code-bin # Microsoft VS Code (proprietary build with full extension support)
