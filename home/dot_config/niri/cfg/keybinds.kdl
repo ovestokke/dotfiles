@@ -133,11 +133,7 @@ binds {
     Mod+ALT+F                          { maximize-window-to-edges; }
 
     // ─── Screenshots ───
-    // CTRL+Shift+1                        { screenshot; }
-    // CTRL+Shift+2                        { screenshot-screen; }
-    // CTRL+Shift+3                        { screenshot-window; }
-    // Mod+Print                           { screenshot-window; }
-    // Mod+Shift+S                         { screenshot; }
+
     Mod+Shift+S                         { spawn "satty-screenshot"; }
     Print                               { screenshot; }
     Mod+Print                           { screenshot-window; }
