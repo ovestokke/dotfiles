@@ -15,7 +15,8 @@ binds {
     //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: Rofi" { spawn "rofi -show drun"; }
     //Mod+ALT+Space                       hotkey-overlay-title="Open App Launcher: aside" { spawn "aside"; }
     Mod+B                               hotkey-overlay-title="Open Browser: firefox" { spawn "firefox"; }
-    Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+    //Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+    Mod+ALT+L                           hotkey-overlay-title="Lock Screen: qylock" { spawn-sh "/home/ove/.local/share/quickshell-lockscreen/lock.sh"; }
     Mod+Shift+Q                         hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
 
     // Please choose your own file manager.
