@@ -139,6 +139,9 @@ binds {
     Print                               { screenshot; }
     Mod+Print                           { screenshot-window; }
     Ctrl+Print                          { screenshot-screen; }
+    // ─── AI ───
+    XF86Assistant                        hotkey-overlay-title="Claude Desktop" { spawn "claude-desktop"; }
+
     // ─── Aside (AI overlay) ───
     Mod+ALT+Space                       hotkey-overlay-title="Aside: Text input" { spawn "aside-input"; }
     Mod+ALT+V                           hotkey-overlay-title="Aside: Voice input" { spawn "aside" "query" "--mic"; }
