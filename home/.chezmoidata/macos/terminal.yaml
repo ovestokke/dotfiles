@@ -12,6 +12,7 @@ packages:
       - git # Version control system
       - yq # YAML/JSON/XML processor (like jq)
       - gnupg # GNU Privacy Guard encryption
+      - helix # Post-modern modal text editor
       - go # Go programming language
       - htop # Interactive process viewer
       - lazygit # Terminal UI for git

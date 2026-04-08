@@ -15,6 +15,7 @@ packages:
       - tealdeer # Fast tldr client in Rust
       - gh # GitHub CLI
       - gnupg # GNU Privacy Guard encryption
+      - helix # Post-modern modal text editor
       - fish # Friendly Interactive SHell
       - neovim # Vim-fork text editor
       - build-essential # GCC, make, and other build tools
@@ -41,6 +42,7 @@ packages:
       - tealdeer # Fast tldr client in Rust
       - github-cli # GitHub CLI (gh)
       - gnupg # GNU Privacy Guard encryption
+      - helix # Post-modern modal text editor
       - fish # Friendly Interactive SHell
       - neovim # Vim-fork text editor
       - base-devel # GCC, make, and other build tools
