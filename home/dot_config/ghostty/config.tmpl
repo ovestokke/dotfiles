@@ -2,8 +2,11 @@
 # https://ghostty.org/docs/config/reference
 
 # Theme
+{{- if eq .chezmoi.os "darwin" }}
+theme = catppuccin-mocha
+{{- else }}
 theme = noctalia
-#theme = noctalia
+{{- end }}
  
 # Font Configuration
 font-family = MesloLGS Nerd Font Mono
