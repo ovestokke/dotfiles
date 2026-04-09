@@ -1,6 +1,9 @@
 // ────────────── ares-cachy (desktop) ──────────────
 // 5120x1440 ultrawide desktop configuration
 
+// Idle: 5.5min screen off
+spawn-sh-at-startup "swayidle -w timeout 330 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'"
+
 // ─── Input ───
 input {
     mouse {

@@ -1,6 +1,7 @@
 // ────────────── iris (laptop) ──────────────
 // ASUS Vivobook S 14 M5406
 
-// Lock screen before suspend (lid close)
-// spawn-at-startup "swayidle" "-w" "before-sleep" "qs -c noctalia-shell ipc call lockScreen lock"
-spawn-at-startup "swayidle" "-w" "before-sleep" "/home/ove/.local/share/quickshell-lockscreen/lock.sh"
+// Idle & suspend management
+// 5min: lock → 5.5min: screen off → 10min: suspend-then-hibernate (battery only)
+// before-sleep: lock (covers lid close)
+spawn-sh-at-startup "swayidle -w timeout 300 '/home/ove/.local/share/quickshell-lockscreen/lock.sh' timeout 330 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors' timeout 600 'grep -q 0 /sys/class/power_supply/ACAD/online && systemctl suspend-then-hibernate' before-sleep '/home/ove/.local/share/quickshell-lockscreen/lock.sh'"
