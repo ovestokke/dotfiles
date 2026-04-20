@@ -1,0 +1,25 @@
+#!/bin/bash
+# Screenshot with satty + notification actions (Open File / Open Folder)
+
+OUTPUT_DIR="$HOME/Pictures/Screenshots"
+FILENAME="screenshot-$(date +%Y%m%d-%H%M%S).png"
+FILEPATH="$OUTPUT_DIR/$FILENAME"
+
+mkdir -p "$OUTPUT_DIR"
+
+grim -g "$(slurp)" - | satty --filename - \
+  --disable-notifications \
+  --output-filename "$FILEPATH"
+
+if [ -f "$FILEPATH" ]; then
+  ACTION=$(notify-send -A "open-file=Open File" -A "open-folder=Open Folder" \
+    -i satty \
+    "Screenshot Saved" "$FILENAME")
+
+  case "$ACTION" in
+    open-file)   xdg-open "$FILEPATH" ;;
+    open-folder) xdg-open "$OUTPUT_DIR" ;;
+  esac
+else
+  notify-send -i satty "Screenshot Copied" "Saved to clipboard"
+fi
