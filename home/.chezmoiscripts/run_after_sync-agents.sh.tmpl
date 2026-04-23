@@ -166,10 +166,10 @@ for skill in "$AGENTS_DIR/skills"/*/; do
     ln -sf "../../.agents/skills/$name" "$target"
 done
 
-for skill in "$AGENTS_DIR/skills"/*/*; do
-    [ -f "$skill" ] || continue
-    chezmoi add "$skill" 2>/dev/null || true
-done
+# Add all skill files recursively (supports nested references/, scripts/, etc.)
+while IFS= read -r -d '' skill_file; do
+    chezmoi add "$skill_file" 2>/dev/null || true
+done < <(find "$AGENTS_DIR/skills" -type f -print0 2>/dev/null)
 
 [ -f "$AGENTS_DIR/.skill-lock.json" ] && chezmoi add "$AGENTS_DIR/.skill-lock.json" 2>/dev/null || true
 
