@@ -2,15 +2,24 @@
 #!/bin/bash
 # Sync agent and skill files between canonical source and tool-specific directories.
 #
-# Canonical agents:  ~/.agents/agents/*.md   (unified frontmatter for all tools)
+# Canonical agents:  ~/.agents/agents/*.md   (single source of truth)
 # Claude Code:       ~/.claude/agents/*.md   (Claude-specific frontmatter)
 # OpenCode:          ~/.config/opencode/agents/*.md (OpenCode-specific frontmatter)
+# Pi subagents:      ~/.pi/agent/agents/*.md (Pi-specific frontmatter; run with /run agent-name ...)
 # Skills:            ~/.agents/skills/       (symlinked into ~/.claude/skills/)
 #
+# Model policy:
+#   - Generated Pi agents omit model by default, so Pi uses the current/default model.
+#     Add pi_model: provider/model to a canonical agent, or set PI_SUBAGENT_MODEL,
+#     only when you deliberately want to pin Pi subagents.
+#   - Generated OpenCode agents omit opencode_model by default, so OpenCode uses its
+#     configured default model (for example GPT). Set AGENT_SYNC_KEEP_TOOL_MODELS=1
+#     before running chezmoi if you want to preserve opencode_model pins.
+#
 # The script:
-#   1. Deploys canonical agents -> Claude + OpenCode (stripping irrelevant fields)
-#   2. Adds changed files to chezmoi (triggers auto-commit/push)
-# Only runs when monitored directories have changed.
+#   1. Deploys canonical agents -> Claude + OpenCode + Pi (converting frontmatter)
+#   2. Adds changed canonical files to chezmoi (triggers auto-commit/push)
+# Only runs when monitored directories or model-policy env vars have changed.
 
 set -uo pipefail
 
@@ -18,11 +27,15 @@ AGENTS_DIR="$HOME/.agents"
 CANONICAL_AGENTS="$AGENTS_DIR/agents"
 CLAUDE_AGENTS_DIR="$HOME/.claude/agents"
 OPENCODE_AGENTS_DIR="$HOME/.config/opencode/agents"
+PI_AGENTS_DIR="$HOME/.pi/agent/agents"
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 HASH_FILE="$HOME/.cache/chezmoi-agent-sync.hash"
+AGENT_SYNC_KEEP_TOOL_MODELS="${AGENT_SYNC_KEEP_TOOL_MODELS:-0}"
+PI_SUBAGENT_MODEL="${PI_SUBAGENT_MODEL:-}"
 
 mkdir -p "$CANONICAL_AGENTS" "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR" \
-         "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" "$(dirname "$HASH_FILE")"
+         "$PI_AGENTS_DIR" "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" \
+         "$(dirname "$HASH_FILE")"
 
 # --- Cross-platform file info (works on both GNU/Linux and macOS/BSD) ---
 file_info() {
@@ -52,16 +65,21 @@ stat_file() {
     {{- end }}
 }
 
-# --- Hash check: skip if nothing changed ---
-current_hash="$(
+calc_hash() {
     {
         file_info "$CANONICAL_AGENTS" '*.md'
         file_info "$CLAUDE_AGENTS_DIR" '*.md'
         file_info "$OPENCODE_AGENTS_DIR" '*.md'
+        file_info "$PI_AGENTS_DIR" '*.md'
         file_info_recurse "$AGENTS_DIR/skills"
         stat_file "$AGENTS_DIR/.skill-lock.json"
+        printf 'AGENT_SYNC_KEEP_TOOL_MODELS=%s\n' "$AGENT_SYNC_KEEP_TOOL_MODELS"
+        printf 'PI_SUBAGENT_MODEL=%s\n' "$PI_SUBAGENT_MODEL"
     } | sort | sha256sum | cut -d' ' -f1
-)"
+}
+
+# --- Hash check: skip if nothing changed ---
+current_hash="$(calc_hash)"
 
 previous_hash=""
 [ -f "$HASH_FILE" ] && previous_hash="$(cat "$HASH_FILE")"
@@ -74,7 +92,7 @@ echo "Syncing agent files..."
 
 # =============================================================================
 # Helper: convert canonical agent to Claude format
-# Strips opencode_* fields from YAML frontmatter, keeps everything else
+# Strips OpenCode/Pi-specific fields from YAML frontmatter, keeps Claude fields.
 # =============================================================================
 to_claude() {
     awk '
@@ -82,7 +100,7 @@ to_claude() {
     /^---$/ && !in_front && !front_done { in_front=1; print; next }
     /^---$/ && in_front { in_front=0; front_done=1; print; next }
     in_front {
-        if ($0 ~ /^opencode_/) { skipping=1; next }
+        if ($0 ~ /^opencode_/ || $0 ~ /^pi_/) { skipping=1; next }
         if (skipping && /^  /) { next }
         skipping=0
         print
@@ -94,25 +112,42 @@ to_claude() {
 
 # =============================================================================
 # Helper: convert canonical agent to OpenCode format
-# Strips Claude-specific fields (name, tools, allowedTools, model)
-# Renames opencode_* fields by removing the prefix
+# Strips Claude/Pi fields and renames opencode_* fields by removing the prefix.
+# By default, opencode_model is omitted so OpenCode uses its configured default
+# model. Set AGENT_SYNC_KEEP_TOOL_MODELS=1 to preserve opencode_model pins.
 # =============================================================================
 to_opencode() {
-    awk '
+    awk -v keep_models="$AGENT_SYNC_KEEP_TOOL_MODELS" '
+    function trim(s) { sub(/^[[:space:]]+/, "", s); sub(/[[:space:]]+$/, "", s); return s }
+    function inherit_model(s, l) {
+        l=tolower(trim(s))
+        gsub(/^["\047]+|["\047]+$/, "", l)
+        return (l == "" || l == "inherit" || l == "default" || l == "current" || l == "none" || l == "false")
+    }
+    function keep_tool_models() { return (keep_models == "1" || tolower(keep_models) == "true" || tolower(keep_models) == "yes") }
     BEGIN { in_front=0; front_done=0; skipping=0 }
     /^---$/ && !in_front && !front_done { in_front=1; print; next }
     /^---$/ && in_front { in_front=0; front_done=1; print; next }
     in_front {
-        # Skip Claude-specific fields
+        # Skip Claude/Pi-specific fields.
         if ($0 ~ /^name:/) { skipping=1; next }
+        if ($0 ~ /^pi_/) { skipping=1; next }
         if ($0 ~ /^tools:/ && $0 !~ /^opencode_tools:/) { skipping=1; next }
         if ($0 ~ /^allowedTools:/) { skipping=1; next }
         if ($0 ~ /^model:/ && $0 !~ /^opencode_model:/) { skipping=1; next }
-        # Continuation lines (indented) for skipped fields
+        # Continuation lines (indented) for skipped fields.
         if (skipping && /^  /) { next }
         skipping=0
-        # Rename opencode_* fields -> strip prefix
-        if ($0 ~ /^opencode_model:/) { sub(/^opencode_model:/, "model:"); print; next }
+        # Rename opencode_* fields -> strip prefix.
+        if ($0 ~ /^opencode_model:/) {
+            value=$0
+            sub(/^opencode_model:[[:space:]]*/, "", value)
+            if (keep_tool_models() && !inherit_model(value)) {
+                sub(/^opencode_model:/, "model:")
+                print
+            }
+            next
+        }
         if ($0 ~ /^opencode_mode:/) { sub(/^opencode_mode:/, "mode:"); print; next }
         if ($0 ~ /^opencode_tools:/) { sub(/^opencode_tools:/, "tools:"); print; next }
         print
@@ -123,7 +158,132 @@ to_opencode() {
 }
 
 # =============================================================================
-# Deploy: canonical -> Claude + OpenCode
+# Helper: convert canonical agent to Pi subagent format
+# Pi discovers user agents from ~/.pi/agent/agents/*.md and humans invoke them
+# with /run agent-name task..., not @agent-name. Generated Pi agents are
+# model-agnostic by default: no model field means Pi uses the current/default
+# model (for example your configured GPT model).
+# =============================================================================
+to_pi() {
+    awk -v pi_model_override="$PI_SUBAGENT_MODEL" '
+    function trim(s) { sub(/^[[:space:]]+/, "", s); sub(/[[:space:]]+$/, "", s); return s }
+    function inherit_model(s, l) {
+        l=tolower(trim(s))
+        gsub(/^["\047]+|["\047]+$/, "", l)
+        return (l == "" || l == "inherit" || l == "default" || l == "current" || l == "none" || l == "false")
+    }
+    function map_tool(raw, t) {
+        t=tolower(trim(raw))
+        gsub(/[\[\],"\047]/, "", t)
+        if (t == "" || t == "-" || t == "true" || t == "false") return ""
+        if (t == "bash") return "bash"
+        if (t == "read") return "read"
+        if (t == "edit") return "edit"
+        if (t == "write") return "write"
+        if (t == "grep") return "grep"
+        if (t == "glob" || t == "find") return "find"
+        if (t == "ls") return "ls"
+        if (t == "websearch" || t == "web_search") return "web_search"
+        if (t == "webfetch" || t == "web_fetch" || t == "fetch_content") return "fetch_content"
+        if (t == "codesearch" || t == "code_search") return "code_search"
+        if (t == "getsearchcontent" || t == "get_search_content") return "get_search_content"
+        if (t ~ /^mcp:/) return t
+        return ""
+    }
+    function add_tool(raw, mapped) { mapped=map_tool(raw); if (mapped != "") tools[mapped]=1 }
+    function collect_tools(line, tmp, n, parts, i) {
+        tmp=line
+        if (tmp ~ /^[[:space:]]*[A-Za-z0-9_]+:/) sub(/^[[:space:]]*[A-Za-z0-9_]+:[[:space:]]*/, "", tmp)
+        sub(/^[[:space:]]*-[[:space:]]*/, "", tmp)
+        gsub(/[\[\],]/, " ", tmp)
+        gsub(/["\047]/, "", tmp)
+        n=split(tmp, parts, /[[:space:]]+/)
+        for (i=1; i<=n; i++) add_tool(parts[i])
+    }
+    function collect_opencode_tool(line, tmp, key, val, mapped) {
+        tmp=trim(line)
+        if (tmp !~ /^[A-Za-z0-9_-]+:[[:space:]]*(true|false)/) return
+        key=tmp; sub(/:.*/, "", key)
+        val=tmp; sub(/^[^:]*:[[:space:]]*/, "", val); val=tolower(trim(val))
+        mapped=map_tool(key)
+        if (mapped != "") opencode_tool[mapped]=(val == "true" ? "1" : "0")
+    }
+    function emit_pi_fields(order, ordered_count, i, t, out, seen, model_to_use) {
+        model_to_use = (pi_model_override != "" ? pi_model_override : pi_model)
+        if (!inherit_model(model_to_use)) print "model: " trim(model_to_use)
+        if (!saw_system_prompt_mode) print "systemPromptMode: replace"
+        if (!saw_inherit_project_context) print "inheritProjectContext: true"
+        if (!saw_inherit_skills) print "inheritSkills: false"
+
+        # Safe baseline: let specialists inspect with read/bash unless disabled.
+        tools["read"]=1
+        tools["bash"]=1
+        for (t in opencode_tool) {
+            if (opencode_tool[t] == "1") tools[t]=1
+            else delete tools[t]
+        }
+
+        ordered_count=split("read grep find ls bash edit write web_search code_search fetch_content get_search_content", order, " ")
+        out=""
+        for (i=1; i<=ordered_count; i++) {
+            t=order[i]
+            seen[t]=1
+            if (tools[t]) out = (out == "" ? t : out ", " t)
+        }
+        for (t in tools) {
+            if (!seen[t]) out = (out == "" ? t : out ", " t)
+        }
+        if (out != "") print "tools: " out
+    }
+    BEGIN { in_front=0; front_done=0; skip_kind="" }
+    /^---$/ && !in_front && !front_done {
+        in_front=1
+        print
+        print "# managed by chezmoi-agent-sync; edit ~/.agents/agents/*.md"
+        next
+    }
+    /^---$/ && in_front {
+        emit_pi_fields()
+        in_front=0
+        front_done=1
+        print
+        next
+    }
+    in_front {
+        if (skip_kind != "") {
+            if ($0 ~ /^[[:space:]]+/ || $0 ~ /^[[:space:]]*-/) {
+                if (skip_kind == "tools") collect_tools($0)
+                else if (skip_kind == "opencode_tools") collect_opencode_tool($0)
+                next
+            }
+            skip_kind=""
+        }
+
+        if ($0 ~ /^[[:space:]]*opencode_tools:/) { skip_kind="opencode_tools"; next }
+        if ($0 ~ /^[[:space:]]*opencode_/) { skip_kind="unsupported"; next }
+        if ($0 ~ /^[[:space:]]*pi_model:/) {
+            pi_model=$0
+            sub(/^[[:space:]]*pi_model:[[:space:]]*/, "", pi_model)
+            next
+        }
+        if ($0 ~ /^[[:space:]]*pi_tools:/) { collect_tools($0); skip_kind="tools"; next }
+        if ($0 ~ /^[[:space:]]*pi_/) { skip_kind="unsupported"; next }
+        if ($0 ~ /^[[:space:]]*model:/) { skip_kind="unsupported"; next }
+        if ($0 ~ /^[[:space:]]*tools:/) { collect_tools($0); skip_kind="tools"; next }
+        if ($0 ~ /^[[:space:]]*allowedTools:/) { collect_tools($0); skip_kind="tools"; next }
+        if ($0 ~ /^[[:space:]]*color:/) { skip_kind="unsupported"; next }
+        if ($0 ~ /^[[:space:]]*systemPromptMode:/) saw_system_prompt_mode=1
+        if ($0 ~ /^[[:space:]]*inheritProjectContext:/) saw_inherit_project_context=1
+        if ($0 ~ /^[[:space:]]*inheritSkills:/) saw_inherit_skills=1
+        print
+        next
+    }
+    { print }
+    '
+}
+
+# =============================================================================
+# Deploy: canonical -> Claude + OpenCode + Pi
 # =============================================================================
 for canonical in "$CANONICAL_AGENTS"/*.md; do
     [ -f "$canonical" ] || continue
@@ -134,9 +294,12 @@ for canonical in "$CANONICAL_AGENTS"/*.md; do
 
     # Deploy to OpenCode
     to_opencode < "$canonical" > "$OPENCODE_AGENTS_DIR/$name"
+
+    # Deploy to Pi subagents (/run agent-name ...)
+    to_pi < "$canonical" > "$PI_AGENTS_DIR/$name"
 done
 
-# Clean up agents that no longer exist in canonical
+# Clean up Claude/OpenCode agents that no longer exist in canonical.
 for target_dir in "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR"; do
     for agent in "$target_dir"/*.md; do
         [ -f "$agent" ] || continue
@@ -145,6 +308,16 @@ for target_dir in "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR"; do
             rm -f "$agent"
         fi
     done
+done
+
+# Only remove Pi agents that this script previously generated; leave agents
+# created directly through Pi's /agents manager alone.
+for agent in "$PI_AGENTS_DIR"/*.md; do
+    [ -f "$agent" ] || continue
+    name="$(basename "$agent")"
+    if [ ! -f "$CANONICAL_AGENTS/$name" ] && grep -q 'chezmoi-agent-sync' "$agent"; then
+        rm -f "$agent"
+    fi
 done
 
 # =============================================================================
@@ -176,15 +349,7 @@ done < <(find "$AGENTS_DIR/skills" -type f -print0 2>/dev/null)
 # =============================================================================
 # Update hash (recompute after deployments)
 # =============================================================================
-current_hash="$(
-    {
-        file_info "$CANONICAL_AGENTS" '*.md'
-        file_info "$CLAUDE_AGENTS_DIR" '*.md'
-        file_info "$OPENCODE_AGENTS_DIR" '*.md'
-        file_info_recurse "$AGENTS_DIR/skills"
-        stat_file "$AGENTS_DIR/.skill-lock.json"
-    } | sort | sha256sum | cut -d' ' -f1
-)"
+current_hash="$(calc_hash)"
 echo "$current_hash" > "$HASH_FILE"
-echo "Agent sync complete."
+echo "Agent sync complete. Run /reload in Pi or restart Pi, then use /agents or /run <agent> ..."
 {{- end }}
