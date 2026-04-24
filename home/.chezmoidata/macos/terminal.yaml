@@ -32,6 +32,8 @@ packages:
       - fastfetch # System info display
       - navi
       - just # Just a Command runner
+      - zellij # Terminal workspace and multiplexer
+      - yazi # Fast and minimal terminal file manager
     casks:
       - font-meslo-lg-nerd-font # Nerd Font patched Meslo font
       - ghostty # Fast GPU-accelerated terminal emulator
