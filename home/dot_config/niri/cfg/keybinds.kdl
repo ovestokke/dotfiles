@@ -136,6 +136,7 @@ binds {
     // ─── Screenshots ───
 
     Mod+Shift+S                         { spawn "satty-screenshot"; }
+    Mod+Shift+D                         hotkey-overlay-title="OCR: Screen Region" { spawn "satty-ocr"; }
     Print                               { screenshot; }
     Mod+Print                           { screenshot-window; }
     Ctrl+Print                          { screenshot-screen; }

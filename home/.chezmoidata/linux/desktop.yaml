@@ -3,12 +3,18 @@ packages:
     # Debian/Ubuntu packages (apt) - Desktop/GUI applications
     apt:
       - wezterm # GPU-accelerated terminal emulator
+      - tesseract-ocr # OCR engine for screen text recognition
+      - tesseract-ocr-eng # English language data for tesseract
+      - tesseract-ocr-nor # Norwegian language data for tesseract
 
     # Arch Linux packages (pacman) - Desktop/GUI applications
     pacman:
       - wezterm # GPU-accelerated terminal emulator
       - ttf-meslo-nerd # Patched Meslo LG font from nerd fonts (includes Powerlevel10k glyphs)
       - gnome-keyring # GNOME keyring for secret/credential storage
+      - tesseract # OCR engine for screen text recognition
+      - tesseract-data-eng # English language data for tesseract
+      - tesseract-data-nor # Norwegian language data for tesseract
 
     # AUR packages (yay/paru) - Desktop apps not in official repos
     aur:

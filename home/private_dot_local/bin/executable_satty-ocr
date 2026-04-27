@@ -1,0 +1,22 @@
+#!/bin/bash
+# OCR screen region → clipboard
+# Select a region with slurp, OCR it with tesseract, copy text to clipboard
+
+set -uo pipefail
+
+GEOM=$(slurp) || exit 0
+
+TMPFILE=$(mktemp /tmp/satty-ocr-XXXXXX.png)
+trap 'rm -f "$TMPFILE"' EXIT
+
+grim -g "$GEOM" "$TMPFILE" || { notify-send -i satty "OCR Failed" "Could not capture region"; exit 1; }
+
+TEXT=$(tesseract "$TMPFILE" - -l eng+nor 2>/dev/null)
+TEXT=$(echo "$TEXT" | sed '/^$/d' | sed 's/[[:space:]]*$//')
+
+if [ -n "$TEXT" ]; then
+    echo -n "$TEXT" | wl-copy
+    notify-send -i satty "OCR Copied" "$(echo "$TEXT" | head -c 100)"
+else
+    notify-send -i satty "OCR Failed" "No text detected in selected region"
+fi
