@@ -10,4 +10,5 @@ window-rule {
     open-on-workspace "tools"
 }
 
+
 // Machine-specific workspaces (gaming, etc.) are in cfg/host/<hostname>.kdl
