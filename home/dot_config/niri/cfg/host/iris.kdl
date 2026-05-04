@@ -9,6 +9,8 @@ spawn-sh-at-startup "swayidle -w timeout 300 '/home/ove/.local/share/quickshell-
 // ─── Input ───
 input {
     touchpad {
+        tap
+        natural-scroll
         // Two-finger physical press/click acts as right-click.
         click-method "clickfinger"
         // Keep multi-finger taps conventional: 2 fingers = right, 3 fingers = middle.
