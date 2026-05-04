@@ -15,7 +15,7 @@ function claude-foundry --description 'Launch Claude Code against CapNordicLabs 
 
     if not test -f $certs
         echo "Warning: CA cert file not found at $certs" >&2
-        echo "To create it, run:" >&2
+        echo "To create it on macOS, run:" >&2
         echo "  mkdir -p ~/.certs && security find-certificate -ap /Library/Keychains/System.keychain > ~/.certs/cacerts.pem" >&2
     end
 
