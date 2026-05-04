@@ -1,25 +1,101 @@
-# Agent Guidelines for Dotfiles Repository
+# Agent Guidelines for This Dotfiles Repo
 
-## Build/Lint/Test Commands
-- **Deploy All**: `chezmoi apply` (deploys all configs to home directory)
-- **Preview Changes**: `chezmoi diff` (shows what will change before deployment)
-- **Test Single File**: `chezmoi cat home/dot_zshrc.tmpl` (preview rendered output without applying)
-- **Validate Templates**: `chezmoi execute-template < home/dot_zshrc.tmpl` (test Go template syntax)
-- **Full Test**: `chezmoi init --apply <repo> --branch=<branch> && chezmoi managed && chezmoi doctor` (simulates CI workflow)
-- **Diagnose Issues**: `chezmoi doctor` (checks setup, identifies configuration problems)
+This repository is managed by [chezmoi](https://www.chezmoi.io/). Treat it as a **source state** for files that will be rendered and applied into the user’s home directory.
 
-## Code Style & Conventions
-- **File Naming**: `dot_` prefix for dotfiles (`dot_zshrc` → `~/.zshrc`), `private_` for secrets, `run_once_` for one-time scripts, `run_onchange_` for hash-tracked scripts that re-run on change
-- **Go Templates**: Use `.tmpl` suffix. OS conditionals: `{{ if eq .chezmoi.os "darwin" }}...{{- else }}...{{- end }}`. Always use `{{-` to trim whitespace. Access data with `{{ .packages.darwin.brews }}`
-- **YAML Data Files**: Declare packages in `.chezmoidata/{os}/*.yaml` with structure `packages.{os}.{manager}` (e.g., `packages.darwin.brews`, `packages.darwin.casks`)
-- **Shell Scripts**: Use `set -uo pipefail`, double-quote all paths, track package changes with `# packages.yaml hash: {{ include "..." | sha256sum }}`, check errors with arrays: `failed=()`, `succeeded=()`
-- **Zsh Config**: Check command exists: `[[ $+commands[cmd] ]]`, use `eval "$(cmd)"` for init, source completions: `source <(chezmoi completion zsh)`
-- **PowerShell**: Include templates: `#{{- includeTemplate "powershell/profile.ps1" . | trim }}`, use `-ErrorAction SilentlyContinue` for module imports
-- **Lua (WezTerm)**: 2-space indent, `local` scope, `snake_case` naming, platform detection: `wezterm.target_triple == 'x86_64-apple-darwin'`, cross-platform leader key handling
-- **Theme Standard**: Catppuccin Mocha everywhere (WezTerm, Neovim, Oh My Posh, Powerlevel10k)
-- **Keybind Philosophy**: Vim-style navigation (hjkl) preferred, cross-platform leader keys (CMD on macOS, CTRL elsewhere)
+## How chezmoi Works Here
 
-## Important Notes
-- **Never commit secrets**: Always check for API keys, tokens, passwords before committing
-- **Cross-platform testing**: Use OS conditionals (`{{ if eq .chezmoi.os "darwin" }}`) and test changes on target platforms
-- **Error handling**: Scripts should track success/failure, continue on errors, report summary at end
+- The repo contains a `.chezmoiroot` file with `home`, so chezmoi’s source root is:
+  - repo path: `home/`
+  - target root: `$HOME`
+- Files under `home/` are not copied literally by filename. chezmoi decodes source-state attributes into real target paths.
+- Common filename transforms:
+  - `dot_config/foo` → `~/.config/foo`
+  - `dot_zshrc` → `~/.zshrc`
+  - `private_dot_ssh/config` → `~/.ssh/config` with private permissions
+  - `executable_script.sh` → executable target file
+  - `encrypted_private_key.age` → decrypted private target file when age is configured
+  - `*.tmpl` → Go template rendered before writing the target file
+- Example: `home/dot_config/ghostty/config.tmpl` renders to `~/.config/ghostty/config`.
+- `.chezmoiignore` controls which files are ignored per OS/host. A file can exist in `home/` but not be managed on the current machine.
+
+## Templates, Data, and Secrets
+
+- Templates use Go template syntax in files ending with `.tmpl`.
+- Use whitespace trimming in templates (`{{- ... -}}`) where possible to avoid accidental blank lines.
+- Platform checks usually use:
+  - `{{ if eq .chezmoi.os "darwin" }}`
+  - `{{ if eq .chezmoi.os "linux" }}`
+  - `{{ if eq .chezmoi.os "windows" }}`
+- Data files live under `home/.chezmoidata/` and are exposed to templates as structured data.
+- Package lists should stay declarative in `.chezmoidata` YAML where possible.
+- Secrets and private keys must stay encrypted or private. Never commit raw tokens, API keys, passwords, or unencrypted private keys.
+- Age-encrypted files (`*.age`) are decrypted by chezmoi on apply when the local age identity is configured.
+
+## Scripts
+
+chezmoi scripts live in `home/.chezmoiscripts/`.
+
+- `run_once_*` runs once per machine.
+- `run_onchange_*` runs when the script content changes.
+- `run_after_*` runs after files are applied.
+- Scripts may be templates (`.tmpl`) and can use data from `.chezmoidata`.
+- Shell scripts should use `set -uo pipefail`, quote paths, continue through package install failures when practical, and report a summary.
+- For package install scripts, include a hash comment based on the package data so `run_onchange_*` re-runs when package lists change.
+
+## Common Commands
+
+Use these from the repository root unless noted otherwise.
+
+```bash
+# Show what chezmoi would change in $HOME
+chezmoi diff
+
+# Apply all managed files/scripts to $HOME
+chezmoi apply
+
+# List currently managed target paths
+chezmoi managed
+
+# Show rendered target content for a managed file
+chezmoi cat ~/.config/ghostty/config
+
+# Validate/render a template directly
+chezmoi execute-template < home/dot_config/ghostty/config.tmpl
+
+# Diagnose chezmoi setup and encryption/config problems
+chezmoi doctor
+
+# Find the active source root and target root
+chezmoi source-path
+chezmoi target-path
+```
+
+When changing templates, prefer `chezmoi diff` and `chezmoi cat <target-path>` before `chezmoi apply`.
+
+## Repo Conventions
+
+- Keep changes cross-platform unless the file is intentionally OS-specific.
+- Use `.chezmoiignore` or template conditionals for OS/host-specific behavior.
+- Prefer declarative data in `.chezmoidata` over hard-coded package lists in scripts.
+- Keep themes consistent with the repo’s Catppuccin/Noctalia-style terminal setup unless asked otherwise.
+- Vim-style navigation/keybinds are preferred where practical.
+- For terminal configs, update both the source template and, if the user wants the change immediately, the live target file or run `chezmoi apply`.
+
+## Debugging Discipline
+
+- Reproduce before editing.
+- Do not invent config errors from a command typo.
+- Do not make speculative cleanup changes.
+- Edit only files proven to cause the reported issue.
+- If the cause is unclear, explain and ask before changing anything.
+
+## Safe Change Workflow for Agents
+
+1. Identify the source file under `home/` that maps to the desired target path.
+2. Edit the source file, not only the already-applied file in `$HOME`.
+3. If the file is templated, render/check it with `chezmoi cat <target-path>` or `chezmoi execute-template`.
+4. Run `chezmoi diff` to confirm the expected target changes.
+5. Only run `chezmoi apply` when the user explicitly wants changes deployed.
+6. After validation, update git awareness with `git status --short` and review `git diff` for the touched files.
+7. Stage/commit only when the user asks for it; stage only the relevant validated files.
+8. Before committing, check for secrets and avoid committing machine-local generated files.
