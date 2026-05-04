@@ -34,6 +34,7 @@ workspace "gaming" {
 // ─── Window Rules ───
 window-rule {
     match app-id="steam"
+    match app-id="net.lutris.Lutris"
     open-on-workspace "gaming"
 }
 
