@@ -17,9 +17,12 @@
 #     before running chezmoi if you want to preserve opencode_model pins.
 #
 # The script:
-#   1. Deploys canonical agents -> Claude + OpenCode + Pi (converting frontmatter)
-#   2. Adds changed canonical files to chezmoi (triggers auto-commit/push)
-# Only runs when monitored directories or model-policy env vars have changed.
+#   1. Imports new agents/skills from normal tool locations into ~/.agents
+#   2. Deploys canonical agents -> Claude + OpenCode + Pi (converting frontmatter)
+#   3. Symlinks ~/.claude/skills/* back to ~/.agents/skills/*
+#   4. Mirrors changed canonical files into chezmoi source state
+#   5. Optionally commits/pushes synced agent/skill source changes with git
+# Only runs when monitored directories, source state, or model-policy env vars change.
 
 set -uo pipefail
 
@@ -30,8 +33,14 @@ OPENCODE_AGENTS_DIR="$HOME/.config/opencode/agents"
 PI_AGENTS_DIR="$HOME/.pi/agent/agents"
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 HASH_FILE="$HOME/.cache/chezmoi-agent-sync.hash"
+SOURCE_ROOT="{{ .chezmoi.sourceDir }}"
+SOURCE_AGENTS_DIR="$SOURCE_ROOT/dot_agents/agents"
+SOURCE_SKILLS_DIR="$SOURCE_ROOT/dot_agents/skills"
 AGENT_SYNC_KEEP_TOOL_MODELS="${AGENT_SYNC_KEEP_TOOL_MODELS:-0}"
+AGENT_SYNC_GIT_COMMIT="${AGENT_SYNC_GIT_COMMIT:-1}"
+AGENT_SYNC_GIT_PUSH="${AGENT_SYNC_GIT_PUSH:-1}"
 PI_SUBAGENT_MODEL="${PI_SUBAGENT_MODEL:-}"
+SYNC_SCHEMA_VERSION="2"
 
 mkdir -p "$CANONICAL_AGENTS" "$CLAUDE_AGENTS_DIR" "$OPENCODE_AGENTS_DIR" \
          "$PI_AGENTS_DIR" "$AGENTS_DIR/skills" "$CLAUDE_SKILLS_DIR" \
@@ -50,9 +59,9 @@ file_info() {
 file_info_recurse() {
     local dir="$1"
     {{- if eq .chezmoi.os "darwin" }}
-    find "$dir" -type f -exec stat -f '%N %m %z' {} \; 2>/dev/null
+    find "$dir" \( -type f -o -type l \) -exec stat -f '%N %m %z' {} \; 2>/dev/null
     {{- else }}
-    find "$dir" -type f -printf '%p %T@ %s\n' 2>/dev/null
+    find "$dir" \( -type f -o -type l \) -printf '%p %T@ %s\n' 2>/dev/null
     {{- end }}
 }
 
@@ -72,8 +81,14 @@ calc_hash() {
         file_info "$OPENCODE_AGENTS_DIR" '*.md'
         file_info "$PI_AGENTS_DIR" '*.md'
         file_info_recurse "$AGENTS_DIR/skills"
+        file_info_recurse "$CLAUDE_SKILLS_DIR"
+        [ -n "$SOURCE_ROOT" ] && file_info "$SOURCE_AGENTS_DIR" '*.md'
+        [ -n "$SOURCE_ROOT" ] && file_info_recurse "$SOURCE_SKILLS_DIR"
         stat_file "$AGENTS_DIR/.skill-lock.json"
+        printf 'SYNC_SCHEMA_VERSION=%s\n' "$SYNC_SCHEMA_VERSION"
         printf 'AGENT_SYNC_KEEP_TOOL_MODELS=%s\n' "$AGENT_SYNC_KEEP_TOOL_MODELS"
+        printf 'AGENT_SYNC_GIT_COMMIT=%s\n' "$AGENT_SYNC_GIT_COMMIT"
+        printf 'AGENT_SYNC_GIT_PUSH=%s\n' "$AGENT_SYNC_GIT_PUSH"
         printf 'PI_SUBAGENT_MODEL=%s\n' "$PI_SUBAGENT_MODEL"
     } | sort | sha256sum | cut -d' ' -f1
 }
@@ -89,6 +104,208 @@ if [ "$current_hash" = "$previous_hash" ]; then
 fi
 
 echo "Syncing agent files..."
+
+sync_failed=0
+backup_root="$HOME/.cache/chezmoi-agent-sync-backups/$(date +%Y%m%d-%H%M%S)"
+
+needs_literal_prefix() {
+    case "$1" in
+        dot_*|private_*|encrypted_*|executable_*|readonly_*|symlink_*|template_*|empty_*|literal_*|create_*|modify_*|remove_*|run_*|once_*|onchange_*|before_*|after_*)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+source_basename_for_target() {
+    local path="$1" base attr_prefix="" literal_prefix=""
+    base="$(basename "$path")"
+
+    if [ -L "$path" ]; then
+        attr_prefix="symlink_"
+    elif [ ! -s "$path" ]; then
+        attr_prefix="empty_"
+    elif [ -x "$path" ]; then
+        attr_prefix="executable_"
+    fi
+
+    if needs_literal_prefix "$base"; then
+        literal_prefix="literal_"
+    fi
+
+    printf '%s%s%s\n' "$attr_prefix" "$literal_prefix" "$base"
+}
+
+remove_source_variants() {
+    local dir="$1" base="$2"
+    rm -f \
+        "$dir/$base" "$dir/literal_$base" \
+        "$dir/executable_$base" "$dir/executable_literal_$base" \
+        "$dir/symlink_$base" "$dir/symlink_literal_$base" \
+        "$dir/empty_$base" "$dir/empty_literal_$base"
+}
+
+truthy() {
+    case "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" in
+        1|true|yes|on) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+sync_file_to_source() {
+    local path="$1" rel source_dir base source_base dest
+
+    if [ -z "$SOURCE_ROOT" ]; then
+        echo "chezmoi-agent-sync: cannot sync $path: chezmoi source path unavailable" >&2
+        sync_failed=1
+        return
+    fi
+
+    if [ "${path#"$CANONICAL_AGENTS/"}" != "$path" ]; then
+        rel="${path#"$CANONICAL_AGENTS/"}"
+        source_dir="$SOURCE_AGENTS_DIR/$(dirname "$rel")"
+    elif [ "${path#"$AGENTS_DIR/skills/"}" != "$path" ]; then
+        rel="${path#"$AGENTS_DIR/skills/"}"
+        source_dir="$SOURCE_SKILLS_DIR/$(dirname "$rel")"
+    else
+        echo "chezmoi-agent-sync: refusing to sync non-canonical path $path" >&2
+        sync_failed=1
+        return
+    fi
+
+    base="$(basename "$rel")"
+    source_base="$(source_basename_for_target "$path")"
+    dest="$source_dir/$source_base"
+
+    mkdir -p "$source_dir"
+    remove_source_variants "$source_dir" "$base"
+
+    if [ -L "$path" ]; then
+        readlink "$path" > "$dest"
+    else
+        cp "$path" "$dest"
+    fi
+    chmod 0644 "$dest" 2>/dev/null || true
+}
+
+commit_synced_source_changes() {
+    local git_root
+
+    truthy "$AGENT_SYNC_GIT_COMMIT" || return 0
+    git_root="$(git -C "$SOURCE_ROOT" rev-parse --show-toplevel 2>/dev/null || true)"
+    [ -n "$git_root" ] || return 0
+
+    git -C "$git_root" add -- "$SOURCE_AGENTS_DIR" "$SOURCE_SKILLS_DIR" || {
+        echo "chezmoi-agent-sync: warning: failed to stage synced agent/skill source files" >&2
+        return 0
+    }
+
+    git -C "$git_root" diff --cached --quiet -- "$SOURCE_AGENTS_DIR" "$SOURCE_SKILLS_DIR" && return 0
+
+    if git -C "$git_root" commit -m "Update synced agents and skills" -- "$SOURCE_AGENTS_DIR" "$SOURCE_SKILLS_DIR"; then
+        if truthy "$AGENT_SYNC_GIT_PUSH"; then
+            git -C "$git_root" push || echo "chezmoi-agent-sync: warning: git push failed" >&2
+        fi
+    else
+        echo "chezmoi-agent-sync: warning: git commit failed; synced files remain in source state" >&2
+    fi
+}
+
+copy_tree_contents() {
+    local src="$1" dst="$2" dereference="${3:-0}"
+    mkdir -p "$dst"
+    if [ "$dereference" = "1" ]; then
+        cp -aL "$src"/. "$dst"/
+    else
+        cp -a "$src"/. "$dst"/
+    fi
+}
+
+is_canonical_skill_link() {
+    local link="$1" name="$2" resolved=""
+    [ -L "$link" ] || return 1
+    resolved="$(readlink -f "$link" 2>/dev/null || true)"
+    [ "$resolved" = "$AGENTS_DIR/skills/$name" ]
+}
+
+import_tool_agents() {
+    local dir="$1" label="$2" agent name canonical
+    for agent in "$dir"/*.md; do
+        [ -f "$agent" ] || continue
+        name="$(basename "$agent")"
+        canonical="$CANONICAL_AGENTS/$name"
+        [ -f "$canonical" ] && continue
+        if [ "$label" = "Pi" ] && grep -q 'chezmoi-agent-sync' "$agent"; then
+            continue
+        fi
+        echo "Importing $label agent $name -> ~/.agents/agents/"
+        cp -a "$agent" "$canonical"
+    done
+}
+
+import_claude_skills() {
+    local skill name canonical backup dereference
+    for skill in "$CLAUDE_SKILLS_DIR"/*; do
+        [ -e "$skill" ] || [ -L "$skill" ] || continue
+        [ -d "$skill" ] || continue
+        name="$(basename "$skill")"
+        canonical="$AGENTS_DIR/skills/$name"
+
+        if is_canonical_skill_link "$skill" "$name"; then
+            continue
+        fi
+
+        dereference=0
+        [ -L "$skill" ] && dereference=1
+
+        if [ ! -d "$canonical" ]; then
+            echo "Importing Claude skill $name -> ~/.agents/skills/"
+            copy_tree_contents "$skill" "$canonical" "$dereference"
+        else
+            backup="$backup_root/claude-skills/$name"
+            mkdir -p "$(dirname "$backup")"
+            echo "Backing up non-canonical Claude skill $name -> $backup"
+            copy_tree_contents "$skill" "$backup" "$dereference"
+        fi
+
+        rm -rf "$skill"
+    done
+}
+
+link_claude_skills() {
+    local skill name target backup
+    for skill in "$AGENTS_DIR/skills"/*/; do
+        [ -d "$skill" ] || continue
+        name="$(basename "$skill")"
+        target="$CLAUDE_SKILLS_DIR/$name"
+
+        if is_canonical_skill_link "$target" "$name"; then
+            continue
+        fi
+
+        if [ -e "$target" ] || [ -L "$target" ]; then
+            backup="$backup_root/claude-skills/$name"
+            mkdir -p "$(dirname "$backup")"
+            echo "Backing up existing Claude skill $name -> $backup"
+            copy_tree_contents "$target" "$backup" "$([ -L "$target" ] && echo 1 || echo 0)"
+            rm -rf "$target"
+        fi
+
+        ln -s "../../.agents/skills/$name" "$target"
+    done
+
+    # Remove stale symlinks that used to point at canonical skills.
+    for target in "$CLAUDE_SKILLS_DIR"/*; do
+        [ -L "$target" ] || continue
+        case "$(readlink "$target" 2>/dev/null || true)" in
+            ../../.agents/skills/*)
+                [ -e "$target" ] || rm -f "$target"
+                ;;
+        esac
+    done
+}
 
 # =============================================================================
 # Helper: convert canonical agent to Claude format
@@ -283,6 +500,14 @@ to_pi() {
 }
 
 # =============================================================================
+# Import: normal tool locations -> canonical ~/.agents
+# =============================================================================
+import_tool_agents "$CLAUDE_AGENTS_DIR" "Claude"
+import_tool_agents "$OPENCODE_AGENTS_DIR" "OpenCode"
+import_tool_agents "$PI_AGENTS_DIR" "Pi"
+import_claude_skills
+
+# =============================================================================
 # Deploy: canonical -> Claude + OpenCode + Pi
 # =============================================================================
 for canonical in "$CANONICAL_AGENTS"/*.md; do
@@ -321,33 +546,32 @@ for agent in "$PI_AGENTS_DIR"/*.md; do
 done
 
 # =============================================================================
-# Add canonical agents to chezmoi
+# Skills: symlink into ~/.claude/skills/
+# =============================================================================
+link_claude_skills
+
+# =============================================================================
+# Mirror canonical agents and skills into chezmoi source state
 # =============================================================================
 for agent in "$CANONICAL_AGENTS"/*.md; do
     [ -f "$agent" ] || continue
-    chezmoi add "$agent" 2>/dev/null || true
+    sync_file_to_source "$agent"
 done
 
-# =============================================================================
-# Skills: symlink into ~/.claude/skills/ and add to chezmoi
-# =============================================================================
-for skill in "$AGENTS_DIR/skills"/*/; do
-    [ -d "$skill" ] || continue
-    name="$(basename "$skill")"
-    target="$CLAUDE_SKILLS_DIR/$name"
-    [ -L "$target" ] && continue
-    ln -sf "../../.agents/skills/$name" "$target"
-done
-
-# Add all skill files recursively (supports nested references/, scripts/, etc.)
+# Add all skill files recursively (supports nested references/, scripts/, symlinks, etc.)
 while IFS= read -r -d '' skill_file; do
-    chezmoi add "$skill_file" 2>/dev/null || true
-done < <(find "$AGENTS_DIR/skills" -type f -print0 2>/dev/null)
+    sync_file_to_source "$skill_file"
+done < <(find "$AGENTS_DIR/skills" \( -type f -o -type l \) -print0 2>/dev/null)
 
-[ -f "$AGENTS_DIR/.skill-lock.json" ] && chezmoi add "$AGENTS_DIR/.skill-lock.json" 2>/dev/null || true
+if [ "$sync_failed" -ne 0 ]; then
+    echo "chezmoi-agent-sync: not updating $HASH_FILE because one or more files failed to sync" >&2
+    exit 1
+fi
+
+commit_synced_source_changes
 
 # =============================================================================
-# Update hash (recompute after deployments)
+# Update hash (recompute after deployments and successful source sync)
 # =============================================================================
 current_hash="$(calc_hash)"
 echo "$current_hash" > "$HASH_FILE"
