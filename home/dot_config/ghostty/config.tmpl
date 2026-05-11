@@ -27,7 +27,8 @@ window-show-tab-bar = auto
 
 # Behavior
 confirm-close-surface = true
-copy-on-select = clipboard
+# Keep terminal selection stable in pi/TUIs; copy explicitly with Ctrl+Shift+C.
+copy-on-select = false
 auto-update = check
 
 # Shell (uses system default login shell)
