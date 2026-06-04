@@ -7,45 +7,67 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "ares-cachyos",
+      "username": "ove",
+      "args": [],
+      "projects": [
+        {
+          "paths": ["/home/ove/projects/homeassistant"],
+        },
+      ],
+    },
+  ],
+  "proxy": "",
   "icon_theme": "Catppuccin Frappé",
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "outline_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "collaboration_panel": {
-    "dock": "left"
+    "dock": "left",
   },
+  "vim_mode": false,
+  "helix_mode": true,
+  "vim": {
+    "use_system_clipboard": "always",
+  },
+  "which_key": {
+    "enabled": true,
+  },
+  "code_lens": "on",
   "agent": {
     "dock": "right",
     "favorite_models": [],
-    "model_parameters": []
+    "model_parameters": [],
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "edit_predictions": {
     "codestral": {
-      "api_url": "https://codestral.mistral.ai"
+      "api_url": "https://codestral.mistral.ai",
     },
-    "provider": "copilot"
+    "provider": "copilot",
   },
   "telemetry": {
     "diagnostics": true,
-    "metrics": false
+    "metrics": false,
   },
   "session": {
-    "trust_all_worktrees": true
+    "trust_all_worktrees": true,
   },
   "terminal": {
-    "font_family": "MesloLGS Nerd Font Mono"
+    "font_family": "MesloLGS Nerd Font Mono",
   },
   "base_keymap": "VSCode",
   "agent_servers": {
     "codex-acp": {
-      "type": "registry"
-    }
+      "type": "registry",
+    },
   },
   "ui_font_size": 16,
   "buffer_font_size": 15,
