@@ -42,7 +42,6 @@ tamasfe.even-better-toml            # TOML language support
 #cuelangorg.vscode-cue               # CUE configuration language
 
 # Other Languages & Frameworks
-ms-vscode.powershell                # PowerShell language support
 #vue.volar                           # Vue.js language support
 geequlim.godot-tools                # Godot game engine integration
 

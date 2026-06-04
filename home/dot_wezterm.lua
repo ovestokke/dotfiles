@@ -7,10 +7,7 @@ local config = wezterm.config_builder()
 -- This is where you actually apply your config choices
 
 -- Set default shell based on platform
-if wezterm.target_triple == "x86_64-pc-windows-msvc" or wezterm.target_triple == "aarch64-pc-windows-msvc" then
-	config.default_prog = { "pwsh.exe" }
-	config.font = wezterm.font("MesloLGS NF")
-elseif wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
+if wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
 	config.default_prog = { "/opt/homebrew/bin/fish", "-l" }
 	config.font = wezterm.font("MesloLGS Nerd Font Mono")
 	config.send_composed_key_when_left_alt_is_pressed = true
@@ -224,7 +221,7 @@ config.keys = {
 	},
 
 	-- ==== COPY/PASTE ====
-	-- Cross-platform copy/paste (Ctrl+Shift on Windows/Linux, Cmd+C/V on Mac)
+	-- Cross-platform copy/paste (Ctrl+Shift on Linux, Cmd+C/V on Mac)
 	{
 		key = "c",
 		mods = "SHIFT|CTRL",

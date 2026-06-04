@@ -4,8 +4,8 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'home/**'
-      - '.github/workflows/test-macos.yaml'
+      - "home/**"
+      - ".github/workflows/test-macos.yaml"
   pull_request:
     branches: [main, master]
 
@@ -13,15 +13,15 @@ jobs:
   test-macos:
     runs-on: macos-latest
     env:
-      CHEZMOI_VERSION: 2.52.3 #latest  # Change to pin version: e.g., 2.52.3
-    
+      CHEZMOI_VERSION: 2.70.2 #latest  # Change to pin version: e.g., 2.52.3
+
     steps:
       - name: Test deployment from branch
         run: |
           BRANCH="${{ github.head_ref || github.ref_name }}"
           echo "Installing chezmoi version: $CHEZMOI_VERSION"
           echo "Testing deployment from branch: $BRANCH"
-          
+
           if [ "$CHEZMOI_VERSION" = "latest" ]; then
             sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply --exclude encrypted ${{ github.repository_owner }} --branch="$BRANCH"
           else

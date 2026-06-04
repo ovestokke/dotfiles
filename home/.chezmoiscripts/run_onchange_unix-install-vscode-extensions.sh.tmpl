@@ -1,4 +1,3 @@
-{{ if ne .chezmoi.os "windows" -}}
 #!/bin/bash
 set -euo pipefail
 
@@ -25,4 +24,3 @@ done <<'EOF'
 EOF
 
 echo "VS Code extensions installed"
-{{- end }}

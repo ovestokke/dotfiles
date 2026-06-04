@@ -10,16 +10,9 @@ Obsidian/OveVault/.obsidian/workspace*.json
 #
 
 {{- if eq .chezmoi.os "darwin" }}
-Documents/
-Documents/**
-AppData/
-AppData/**
-.config/powershell/
-.config/powershell/**
+.config/Code/
+.config/Code/**
 .config/tealdeer/**
-komorebi.json
-komorebi.bar.json
-applications.json
 # Linux desktop configs
 .config/niri/
 .config/niri/**
@@ -36,44 +29,6 @@ applications.json
 .config/xdg-desktop-portal/
 .config/xdg-desktop-portal/**
 # Platform-specific scripts
-.chezmoiscripts/*windows*.ps1
-.chezmoiscripts/*windows*.ps1.tmpl
-.chezmoiscripts/*linux*.sh
-.chezmoiscripts/*linux*.sh.tmpl
-
-#
-# Windows Ignores
-#
-
-{{- else if eq .chezmoi.os "windows" }}
-Library/
-Library/**
-.config/powershell/
-.config/powershell/**
-.config/fish/
-.config/fish/**
-# macOS/Linux shell configs
-.zshrc
-.zprofile
-.p10k.zsh
-# Linux desktop configs
-.config/niri/
-.config/niri/**
-.config/noctalia/
-.config/noctalia/**
-.config/alacritty/
-.config/alacritty/**
-.config/cava/
-.config/cava/**
-.config/satty/
-.config/satty/**
-.config/spotify-player/
-.config/spotify-player/**
-.config/xdg-desktop-portal/
-.config/xdg-desktop-portal/**
-# Platform-specific scripts
-.chezmoiscripts/*darwin*.sh
-.chezmoiscripts/*darwin*.sh.tmpl
 .chezmoiscripts/*linux*.sh
 .chezmoiscripts/*linux*.sh.tmpl
 
@@ -84,10 +39,6 @@ Library/**
 {{- else if eq .chezmoi.os "linux" }}
 Library/
 Library/**
-Documents/
-Documents/**
-AppData/
-AppData/**
 # macOS zsh (using fish on Linux)
 .zshrc
 .zprofile
@@ -95,37 +46,6 @@ AppData/**
 # Platform-specific scripts
 .chezmoiscripts/*darwin*.sh
 .chezmoiscripts/*darwin*.sh.tmpl
-.chezmoiscripts/*windows*.ps1
-.chezmoiscripts/*windows*.ps1.tmpl
-
-#
-# WSL Ignores
-#
-
-{{- /* Detect WSL by checking for Microsoft in kernel release */ -}}
-{{- $isWSL := false -}}
-{{- $kernelRelease := output "uname" "-r" | trim -}}
-{{- if contains "microsoft" (lower $kernelRelease) -}}
-{{-   $isWSL = true -}}
-{{- end -}}
-{{- if $isWSL }}
-# WSL - skip desktop apps
-.wezterm.lua
-.config/ghostty/
-.config/ghostty/**
-.config/niri/
-.config/niri/**
-.config/noctalia/
-.config/noctalia/**
-.config/alacritty/
-.config/alacritty/**
-.config/cava/
-.config/cava/**
-.config/satty/
-.config/satty/**
-.config/xdg-desktop-portal/
-.config/xdg-desktop-portal/**
-{{- end }}
 
 {{- /* Detect server by checking hostname against machines.servers list */ -}}
 {{- $isServer := has .chezmoi.hostname .machines.servers -}}

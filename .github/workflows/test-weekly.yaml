@@ -9,12 +9,10 @@ jobs:
   test-full-setup:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         include:
           - os: ubuntu-latest
             name: Ubuntu
-          #- os: windows-latest
-          #  name: Windows
           - os: macos-latest
             name: macOS
     
@@ -25,7 +23,6 @@ jobs:
     
     steps:
       - name: Test one-liner setup (Linux/macOS)
-        if: runner.os != 'Windows'
         run: |
           echo "Installing chezmoi version: $CHEZMOI_VERSION"
           echo "Testing full setup from main branch on ${{ matrix.name }}"
@@ -48,16 +45,6 @@ jobs:
             sudo install /tmp/chezmoi /usr/local/bin/
             chezmoi init --apply --exclude encrypted ${{ github.repository_owner }}
           fi
-          
+
           chezmoi doctor
           chezmoi managed
-
-      - name: Test one-liner setup (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Write-Host "Testing full setup from main branch on ${{ matrix.name }}"
-          $ChezmoiInstallScript = irm -useb https://get.chezmoi.io/ps1
-          & ([scriptblock]::Create($ChezmoiInstallScript)) -BinDir "$env:TEMP\chezmoi"
-          $env:PATH = "$env:TEMP\chezmoi;$env:PATH"
-          chezmoi init --apply --exclude encrypted ${{ github.repository_owner }}
-        shell: powershell

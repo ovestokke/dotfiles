@@ -22,14 +22,21 @@ This repository is managed by [chezmoi](https://www.chezmoi.io/). Treat it as a 
 
 - Templates use Go template syntax in files ending with `.tmpl`.
 - Use whitespace trimming in templates (`{{- ... -}}`) where possible to avoid accidental blank lines.
-- Platform checks usually use:
+- Active platform checks usually use:
   - `{{ if eq .chezmoi.os "darwin" }}`
   - `{{ if eq .chezmoi.os "linux" }}`
-  - `{{ if eq .chezmoi.os "windows" }}`
+- Windows support is archived, not active. Do not add Windows template branches unless the task is explicitly restoring Windows support.
 - Data files live under `home/.chezmoidata/` and are exposed to templates as structured data.
 - Package lists should stay declarative in `.chezmoidata` YAML where possible.
 - Secrets and private keys must stay encrypted or private. Never commit raw tokens, API keys, passwords, or unencrypted private keys.
 - Age-encrypted files (`*.age`) are decrypted by chezmoi on apply when the local age identity is configured.
+
+## Windows Archive
+
+- `_archive/` intentionally keeps old Windows source-state files for possible future restoration.
+- Files under `_archive/` are not active chezmoi source because `.chezmoiroot` points at `home/`.
+- If Windows support needs to come back, follow `docs/WINDOWS_RESTORE.md` and restore source files, ignore rules, template branches, docs, and CI together.
+- Do not delete `_archive/` as cleanup; it is the recovery path for the darkest timeline.
 
 ## Scripts
 
