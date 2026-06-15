@@ -149,7 +149,7 @@ binds {
     Mod+ALT+X                           hotkey-overlay-title="Aside: Cancel query" { spawn "aside" "cancel"; }
 
     // ─── Miscellaneous ───
-    Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "smile"; }
+    Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "flatpak run it.mijorus.smile"; }
 
     // ─── Emergency Escape Key ───
     // Use this when a fullscreen app blocks your keybinds.
