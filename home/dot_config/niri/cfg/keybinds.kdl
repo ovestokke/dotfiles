@@ -144,12 +144,12 @@ binds {
     XF86Assistant                        hotkey-overlay-title="Claude Desktop" { spawn "claude-desktop"; }
 
     // ─── Aside (AI overlay) ───
-    Mod+ALT+Space                       hotkey-overlay-title="Aside: Text input" { spawn "aside-input"; }
-    Mod+ALT+V                           hotkey-overlay-title="Aside: Voice input" { spawn "aside" "query" "--mic"; }
-    Mod+ALT+X                           hotkey-overlay-title="Aside: Cancel query" { spawn "aside" "cancel"; }
+    // Mod+ALT+Space                       hotkey-overlay-title="Aside: Text input" { spawn "aside-input"; }
+    // Mod+ALT+V                           hotkey-overlay-title="Aside: Voice input" { spawn "aside" "query" "--mic"; }
+    // Mod+ALT+X                           hotkey-overlay-title="Aside: Cancel query" { spawn "aside" "cancel"; }
 
     // ─── Miscellaneous ───
-    Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "flatpak run it.mijorus.smile"; }
+    Mod+Alt+Period                      hotkey-overlay-title="Emoji Picker: Smile" { spawn "flatpak" "run" "it.mijorus.smile"; }
 
     // ─── Emergency Escape Key ───
     // Use this when a fullscreen app blocks your keybinds.
