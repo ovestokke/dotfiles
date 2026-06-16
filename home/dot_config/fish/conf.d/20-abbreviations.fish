@@ -79,6 +79,12 @@ if status is-interactive
     # Zoxide: smart cd function (defined in 10-tools.fish)
     # Use 'z' for zoxide jumps, 'cd' works normally for paths
 
+    # Podman as Docker (if podman is installed)
+    if type -q podman
+        abbr --add docker podman
+        abbr --add docker-compose 'podman compose'
+    end
+
     # Python
     abbr --add python python3
 end

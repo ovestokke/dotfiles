@@ -123,6 +123,14 @@ alias cd="z"
 # Python alias
 alias python=python3
 
+# Podman as Docker (macOS only, if podman is installed)
+{{- if eq .chezmoi.os "darwin" }}
+if command -v podman &>/dev/null; then
+  alias docker=podman
+  alias docker-compose='podman compose'
+fi
+{{- end }}
+
 # Load zsh plugins
 {{- if eq .chezmoi.os "darwin" }}
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
