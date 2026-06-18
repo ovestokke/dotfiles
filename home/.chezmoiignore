@@ -43,6 +43,7 @@ Library/**
 .zshrc
 .zprofile
 .p10k.zsh
+.skhdrc
 # Platform-specific scripts
 .chezmoiscripts/*darwin*.sh
 .chezmoiscripts/*darwin*.sh.tmpl
