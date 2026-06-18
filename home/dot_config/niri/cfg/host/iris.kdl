@@ -1,10 +1,10 @@
 // ────────────── iris (laptop) ──────────────
 // ASUS Vivobook S 14 M5406
 
-// Idle & suspend management
-// 10min: lock + screen off → 15min: suspend-then-hibernate (battery only)
+// Idle & hibernate management
+// 10min: lock + screen off → 15min: direct hibernate (battery only)
 // before-sleep: lock (covers lid close)
-spawn-sh-at-startup "swayidle -w timeout 600 'qs -c noctalia-shell ipc call lockScreen lock' timeout 600 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors' timeout 900 'grep -q 0 /sys/class/power_supply/ACAD/online && systemctl suspend-then-hibernate' before-sleep 'qs -c noctalia-shell ipc call lockScreen lock'"
+spawn-sh-at-startup "swayidle -w timeout 600 'qs -c noctalia-shell ipc call lockScreen lock' timeout 600 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors' timeout 900 'grep -q 0 /sys/class/power_supply/ACAD/online && systemctl hibernate' before-sleep 'qs -c noctalia-shell ipc call lockScreen lock'"
 
 // ─── Input ───
 input {
