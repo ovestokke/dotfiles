@@ -29,6 +29,20 @@
     IdentityFile ~/.ssh/id_ed25519_vultr
     IdentitiesOnly yes
 
+  # ares-cachyos
+  Host ares-cachyos
+    HostName ares-cachyos
+    User ove
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+  # ai-hub
+  Host ai-hub
+    HostName ai-hub
+    User ove
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
   # Default for everything else
   Host *
     IdentityFile ~/.ssh/id_ed25519
