@@ -2,7 +2,6 @@ packages:
   darwin:
     brews:
       - asmvik/formulae/skhd # Simple hotkey daemon for macOS
-      - gemini-cli # Google Gemini AI CLI tool
       - protonpass/tap/pass-cli # Proton Pass CLI for password management
     casks:
       #  - 1password # Password manager

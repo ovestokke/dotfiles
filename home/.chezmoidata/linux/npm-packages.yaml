@@ -1,4 +1,3 @@
 packages:
   linux:
     npm:
-      - "@google/gemini-cli" # Google Gemini AI CLI tool
