@@ -25,6 +25,8 @@ function ff -d "Find files with fd + fzf and open the selected file"
         set preview "sed -n '1,200p' {}"
     end
 
+    set -l query (string join ' ' -- $argv)
+
     set -l file
     if test "$finder" = find
         set file (
@@ -33,6 +35,7 @@ function ff -d "Find files with fd + fzf and open the selected file"
                 -not -path './Library/*' \
                 2>/dev/null | \
             fzf --prompt 'files> ' \
+                --query "$query" \
                 --height 80% \
                 --layout reverse \
                 --border \
@@ -49,6 +52,7 @@ function ff -d "Find files with fd + fzf and open the selected file"
                 --exclude Library \
                 2>/dev/null | \
             fzf --prompt 'files> ' \
+                --query "$query" \
                 --height 80% \
                 --layout reverse \
                 --border \
