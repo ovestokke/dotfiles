@@ -6,6 +6,11 @@ if status is-interactive
         source (code --locate-shell-integration-path fish)
     end
 
+    # fzf shell integration (keybindings: Ctrl-R history, Ctrl-T files, Alt-C dirs)
+    if type -q fzf
+        fzf --fish | source
+    end
+
     # Oh My Posh themes (user curated)
     set -g OMP_THEMES \
         catppuccin_mocha \
