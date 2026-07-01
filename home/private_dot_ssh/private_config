@@ -10,12 +10,13 @@
     IdentityFile ~/.ssh/id_ed25519_github_work
     IdentitiesOnly yes
 
-  # Azure DevOps (work)
+  # Azure DevOps (work) - RSA required by ADO
   Host ssh.dev.azure.com
     HostName ssh.dev.azure.com
     User git
-    IdentityFile ~/.ssh/id_ed25519_azure
+    IdentityFile ~/.ssh/id_rsa_azure
     IdentitiesOnly yes
+    PubkeyAcceptedAlgorithms +ssh-rsa
 
   # Gateway (Hetzner VPS - reverse proxy)
   Host gateway 46.224.94.101
