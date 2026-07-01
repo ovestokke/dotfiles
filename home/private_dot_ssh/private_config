@@ -3,6 +3,20 @@
     IdentityFile ~/.ssh/id_ed25519_github
     IdentitiesOnly yes
 
+  # GitHub konto B (work)
+  Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github_work
+    IdentitiesOnly yes
+
+  # Azure DevOps (work)
+  Host ssh.dev.azure.com
+    HostName ssh.dev.azure.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_azure
+    IdentitiesOnly yes
+
   # Gateway (Hetzner VPS - reverse proxy)
   Host gateway 46.224.94.101
     HostName 46.224.94.101
