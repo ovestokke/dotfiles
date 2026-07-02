@@ -1,1 +1,1 @@
-/home/ove/projects/pixelart-engine/skill/SKILL.md
+/home/ove/projects/private/pixelart-engine/skill/SKILL.md
