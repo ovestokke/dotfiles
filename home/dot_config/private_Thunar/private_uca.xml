@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>com.mitchellh.ghostty</icon>
+	<name>Open in Ghostty</name>
+	<submenu></submenu>
+	<unique-id>1783018938242971-1</unique-id>
+	<command>ghostty --working-directory=%f</command>
+	<description></description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>Alacritty</icon>
+	<name>Open i Alacritty</name>
+	<submenu></submenu>
+	<unique-id>1783019523061901-1</unique-id>
+	<command>alacritty --working-directory %f</command>
+	<description></description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>edit-copy</icon>
+	<name>Copy Path</name>
+	<submenu></submenu>
+	<unique-id>1783019249309241-2</unique-id>
+	<command> echo -n %f | wl-copy</command>
+	<description>Copy Path to clipboard</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+</actions>
