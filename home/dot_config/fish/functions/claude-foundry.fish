@@ -24,7 +24,7 @@ function claude-foundry --description 'Launch Claude Code against CapNordicLabs 
             NODE_EXTRA_CA_CERTS=$certs \
             CLAUDE_CODE_USE_FOUNDRY=1 \
             ANTHROPIC_FOUNDRY_BASE_URL=https://foundry-ccaclaudefoundry-swe.services.ai.azure.com/anthropic/ \
-            ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-latest \
+            ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-5 \
             ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-latest \
             ANTHROPIC_DEFAULT_OPUS_MODEL=claude-opus-latest \
             claude $argv
@@ -32,7 +32,7 @@ function claude-foundry --description 'Launch Claude Code against CapNordicLabs 
         env \
             CLAUDE_CODE_USE_FOUNDRY=1 \
             ANTHROPIC_FOUNDRY_BASE_URL=https://foundry-ccaclaudefoundry-swe.services.ai.azure.com/anthropic/ \
-            ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-latest \
+            ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-5 \
             ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-latest \
             ANTHROPIC_DEFAULT_OPUS_MODEL=claude-opus-latest \
             claude $argv
