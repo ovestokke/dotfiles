@@ -12,6 +12,8 @@ packages:
       - wezterm # GPU-accelerated terminal emulator
       - ttf-meslo-nerd # Patched Meslo LG font from nerd fonts (includes Powerlevel10k glyphs)
       - gnome-keyring # GNOME keyring for secret/credential storage
+      - tumbler # Thumbnail service for Thunar
+      - thunar-archive-plugin # Archive actions in Thunar context menu
       - tesseract # OCR engine for screen text recognition
       - tesseract-data-eng # English language data for tesseract
       - tesseract-data-nor # Norwegian language data for tesseract
