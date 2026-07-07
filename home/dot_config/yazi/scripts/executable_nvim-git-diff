@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+file=${1:-}
+if [[ -z "$file" || ! -e "$file" ]]; then
+  exit 0
+fi
+
+if [[ ! -f "$file" ]]; then
+  nvim "$file"
+  exit $?
+fi
+
+dir=$(dirname -- "$file")
+if ! root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null); then
+  nvim "$file"
+  exit $?
+fi
+
+rel=$(realpath --relative-to="$root" "$file" 2>/dev/null || printf '%s' "$file")
+if [[ $(git -C "$root" status --porcelain=v1 -- "$rel" 2>/dev/null | cut -c1-2) == "??" ]]; then
+  nvim "$file"
+  exit $?
+fi
+
+base=$(mktemp --tmpdir "yazi-nvim-diff.XXXXXX")
+cleanup() { rm -f -- "$base"; }
+trap cleanup EXIT
+
+if ! git -C "$root" show "HEAD:$rel" >"$base" 2>/dev/null; then
+  if ! git -C "$root" show ":$rel" >"$base" 2>/dev/null; then
+    : >"$base"
+  fi
+fi
+
+chmod 600 "$base"
+nvim -d "$base" "$file"

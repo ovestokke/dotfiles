@@ -1,2 +1,14 @@
+[theme]
+name = "catppuccin"
+
+[terminal]
+new_cwd = "follow"
+
+[keys]
+new_tab = "prefix+t"
+split_horizontal = "prefix+comma"
+split_vertical = "prefix+period"
+
 [ui]
-agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
+agent_panel_sort = "priority"

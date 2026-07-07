@@ -1,0 +1,26 @@
+# Small Vim-ish additions on top of Yazi defaults.
+
+[[mgr.prepend_keymap]]
+on = "J"
+run = "seek 5"
+desc = "Scroll preview down"
+
+[[mgr.prepend_keymap]]
+on = "K"
+run = "seek -5"
+desc = "Scroll preview up"
+
+[[mgr.prepend_keymap]]
+on = "D"
+run = "shell --block -- ~/.config/yazi/scripts/nvim-git-diff %h"
+desc = "Open git diff in Neovim"
+
+[[mgr.prepend_keymap]]
+on = "O"
+run = "open --interactive"
+desc = "Open with..."
+
+[[mgr.prepend_keymap]]
+on = ["g", "f"]
+run = 'search_do --via=fd --args="-H -d 4"'
+desc = "Flat file view"
