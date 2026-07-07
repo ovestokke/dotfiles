@@ -15,7 +15,7 @@ wrap = "no"
 tab_size = 2
 max_width = {{ if eq .chezmoi.os "darwin" }}900{{ else }}1200{{ end }}
 max_height = {{ if eq .chezmoi.os "darwin" }}650{{ else }}900{{ end }}
-image_delay = {{ if eq .chezmoi.os "darwin" }}120{{ else }}60{{ end }}
+image_delay = {{ if eq .chezmoi.os "darwin" }}100{{ else }}60{{ end }}
 image_filter = "triangle"
 image_quality = {{ if eq .chezmoi.os "darwin" }}65{{ else }}75{{ end }}
 
