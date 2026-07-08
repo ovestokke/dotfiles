@@ -3,6 +3,24 @@
     IdentityFile ~/.ssh/id_ed25519_github
     IdentitiesOnly yes
 
+  # Forgejo (selfhost)
+  # Web: https://git.vstokke.com — SSH går internt via Demeter/Forgejo på port 2222.
+  Host forgejo git-ssh.vstokke.com
+    HostName 192.168.1.230
+    User git
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519_forgejo
+    IdentitiesOnly yes
+    UserKnownHostsFile ~/.ssh/known_hosts_forgejo
+
+  # Codeberg
+  Host codeberg codeberg.org
+    HostName codeberg.org
+    User git
+    IdentityFile ~/.ssh/id_ed25519_codeberg
+    IdentitiesOnly yes
+    UserKnownHostsFile ~/.ssh/known_hosts_codeberg
+
   # GitHub konto B (work)
   Host github-work
     HostName github.com
